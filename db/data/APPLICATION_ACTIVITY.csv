@@ -1,0 +1,58 @@
+1,USER_CREATE,Admin: Create a user
+2,USER_UPDATE,Admin: Update a user
+3,USER_DELETE,Admin: Delete a user
+4,USER_VIEW,Admin: View a user
+5,OWNER_CREATE,Admin: Create an owner
+6,OWNER_UPDATE,Admin: Update an owner
+7,OWNER_DELETE,Admin: Delete an owner
+8,OWNER_VIEW,League: View an owner
+9,USER_GROUP_CREATE,Admin: Create user group
+10,USER_GROUP_UPDATE,Admin: Update user group
+11,USER_GROUP_DELETE,Admin: Delete user group
+12,USER_GROUP_VIEW,Admin: View user group
+13,APP_ACTIVITY_CREATE,Admin: Create application activity code
+14,APP_ACTIVITY_DELETE,Admin: Delete application activity code
+15,APP_ACTIVITY_VIEW,Admin: View application activity code
+16,GROUP_ACTIVITY_VIEW,Admin: View user group / activity mapping
+17,GROUP_ACTIVITY_ASSOC,Admin: Administer user group / activity mapping
+18,WEEK_CREATE,Admin: Create calendar week
+19,WEEK_UPDATE,Admin: Update calendar week
+20,WEEK_DELETE,Admin: Delete calendar week
+21,WEEK_VIEW,Admin: View calendar week
+22,SEASON_WEEK_CREATE,Admin: Create season calendar week
+23,SEASON_WEEK_UPDATE,Admin: Update season calendar week
+24,SEASON_WEEK_DELETE,Admin: Delete season calendar week
+25,SEASON_WEEK_VIEW,League: View season calendar week
+26,DIVISION_CREATE,Admin: Create league division(s)
+27,DIVISION_UPDATE,Admin: Update league division(s)
+28,DIVISION_DELETE,Admin: Delete league division(s)
+29,DIVISION_VIEW,Admin: View league division(s)
+30,TEAM_CREATE,Admin: Create league team(s)
+31,TEAM_UPDATE,Admin: Update league team(s)
+32,TEAM_DELETE,Admin: Delete league team(s)
+33,TEAM_VIEW,League: View league team(s)
+34,SCHEDULE_CREATE,Admin: Create season schedule
+35,SCHEDULE_UPDATE,Admin: Update season schedule
+36,SCHEDULE_DELETE,Admin: Delete season schedule
+37,SCHEDULE_VIEW,League: View season schedule
+38,CONFERENCE_CREATE,Admin: Create NCAA conference
+39,CONFERENCE_UPDATE,Admin: Update NCAA conference
+40,CONFERENCE_DELETE,Admin: Delete NCAA conference
+41,CONFERENCE_VIEW,League: View NCAA conference
+42,SCHOOL_CREATE,Admin: Create school
+43,SCHOOL_UPDATE,Admin: Update school
+44,SCHOOL_DELETE,Admin: Delete school
+45,SCHOOL_VIEW,League: View school
+46,LINEUP_CREATE,League: Create lineup
+47,LINEUP_UPDATE,League: Update lineup
+48,LINEUP_DELETE,Admin: Delete lineup
+49,LINEUP_VIEW,League: View lineup
+50,LINEUP_APPROVE,Admin: Approve/lock lineup
+51,BID_CREATE,League: Create bid
+52,BID_UPDATE,League: Update bid
+53,BID_DELETE,League: Delete bid
+54,BID_VIEW,League: View bid
+55,BID_APPROVE,Admin: Approve/lock bid
+56,STANDINGS_VIEW,League: View standings
+57,TEAM_TX_HISTORY_VIEW,Admin: View transactions history
+58,STATS_VIEW,League: View all league statistics
