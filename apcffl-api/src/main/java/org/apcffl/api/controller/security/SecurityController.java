@@ -1,6 +1,7 @@
 package org.apcffl.api.controller.security;
 
 import org.apcffl.api.controller.security.handler.SecurityExceptionHandler;
+import org.apcffl.api.security.dto.PasswordResetResponse;
 import org.apcffl.api.security.dto.UserDto;
 import org.apcffl.api.security.service.AuthorizationService;
 import org.springframework.http.MediaType;
@@ -31,5 +32,15 @@ public class SecurityController implements SecurityExceptionHandler {
 			@PathVariable(required=true) String password) {
 		
 		return service.login(userName, password);
+	}
+
+	@ApiOperation(value="Password Reset token request", httpMethod = "GET",
+			produces = MediaType.APPLICATION_JSON_VALUE, response = PasswordResetResponse.class)
+	@GetMapping(path="/passwordResetToken/userName/{userName}", produces = {MediaType.APPLICATION_JSON_VALUE})
+	public PasswordResetResponse passwordResetToken(@PathVariable(required=true) String userName) {
+		
+		service.passwordResetToken(userName);
+		
+		return new PasswordResetResponse("Please check your email.");
 	}
 }

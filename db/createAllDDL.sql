@@ -9,6 +9,11 @@
 
 create database apcffl_phoenix;
 
+create table apcffl_phoenix.CONFIG (
+      CONFIG_KEY            varchar(64) not null primary key,
+      CONFIG_VALUE          varchar(2048) not null,
+      CONFIG_DESC           varchar(128)
+);
 
 /* **************************************************************
 

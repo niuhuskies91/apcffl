@@ -18,6 +18,7 @@
     select * from apcffl_phoenix.CONFERENCE;
     select * from apcffl_phoenix.DIVISION;
     select * from apcffl_phoenix.LEAGUE;
+    select * from apcffl_phoenix.OWNER;
     select * from apcffl_phoenix.USER;
     select * from apcffl_phoenix.USER_GROUP;
     select * from apcffl_phoenix.WEEK;
