@@ -9,6 +9,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import org.apcffl.ApcfflTest;
+import org.apcffl.api.exception.EmailException;
 import org.apcffl.api.exception.SecurityException;
 import org.apcffl.api.security.dto.UserDto;
 import org.apcffl.api.security.service.AuthorizationService;
@@ -80,6 +81,25 @@ public class SecurityControllerTest {
     	// verify results
     	
     	verify(service, times(1)).login(anyString(), anyString());
+    }
+    
+    @Test
+    public void testPasswordResetTokenEmailException() throws Exception {
+    	
+    	// build the mock service response
+    	
+    	Mockito.doThrow(new EmailException("error"))
+    	.when(service).passwordResetToken(anyString());
+    	
+    	
+    	// perform the mock REST call
+    	
+    	mockMvc.perform(
+    			get(PSWD_RESET_URL, ApcfflTest.USER_NAME)
+				.accept(MediaType.APPLICATION_JSON))
+			.andDo(print())
+			.andExpect(status().isInternalServerError());
+    	
     }
     
     @Test
