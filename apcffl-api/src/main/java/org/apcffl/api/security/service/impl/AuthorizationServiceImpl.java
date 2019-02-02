@@ -1,5 +1,6 @@
 package org.apcffl.api.security.service.impl;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apcffl.api.bo.EmailManagerBo;
 import org.apcffl.api.bo.SessionManagerBo;
 import org.apcffl.api.exception.SecurityException;
@@ -7,6 +8,7 @@ import org.apcffl.api.persistence.model.OwnerModel;
 import org.apcffl.api.persistence.model.UserModel;
 import org.apcffl.api.persistence.repository.OwnerRepository;
 import org.apcffl.api.persistence.repository.UserRepository;
+import org.apcffl.api.security.dto.PasswordResetRequest;
 import org.apcffl.api.security.dto.UserDto;
 import org.apcffl.api.security.service.AuthorizationService;
 import org.slf4j.Logger;
@@ -69,15 +71,54 @@ public class AuthorizationServiceImpl implements AuthorizationService {
 	}
 
 	@Override
-	public void userNameRecovery(String email) {
-		// TODO Auto-generated method stub
+	public void resetPassword(PasswordResetRequest request) {
+		String userName = request.getUserName();
+		Integer token = request.getPasswordResetToken();
+		String password = request.getPassword();
 		
+		if (StringUtils.isEmpty(userName) || token == null || StringUtils.isEmpty(password)) {
+			String error = "Missing required parameters. The password cannot be reset.";
+			LOG.error(error);
+			throw new SecurityException(error);
+		}
+		OwnerModel owner = ownerRepository.findByUserName(request.getUserName());
+		if (owner == null) {
+			String error = "The username is not found. The password cannot be reset.";
+			LOG.error(error);
+			throw new SecurityException(error);
+		}
+		boolean tokenValid = sessionManager.isValidPasswordResetToken(userName, token);
+		if (!tokenValid) {
+			String error = "The password reset token is invalid. The password cannot be reset.";
+			throw new SecurityException(error);
+		}
+		UserModel user = owner.getUserModel();
+		user.setPassword(password);
+		userRepository.save(user);
 	}
 
 	@Override
-	public void resetPassword(String resetToken, String userName, String password) {
-		// TODO Auto-generated method stub
+	public void userNameRecovery(String email) {
+		if (StringUtils.isEmpty(email)) {
+			String error = "The email is not privided. The the user name cannot be recovered.";
+			LOG.error(error);
+			throw new SecurityException(error);
+		}
+		// recover the user name for the given email
+		OwnerModel owner = ownerRepository.findByEmail(email);
+		if (owner == null || owner.getUserModel() == null || StringUtils.isEmpty(owner.getUserModel().getUserName())) {
+			String error = "The username is not found. The password cannot be reset.";
+			LOG.error(error);
+			throw new SecurityException(error);
+		}
 		
+		// send the recovered user name to the email address
+		
+		String subject = "Apcffl: User name recovery";
+		StringBuilder sb = new StringBuilder();
+		sb.append("Your user name is: ").append(owner.getUserModel().getUserName());
+		
+		emailManager.sendEmail(email, subject, sb.toString());
 	}
 
 	@Override

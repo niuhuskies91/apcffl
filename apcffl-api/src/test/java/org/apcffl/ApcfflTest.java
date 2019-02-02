@@ -11,6 +11,7 @@ import org.apcffl.api.persistence.model.LeagueModel;
 import org.apcffl.api.persistence.model.OwnerModel;
 import org.apcffl.api.persistence.model.UserGroupModel;
 import org.apcffl.api.persistence.model.UserModel;
+import org.apcffl.api.security.dto.PasswordResetRequest;
 
 public class ApcfflTest {
 	
@@ -18,9 +19,12 @@ public class ApcfflTest {
 	
 	public static final Long   PRIMARY_KEY = 42L;
 	
-	public static final String USER_NAME   = "dan.kamp";
-	public static final String PASSWORD    = "password";
-	public static final String TEST_TOKEN  = "R1BCLhVAYJb2zQ9Mkewwmg==";
+	// General security constants
+	
+	public static final String USER_NAME              = "dan.kamp";
+	public static final String PASSWORD               = "password";
+	public static final String TEST_TOKEN             = "R1BCLhVAYJb2zQ9Mkewwmg==";
+	public static final Integer TEST_RESET_PSWD_TOKEN = new Integer(42);
 	
 	public static final Date   TEST_DATE   = new Date();
 	
@@ -212,5 +216,14 @@ public class ApcfflTest {
 		config.setConfigValue(CONFIG_PSWD_RESET_VAL);
 		
 		return configs;
+	}
+	
+	public static PasswordResetRequest buildPasswordResetRequest() {
+		PasswordResetRequest request = new PasswordResetRequest();
+		request.setPassword(PASSWORD);
+		request.setPasswordResetToken(TEST_RESET_PSWD_TOKEN);
+		request.setUserName(USER_NAME);
+		
+		return request;
 	}
 }

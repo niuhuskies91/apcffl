@@ -9,4 +9,7 @@ public interface OwnerRepository extends JpaRepository<OwnerModel, Long> {
 
 	@Query("select o from OwnerModel o INNER JOIN o.userModel u where u.userName = :userName")
 	OwnerModel findByUserName(@Param("userName") String userName);
+
+	@Query("select o from OwnerModel o where o.email1 = :email")
+	OwnerModel findByEmail(@Param("email") String email);
 }

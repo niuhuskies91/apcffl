@@ -1,13 +1,17 @@
 package org.apcffl.api.controller.security;
 
 import org.apcffl.api.controller.security.handler.SecurityExceptionHandler;
-import org.apcffl.api.security.dto.PasswordResetResponse;
+import org.apcffl.api.security.dto.PasswordResetRequest;
+import org.apcffl.api.security.dto.GenericSecurityResponse;
 import org.apcffl.api.security.dto.UserDto;
 import org.apcffl.api.security.service.AuthorizationService;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.swagger.annotations.Api;
@@ -35,12 +39,33 @@ public class SecurityController implements SecurityExceptionHandler {
 	}
 
 	@ApiOperation(value="Password Reset token request", httpMethod = "GET",
-			produces = MediaType.APPLICATION_JSON_VALUE, response = PasswordResetResponse.class)
+			produces = MediaType.APPLICATION_JSON_VALUE, response = GenericSecurityResponse.class)
 	@GetMapping(path="/passwordResetToken/userName/{userName}", produces = {MediaType.APPLICATION_JSON_VALUE})
-	public PasswordResetResponse passwordResetToken(@PathVariable(required=true) String userName) {
+	public GenericSecurityResponse passwordResetToken(@PathVariable(required=true) String userName) {
 		
 		service.passwordResetToken(userName);
 		
-		return new PasswordResetResponse("Please check your email.");
+		return new GenericSecurityResponse("Please check your email.");
 	}
-}
+
+	@ApiOperation(value="User name recovery request", httpMethod = "GET",
+			produces = MediaType.APPLICATION_JSON_VALUE, response = GenericSecurityResponse.class)
+	@GetMapping(path="/userNameRecovery/email/{email}", produces = {MediaType.APPLICATION_JSON_VALUE})
+	public GenericSecurityResponse userNameRecovery(@PathVariable(required=true) String email) {
+		
+		service.userNameRecovery(email);
+		
+		return new GenericSecurityResponse("Please check your email.");
+	}
+
+	@ApiOperation(value="Password Reset request", httpMethod = "POST",
+			produces = MediaType.APPLICATION_JSON_VALUE, response = GenericSecurityResponse.class)
+	@RequestMapping(method = RequestMethod.POST, value="/passwordReset")
+	@ResponseBody
+	public GenericSecurityResponse passwordReset(@RequestBody PasswordResetRequest request) {
+		
+		service.resetPassword(request);
+		
+		return new GenericSecurityResponse("Your password has been successfully changed. Please log in.");
+	}
+} 
