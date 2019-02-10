@@ -55,6 +55,9 @@ public class SessionManagerBo {
 	
 	/**
 	 * Generate a session token for the user.
+	 * We are double encoding. The session map contains level 1
+	 * Base 64 encoding. What we return to the user is a level 2
+	 * Base 64 encoding, so that the UI user token is double encoded.
 	 * 
 	 * @param userName : user login
 	 * @return session token
@@ -64,7 +67,7 @@ public class SessionManagerBo {
 		String token = session.getToken();
 		sessionMap.put(userName, session);
 		
-		return token;
+		return Base64.getEncoder().encodeToString(token.getBytes());
 	}
 	
 	/**
@@ -79,9 +82,14 @@ public class SessionManagerBo {
 		if (!sessionMap.containsKey(userName)) {
 			return false;
 		} 
+		
+		// remove the double encoding to a single encoded token
+		// which is stored in the map
+		String decoded = new String(Base64.getDecoder().decode(token));
+		
 		// the session token does not match the token passed in
 		Session session = sessionMap.get(userName);
-		if (!session.getToken().equals(token)) {
+		if (!session.getToken().equals(decoded)) {
 			sessionMap.remove(userName);
 			if (LOG.isDebugEnabled()) {
 				LOG.debug("Token does not match cache. Removed session token for userName: " + userName);

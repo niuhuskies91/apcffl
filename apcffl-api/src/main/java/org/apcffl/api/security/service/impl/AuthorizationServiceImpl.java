@@ -11,27 +11,27 @@ import org.apcffl.api.persistence.repository.UserRepository;
 import org.apcffl.api.security.dto.PasswordResetRequest;
 import org.apcffl.api.security.dto.UserDto;
 import org.apcffl.api.security.service.AuthorizationService;
+import org.apcffl.api.service.ApcfflService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 @Service
-public class AuthorizationServiceImpl implements AuthorizationService {
+public class AuthorizationServiceImpl extends ApcfflService implements AuthorizationService {
 
 	private static final Logger LOG = LoggerFactory.getLogger(AuthorizationServiceImpl.class);
 	
 	private UserRepository userRepository;
 	private OwnerRepository ownerRepository;
-	private SessionManagerBo sessionManager;
 	private EmailManagerBo emailManager;
 	
 	public AuthorizationServiceImpl(UserRepository userRepository, OwnerRepository ownerRepository,
-			SessionManagerBo sessionManager, EmailManagerBo emailManager) {
+			EmailManagerBo emailManager, SessionManagerBo sessionManager) {
 		
 		this.userRepository = userRepository;
 		this.ownerRepository = ownerRepository;
-		this.sessionManager = sessionManager;
 		this.emailManager = emailManager;
+		this.sessionManager = sessionManager;
 	}
 
 	@Override
@@ -121,10 +121,10 @@ public class AuthorizationServiceImpl implements AuthorizationService {
 		emailManager.sendEmail(email, subject, sb.toString());
 	}
 
-	@Override
-	public boolean isValidSessionToken(String sessionToken, String userName) {
+//	@Override
+//	public boolean isValidSessionToken(String sessionToken, String userName) {
 		
-		return sessionManager.isValidSessionToken(userName, sessionToken);
-	}
+//		return sessionManager.isValidSessionToken(userName, sessionToken);
+//	}
 
 }

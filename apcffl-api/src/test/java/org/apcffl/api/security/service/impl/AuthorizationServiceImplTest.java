@@ -110,23 +110,6 @@ public class AuthorizationServiceImplTest {
 		service.passwordResetToken(ApcfflTest.USER_NAME);
 	}
     
-    @Test
-    public void testIsSessionExpired() {
-
-		// prepare test data
-		
-		OwnerModel mockOwner = ApcfflTest.buildOwnerModel();
-		when(ownerRepository.findByUserName(anyString())).thenReturn(mockOwner);
-		
-		// invoke method
-		
-    	service.passwordResetToken(ApcfflTest.USER_NAME);
-    	
-    	// verify results
-    	
-    	assertEquals(service.isValidSessionToken("invalid", ApcfflTest.USER_NAME), false);
-    }
-    
     @Test(expected = org.apcffl.api.exception.SecurityException.class)
     public void testResetPasswordNullUserName() {
     	

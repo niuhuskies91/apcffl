@@ -66,6 +66,10 @@ public class SecurityControllerTest {
 				.accept(MediaType.APPLICATION_JSON))
 			.andDo(print())
 			.andExpect(status().isUnauthorized());
+    	
+    	// verify results
+    	
+    	verify(service, times(1)).login(anyString(), anyString());
     }
     
     @Test
@@ -110,6 +114,10 @@ public class SecurityControllerTest {
 			.andDo(print())
 			.andExpect(status().isInternalServerError());
     	
+    	// verify results
+    	
+    	verify(service, times(1)).passwordResetToken(anyString());
+    	
     }
     
     @Test
@@ -128,6 +136,10 @@ public class SecurityControllerTest {
 				.accept(MediaType.APPLICATION_JSON))
 			.andDo(print())
 			.andExpect(status().isUnauthorized());
+    	
+    	// verify results
+    	
+    	verify(service, times(1)).passwordResetToken(anyString());
     }
     
     @Test
@@ -145,6 +157,10 @@ public class SecurityControllerTest {
 				.accept(MediaType.APPLICATION_JSON))
 			.andDo(print())
 			.andExpect(status().isOk());
+    	
+    	// verify results
+    	
+    	verify(service, times(1)).passwordResetToken(anyString());
     }
     
     @Test
@@ -169,6 +185,10 @@ public class SecurityControllerTest {
 				.accept(MediaType.APPLICATION_JSON))
 			.andDo(print())
 			.andExpect(status().isUnauthorized());
+    	
+    	// verify results
+    	
+    	verify(service, times(1)).resetPassword(any());
     }
     
     @Test
@@ -192,6 +212,10 @@ public class SecurityControllerTest {
 				.accept(MediaType.APPLICATION_JSON))
 			.andDo(print())
 			.andExpect(status().isOk());
+    	
+    	// verify results
+    	
+    	verify(service, times(1)).resetPassword(any());
     }
     
     @Test
@@ -212,6 +236,9 @@ public class SecurityControllerTest {
 			.andDo(print())
 			.andExpect(status().isUnauthorized());
     	
+    	// verify results
+    	
+    	verify(service, times(1)).userNameRecovery(anyString());
     }
     
     @Test
@@ -232,6 +259,9 @@ public class SecurityControllerTest {
 			.andDo(print())
 			.andExpect(status().isInternalServerError());
     	
+    	// verify results
+    	
+    	verify(service, times(1)).userNameRecovery(anyString());
     }
     
     @Test
@@ -252,5 +282,8 @@ public class SecurityControllerTest {
 			.andDo(print())
 			.andExpect(status().isOk());
     	
+    	// verify results
+    	
+    	verify(service, times(1)).userNameRecovery(anyString());
     }
 }

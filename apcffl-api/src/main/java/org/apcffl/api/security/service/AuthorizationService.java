@@ -12,6 +12,4 @@ public interface AuthorizationService {
 	public void userNameRecovery(String email);
 	
 	public void resetPassword(PasswordResetRequest request);
-	
-	public boolean isValidSessionToken(String sessionToken, String userName);
 }
