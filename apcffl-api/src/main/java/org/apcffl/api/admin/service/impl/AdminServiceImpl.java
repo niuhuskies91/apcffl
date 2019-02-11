@@ -9,19 +9,17 @@ import org.apcffl.api.admin.dto.ConfigurationRetrievalRequest;
 import org.apcffl.api.admin.dto.ConfigurationUpdateRequest;
 import org.apcffl.api.admin.dto.mapper.AdminMapper;
 import org.apcffl.api.admin.service.AdminService;
-import org.apcffl.api.bo.SessionManagerBo;
 import org.apcffl.api.config.ApiServiceConfig;
 import org.apcffl.api.exception.SecurityException;
 import org.apcffl.api.exception.constants.AppAccessConstants;
 import org.apcffl.api.persistence.model.ConfigModel;
 import org.apcffl.api.persistence.repository.ConfigRepository;
-import org.apcffl.api.service.ApcfflService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 @Service
-public class AdminServiceImpl extends ApcfflService implements AdminService {
+public class AdminServiceImpl implements AdminService {
 
 	private static final Logger LOG = LoggerFactory.getLogger(AdminServiceImpl.class);
 
@@ -29,15 +27,13 @@ public class AdminServiceImpl extends ApcfflService implements AdminService {
 	
 	private ApiServiceConfig config;
 	
-	public AdminServiceImpl(ConfigRepository configRepository, ApiServiceConfig config, SessionManagerBo sessionManager) {
+	public AdminServiceImpl(ConfigRepository configRepository, ApiServiceConfig config) {
 		this.configRepository = configRepository;
 		this.config = config;
-		this.sessionManager = sessionManager;
 	}
 
 	@Override
 	public AccountResponse accountRetrieval(AccountRequest request) {
-		isValidSessionToken(request.getSecurityToken(), request.getUserName());
 		
 		// TODO Auto-generated method stub
 		return null;
@@ -45,7 +41,6 @@ public class AdminServiceImpl extends ApcfflService implements AdminService {
 
 	@Override
 	public void accountCreate(AccountRequest request) {
-		isValidSessionToken(request.getSecurityToken(), request.getUserName());
 		
 		// TODO Auto-generated method stub
 		
@@ -53,7 +48,6 @@ public class AdminServiceImpl extends ApcfflService implements AdminService {
 
 	@Override
 	public void accountUpdate(AccountRequest request) {
-		isValidSessionToken(request.getSecurityToken(), request.getUserName());
 		
 		// TODO Auto-generated method stub
 		
@@ -61,7 +55,6 @@ public class AdminServiceImpl extends ApcfflService implements AdminService {
 
 	@Override
 	public List<ConfigurationDto> configurationRetrieval(ConfigurationRetrievalRequest request) {
-		isValidSessionToken(request.getSecurityToken(), request.getUserName());
 		
 		if (!AppAccessConstants.USER_GROUP_ADMIN.equals(request.getUserGroupName())) {
 			String error = "You do not have Administrative access.";
@@ -75,7 +68,6 @@ public class AdminServiceImpl extends ApcfflService implements AdminService {
 
 	@Override
 	public void configurationUpdate(ConfigurationUpdateRequest request) {
-		isValidSessionToken(request.getSecurityToken(), request.getUserName());
 		
 		if (!AppAccessConstants.USER_GROUP_ADMIN.equals(request.getUserGroupName())) {
 			String error = "You do not have Administrative access.";

@@ -4,10 +4,15 @@ import org.apcffl.ApcfflTest;
 import org.apcffl.api.admin.dto.AccountRequest;
 import org.apcffl.api.admin.dto.AccountResponse;
 import org.apcffl.api.admin.service.AdminService;
+import org.apcffl.api.bo.SessionManagerBo;
+import org.apcffl.api.exception.PersistenceException;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.MockitoAnnotations;
+
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -36,11 +41,71 @@ public class AccountControllerTest {
 	@MockBean
 	AdminService service;
 	
+	@MockBean
+	SessionManagerBo sessionManager;
+	
 	private ObjectMapper objectMapper;
  
     @Before
     public void setUp() {
+		MockitoAnnotations.initMocks(this);
+		
     	objectMapper = new ObjectMapper();
+		
+		sessionManager.init();
+		when(sessionManager.isValidSessionToken(anyString(), anyString())).thenReturn(true);
+    }
+    
+    @Test
+    public void testAccountRetrievalPersistenceException() throws Exception {
+    	
+    	// prepare test data
+    	
+		AccountRequest request = ApcfflTest.buildAccountRequest();
+
+		when(service.accountRetrieval(any())).thenThrow(new PersistenceException("error1"));
+		
+		// perform the mock REST call
+		
+		String jsonRequest = objectMapper.writeValueAsString(request);
+		
+		mockMvc.perform(
+				post(ACCOUNT_RETRIEVAL_URL)
+				.contentType(MediaType.APPLICATION_JSON)
+				.content(jsonRequest)
+				.accept(MediaType.APPLICATION_JSON))
+			.andDo(print())
+			.andExpect(status().isInternalServerError());
+    	
+    	// verify results
+    	
+    	verify(service, times(1)).accountRetrieval(any());
+    }
+    
+    @Test
+    public void testAccountRetrievalInvalidSessionToken() throws Exception {
+    	
+    	// prepare test data
+    	
+		AccountRequest request = ApcfflTest.buildAccountRequest();
+
+		when(sessionManager.isValidSessionToken(anyString(), anyString())).thenReturn(false);
+		
+		// perform the mock REST call
+		
+		String jsonRequest = objectMapper.writeValueAsString(request);
+		
+		mockMvc.perform(
+				post(ACCOUNT_RETRIEVAL_URL)
+				.contentType(MediaType.APPLICATION_JSON)
+				.content(jsonRequest)
+				.accept(MediaType.APPLICATION_JSON))
+			.andDo(print())
+			.andExpect(status().isUnauthorized());
+    	
+    	// verify results
+    	
+    	verify(service, times(0)).accountRetrieval(any());
     }
 	
 	@Test
@@ -48,18 +113,8 @@ public class AccountControllerTest {
 		
 		// prepare test data
 		
-		AccountRequest request = new AccountRequest();
-		request.setSecurityToken(ApcfflTest.TEST_TOKEN);
-		request.setUserGroupName(ApcfflTest.USER_GROUP_OWNER);
-		request.setUserName(ApcfflTest.USER_NAME);
-		
-		AccountResponse mockResponse = new AccountResponse();
-		mockResponse.setEmail1(ApcfflTest.OWNER_EMAIL1);
-		mockResponse.setEmail2(ApcfflTest.OWNER_EMAIL2);
-		mockResponse.setEmail3(ApcfflTest.OWNER_EMAIL3);
-		mockResponse.setFirstName(ApcfflTest.OWNER_FIRST_NAME);
-		mockResponse.setLastName(ApcfflTest.OWNER_LAST_NAME);
-		mockResponse.setLeagueName(ApcfflTest.LEAGUE_1_NAME);
+		AccountRequest request = ApcfflTest.buildAccountRequest();
+		AccountResponse mockResponse = ApcfflTest.buildAccountResponse();
 		
 		when(service.accountRetrieval(any())).thenReturn(mockResponse);
 		

@@ -1,4 +1,4 @@
-package org.apcffl.api.exception.dto;
+package org.apcffl.api.dto;
 
 import java.io.Serializable;
 

@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.apcffl.api.admin.dto.AccountRequest;
+import org.apcffl.api.admin.dto.AccountResponse;
 import org.apcffl.api.persistence.model.ApplicationActivityModel;
 import org.apcffl.api.persistence.model.ConfigModel;
 import org.apcffl.api.persistence.model.GroupActivityMapModel;
@@ -225,5 +227,26 @@ public class ApcfflTest {
 		request.setUserName(USER_NAME);
 		
 		return request;
+	}
+	
+	public static AccountRequest buildAccountRequest() {
+		AccountRequest request = new AccountRequest();
+		request.setSecurityToken(ApcfflTest.TEST_TOKEN);
+		request.setUserGroupName(ApcfflTest.USER_GROUP_OWNER);
+		request.setUserName(ApcfflTest.USER_NAME);
+		
+		return request;
+	}
+	
+	public static AccountResponse buildAccountResponse() {
+		AccountResponse response = new AccountResponse();
+		response.setEmail1(ApcfflTest.OWNER_EMAIL1);
+		response.setEmail2(ApcfflTest.OWNER_EMAIL2);
+		response.setEmail3(ApcfflTest.OWNER_EMAIL3);
+		response.setFirstName(ApcfflTest.OWNER_FIRST_NAME);
+		response.setLastName(ApcfflTest.OWNER_LAST_NAME);
+		response.setLeagueName(ApcfflTest.LEAGUE_1_NAME);
+		
+		return response;
 	}
 }

@@ -1,6 +1,8 @@
 package org.apcffl.api.admin.dto;
 
-public class AccountResponse {
+import org.apcffl.api.dto.ApiResponse;
+
+public class AccountResponse extends ApiResponse {
 
 	private String leagueName;
 	private String firstName;

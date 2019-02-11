@@ -3,7 +3,6 @@ package org.apcffl.api.admin.service.impl;
 import org.apcffl.ApcfflTest;
 import org.apcffl.api.admin.dto.ConfigurationDto;
 import org.apcffl.api.admin.dto.ConfigurationRetrievalRequest;
-import org.apcffl.api.bo.SessionManagerBo;
 import org.apcffl.api.config.ApiServiceConfig;
 import org.apcffl.api.persistence.repository.ConfigRepository;
 import org.junit.Before;
@@ -13,7 +12,6 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 import static org.junit.Assert.assertEquals;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
 import java.util.List;
@@ -29,18 +27,11 @@ public class AdminServiceImplTest {
 	@Mock
 	private ApiServiceConfig config;
 	
-	@Mock
-	private SessionManagerBo sessionManager;
-	
 	@Before
 	public void setUp() {
 		MockitoAnnotations.initMocks(this);
 		
 		config.init();
-		
-		sessionManager.init();
-		when(sessionManager.isValidSessionToken(ApcfflTest.TEST_TOKEN, ApcfflTest.USER_NAME)).thenReturn(true);
-		
 	}
 	
 	@Test(expected = org.apcffl.api.exception.SecurityException.class)
@@ -62,8 +53,6 @@ public class AdminServiceImplTest {
 	public void testConfigurationRetrieval() {
 		
 		// prepare test data
-
-		when(sessionManager.isValidSessionToken(anyString(), anyString())).thenReturn(true);
 		
 		ConfigurationRetrievalRequest request = new ConfigurationRetrievalRequest();
 		request.setUserGroupName(ApcfflTest.USER_GROUP_ADMIN);

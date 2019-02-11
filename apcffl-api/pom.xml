@@ -59,6 +59,10 @@
     		<groupId>org.springframework.boot</groupId>
     		<artifactId>spring-boot-starter-mail</artifactId>
 		</dependency><!--$NO-MVN-MAN-VER$-->
+<!--  		<dependency>
+    		<groupId>org.springframework.boot</groupId>
+    		<artifactId>spring-boot-starter-security</artifactId>
+		</dependency> -->
 		
 		<!-- Swagger -->
 

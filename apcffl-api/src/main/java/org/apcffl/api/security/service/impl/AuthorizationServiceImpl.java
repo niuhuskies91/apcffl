@@ -11,19 +11,19 @@ import org.apcffl.api.persistence.repository.UserRepository;
 import org.apcffl.api.security.dto.PasswordResetRequest;
 import org.apcffl.api.security.dto.UserDto;
 import org.apcffl.api.security.service.AuthorizationService;
-import org.apcffl.api.service.ApcfflService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 @Service
-public class AuthorizationServiceImpl extends ApcfflService implements AuthorizationService {
+public class AuthorizationServiceImpl implements AuthorizationService {
 
 	private static final Logger LOG = LoggerFactory.getLogger(AuthorizationServiceImpl.class);
 	
-	private UserRepository userRepository;
-	private OwnerRepository ownerRepository;
-	private EmailManagerBo emailManager;
+	private final UserRepository userRepository;
+	private final OwnerRepository ownerRepository;
+	private final EmailManagerBo emailManager;
+	private final SessionManagerBo sessionManager;
 	
 	public AuthorizationServiceImpl(UserRepository userRepository, OwnerRepository ownerRepository,
 			EmailManagerBo emailManager, SessionManagerBo sessionManager) {
