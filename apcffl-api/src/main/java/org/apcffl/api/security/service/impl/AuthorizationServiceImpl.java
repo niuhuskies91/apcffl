@@ -3,6 +3,7 @@ package org.apcffl.api.security.service.impl;
 import org.apache.commons.lang3.StringUtils;
 import org.apcffl.api.bo.EmailManagerBo;
 import org.apcffl.api.bo.SessionManagerBo;
+import org.apcffl.api.constants.UIMessages;
 import org.apcffl.api.exception.SecurityException;
 import org.apcffl.api.persistence.model.OwnerModel;
 import org.apcffl.api.persistence.model.UserModel;
@@ -25,8 +26,8 @@ public class AuthorizationServiceImpl implements AuthorizationService {
 	private final EmailManagerBo emailManager;
 	private final SessionManagerBo sessionManager;
 	
-	public AuthorizationServiceImpl(UserRepository userRepository, OwnerRepository ownerRepository,
-			EmailManagerBo emailManager, SessionManagerBo sessionManager) {
+	public AuthorizationServiceImpl(final UserRepository userRepository, final OwnerRepository ownerRepository,
+			final EmailManagerBo emailManager, final SessionManagerBo sessionManager) {
 		
 		this.userRepository = userRepository;
 		this.ownerRepository = ownerRepository;
@@ -39,7 +40,7 @@ public class AuthorizationServiceImpl implements AuthorizationService {
 		
 		UserModel user = userRepository.findByUserNamePassword(userName, password);
 		if (user == null) {
-			String error = "Authorization failed for user name: " + userName;
+			String error = UIMessages.ERROR_AUTH_FAIL + userName;
 			LOG.warn(error);
 			throw new SecurityException(error);
 		}
@@ -52,11 +53,11 @@ public class AuthorizationServiceImpl implements AuthorizationService {
 	@Override
 	public void passwordResetToken(String userName) {
 		
-		String subject = "Apcffl: Password reset";
+		String subject = UIMessages.EMAIL_PSWD_RESET_SUBJECT;
 		
 		OwnerModel owner = ownerRepository.findByUserName(userName);
 		if (owner == null) {
-			String error = "The username is not found. No password reset token was generated.";
+			String error = UIMessages.ERROR_AUTH_PSWD_RESET_USER_NOTFOUND;
 			LOG.error(error);
 			throw new SecurityException(error);
 		}
@@ -64,8 +65,8 @@ public class AuthorizationServiceImpl implements AuthorizationService {
 		
 		int token = sessionManager.generatePasswordResetToken(userName);
 		StringBuilder sb = new StringBuilder();
-		sb.append("Your password reset token is: ").append(token);
-		sb.append(". Please use this when resetting your password.");
+		sb.append(UIMessages.EMAIL_BODY_PSWD_RESET_1).append(token);
+		sb.append(UIMessages.EMAIL_BODY_PSWD_RESET_2);
 		
 		emailManager.sendEmail(email, subject, sb.toString());
 	}
@@ -77,19 +78,19 @@ public class AuthorizationServiceImpl implements AuthorizationService {
 		String password = request.getPassword();
 		
 		if (StringUtils.isEmpty(userName) || token == null || StringUtils.isEmpty(password)) {
-			String error = "Missing required parameters. The password cannot be reset.";
+			String error = UIMessages.ERROR_RESET_PSWD_PARAMS;
 			LOG.error(error);
 			throw new SecurityException(error);
 		}
 		OwnerModel owner = ownerRepository.findByUserName(request.getUserName());
 		if (owner == null) {
-			String error = "The username is not found. The password cannot be reset.";
+			String error = UIMessages.ERROR_RESET_PSWD_USER_NOTFOUND;
 			LOG.error(error);
 			throw new SecurityException(error);
 		}
 		boolean tokenValid = sessionManager.isValidPasswordResetToken(userName, token);
 		if (!tokenValid) {
-			String error = "The password reset token is invalid. The password cannot be reset.";
+			String error = UIMessages.ERROR_RESET_TOKEN_INVALID;
 			throw new SecurityException(error);
 		}
 		UserModel user = owner.getUserModel();
@@ -100,31 +101,24 @@ public class AuthorizationServiceImpl implements AuthorizationService {
 	@Override
 	public void userNameRecovery(String email) {
 		if (StringUtils.isEmpty(email)) {
-			String error = "The email is not privided. The the user name cannot be recovered.";
+			String error = UIMessages.ERROR_USERNAME_RECOVER_MISSING_EMAIL;
 			LOG.error(error);
 			throw new SecurityException(error);
 		}
 		// recover the user name for the given email
 		OwnerModel owner = ownerRepository.findByEmail(email);
 		if (owner == null || owner.getUserModel() == null || StringUtils.isEmpty(owner.getUserModel().getUserName())) {
-			String error = "The username is not found. The password cannot be reset.";
+			String error = UIMessages.ERROR_USERNAME_RECOVER_NOT_FOUND;
 			LOG.error(error);
 			throw new SecurityException(error);
 		}
 		
 		// send the recovered user name to the email address
 		
-		String subject = "Apcffl: User name recovery";
+		String subject = UIMessages.EMAIL_USERNAME_RECOVER_SUBJECT;
 		StringBuilder sb = new StringBuilder();
-		sb.append("Your user name is: ").append(owner.getUserModel().getUserName());
+		sb.append(UIMessages.EMAIL_BODY_USERNAME_RECOVER).append(owner.getUserModel().getUserName());
 		
 		emailManager.sendEmail(email, subject, sb.toString());
 	}
-
-//	@Override
-//	public boolean isValidSessionToken(String sessionToken, String userName) {
-		
-//		return sessionManager.isValidSessionToken(userName, sessionToken);
-//	}
-
 }

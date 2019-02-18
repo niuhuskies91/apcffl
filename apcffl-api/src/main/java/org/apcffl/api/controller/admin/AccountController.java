@@ -2,10 +2,13 @@ package org.apcffl.api.controller.admin;
 
 import org.apcffl.api.admin.dto.AccountRequest;
 import org.apcffl.api.admin.dto.AccountResponse;
+import org.apcffl.api.admin.dto.ConfigurationResponse;
+import org.apcffl.api.admin.dto.ConfigurationRetrievalRequest;
 import org.apcffl.api.admin.service.AdminService;
 import org.apcffl.api.bo.SessionManagerBo;
 import org.apcffl.api.controller.ApcfflController;
 import org.apcffl.api.controller.admin.handler.AdminExceptionHandler;
+import org.apcffl.api.dto.ErrorDto;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -25,7 +28,7 @@ public class AccountController extends ApcfflController implements AdminExceptio
 	
 	private final AdminService service;
 	
-	public AccountController(AdminService service, SessionManagerBo sessionManager) {
+	public AccountController(final AdminService service, final SessionManagerBo sessionManager) {
 		this.service = service;
 		this.sessionManager = sessionManager;
 	}
@@ -36,12 +39,29 @@ public class AccountController extends ApcfflController implements AdminExceptio
 	@ResponseBody
 	public ResponseEntity<AccountResponse> accountRetrieval(@RequestBody AccountRequest request) {
 		// validate the session token
-		AccountResponse response = 
-			isValidSessionToken(request.getSecurityToken(), request.getUserName());
-		if (response != null) {
+		ErrorDto error = isValidSessionToken(request.getSecurityToken(), request.getUserName());
+		if (error != null) {
+			AccountResponse response = new AccountResponse();
+			response.setError(error);
 			return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
 		}
 		// retrieve the account
 		return new ResponseEntity<>(service.accountRetrieval(request), HttpStatus.OK);
+	}
+
+	@ApiOperation(value="Configuration retrieval request", httpMethod = "POST",
+			produces = MediaType.APPLICATION_JSON_VALUE, response = ConfigurationResponse.class)
+	@RequestMapping(method = RequestMethod.POST, value="/configRetrieval")
+	@ResponseBody
+	public ResponseEntity<ConfigurationResponse> configurationRetrieval(@RequestBody ConfigurationRetrievalRequest request) {
+		// validate the session token
+		ErrorDto error = isValidSessionToken(request.getSecurityToken(), request.getUserName());
+		if (error != null) {
+			ConfigurationResponse response = new ConfigurationResponse();
+			response.setError(error);
+			return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
+		}
+		// retrieve the account
+		return new ResponseEntity<>(service.configurationRetrieval(request), HttpStatus.OK);
 	}
 }

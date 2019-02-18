@@ -1,5 +1,6 @@
 package org.apcffl.api.controller.security;
 
+import org.apcffl.api.constants.UIMessages;
 import org.apcffl.api.controller.security.handler.SecurityExceptionHandler;
 import org.apcffl.api.security.dto.PasswordResetRequest;
 import org.apcffl.api.security.dto.GenericSecurityResponse;
@@ -24,7 +25,7 @@ public class SecurityController implements SecurityExceptionHandler {
 	
 	private final AuthorizationService service;
 	
-	public SecurityController(AuthorizationService service) {
+	public SecurityController(final AuthorizationService service) {
 		this.service = service;
 	}
 
@@ -45,7 +46,7 @@ public class SecurityController implements SecurityExceptionHandler {
 		
 		service.passwordResetToken(userName);
 		
-		return new GenericSecurityResponse("Please check your email.");
+		return new GenericSecurityResponse(UIMessages.MSG_GENERIC_CHECK_EMAIL);
 	}
 
 	@ApiOperation(value="User name recovery request", httpMethod = "GET",
@@ -55,7 +56,7 @@ public class SecurityController implements SecurityExceptionHandler {
 		
 		service.userNameRecovery(email);
 		
-		return new GenericSecurityResponse("Please check your email.");
+		return new GenericSecurityResponse(UIMessages.MSG_GENERIC_CHECK_EMAIL);
 	}
 
 	@ApiOperation(value="Password Reset request", httpMethod = "POST",
@@ -66,6 +67,6 @@ public class SecurityController implements SecurityExceptionHandler {
 		
 		service.resetPassword(request);
 		
-		return new GenericSecurityResponse("Your password has been successfully changed. Please log in.");
+		return new GenericSecurityResponse(UIMessages.MSG_PSWD_RESET_SUCCESS);
 	}
 } 

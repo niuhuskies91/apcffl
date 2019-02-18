@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.apcffl.api.admin.dto.AccountRequest;
 import org.apcffl.api.admin.dto.AccountResponse;
+import org.apcffl.api.admin.dto.ConfigurationDto;
 import org.apcffl.api.persistence.model.ApplicationActivityModel;
 import org.apcffl.api.persistence.model.ConfigModel;
 import org.apcffl.api.persistence.model.GroupActivityMapModel;
@@ -216,6 +217,19 @@ public class ApcfflTest {
 		config.setConfigDesc(CONFIG_PSWD_RESET_DESC);
 		config.setConfigKey(CONFIG_PSWD_RESET_KEY);
 		config.setConfigValue(CONFIG_PSWD_RESET_VAL);
+		
+		return configs;
+	}
+	
+	public static List<ConfigurationDto> buildConfigDto() {
+		List<ConfigurationDto> configs = new ArrayList<>();
+		
+		ConfigurationDto config = 
+			new ConfigurationDto(CONFIG_SESSION_KEY, CONFIG_SESSION_VAL, CONFIG_SESSION_DESC);
+		configs.add(config);
+		config = 
+				new ConfigurationDto(CONFIG_PSWD_RESET_KEY, CONFIG_PSWD_RESET_VAL, CONFIG_PSWD_RESET_DESC);
+		configs.add(config);
 		
 		return configs;
 	}
