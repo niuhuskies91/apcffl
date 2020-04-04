@@ -5,9 +5,9 @@ FROM mhart/alpine-node:10
 ARG ENV=${ENV:-dev}
 
 # Copy / Move Files
-WORKDIR /koa-react-boilerplate
-COPY . /koa-react-boilerplate
-RUN cd /koa-react-boilerplate
+WORKDIR /apcffl-ui
+COPY . /apcffl-ui
+RUN cd /apcffl-ui
 
 # Dependencies / Build
 RUN npm install

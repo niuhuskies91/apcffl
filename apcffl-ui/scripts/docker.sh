@@ -5,5 +5,5 @@ if [ "$@" = "prd" ]
     ENV=prd
 fi
 
-docker build . --build-arg ENV=${ENV} -t koa-react-boilerplate
-docker run -it -e ENV=${ENV} -p 8080:8080 koa-react-boilerplate
+docker build . --build-arg ENV=${ENV} -t apcffl-ui
+docker run -it -e ENV=${ENV} -p 8080:8080 apcffl-ui
