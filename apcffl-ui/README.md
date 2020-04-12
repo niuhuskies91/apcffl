@@ -1,14 +1,12 @@
-# Koa & React Boilerplate Project
+# apcffl-ui
 
 ## Running In Development Mode
+
+This project requires Node.js 10+.
 
 Install dependencies:
 
     npm install
-
-Download data:
-
-    npm run download
 
 Run development server:
 
