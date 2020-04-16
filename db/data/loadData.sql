@@ -10,21 +10,21 @@
         <password>   = Pa55word!
         <csvFile>    = /Users/daniel.kamp/Documents/Other/APCFFL/Phoenix/db/data/USER_GROUP.csv
 
-     /usr/local/mysql/bin/mysqlimport --fields-terminated-by=, --verbose --local -uroot -pPa55word! apcffl_phoenix /Users/daniel.kamp/Documents/Other/APCFFL/Phoenix/db/data/APPLICATION_ACTIVITY.csv
+     /usr/local/mysql/bin/mysqlimport --fields-terminated-by=, --verbose --local -uroot -pPa55word! apcffl_phoenix ./data/APPLICATION_ACTIVITY.csv
 
-     /usr/local/mysql/bin/mysqlimport --fields-terminated-by=, --verbose --local -uroot -pPa55word! apcffl_phoenix /Users/daniel.kamp/Documents/Other/APCFFL/Phoenix/db/data/BOWL.csv
+     /usr/local/mysql/bin/mysqlimport --fields-terminated-by=, --verbose --local -uroot -pPa55word! apcffl_phoenix ./data/BOWL.csv
 
-     /usr/local/mysql/bin/mysqlimport --fields-terminated-by=, --verbose --local -uroot -pPa55word! apcffl_phoenix /Users/daniel.kamp/Documents/Other/APCFFL/Phoenix/db/data/CONFERENCE.csv
+     /usr/local/mysql/bin/mysqlimport --fields-terminated-by=, --verbose --local -uroot -pPa55word! apcffl_phoenix ./data/CONFERENCE.csv
 
-     /usr/local/mysql/bin/mysqlimport --fields-terminated-by=, --verbose --local -uroot -pPa55word! apcffl_phoenix /Users/daniel.kamp/Documents/Other/APCFFL/Phoenix/db/data/DIVISION.csv
+     /usr/local/mysql/bin/mysqlimport --fields-terminated-by=, --verbose --local -uroot -pPa55word! apcffl_phoenix ./data/DIVISION.csv
 
-     /usr/local/mysql/bin/mysqlimport --fields-terminated-by=, --verbose --local -uroot -pPa55word! apcffl_phoenix /Users/daniel.kamp/Documents/Other/APCFFL/Phoenix/db/data/GROUP_ACTIVITY_MAP.csv
+     /usr/local/mysql/bin/mysqlimport --fields-terminated-by=, --verbose --local -uroot -pPa55word! apcffl_phoenix ./data/GROUP_ACTIVITY_MAP.csv
 
-     /usr/local/mysql/bin/mysqlimport --fields-terminated-by=, --verbose --local -uroot -pPa55word! apcffl_phoenix /Users/daniel.kamp/Documents/Other/APCFFL/Phoenix/db/data/LEAGUE.csv
+     /usr/local/mysql/bin/mysqlimport --fields-terminated-by=, --verbose --local -uroot -pPa55word! apcffl_phoenix ./data/LEAGUE.csv
 
-     /usr/local/mysql/bin/mysqlimport --fields-terminated-by=, --verbose --local -uroot -pPa55word! apcffl_phoenix /Users/daniel.kamp/Documents/Other/APCFFL/Phoenix/db/data/USER.csv
+     /usr/local/mysql/bin/mysqlimport --fields-terminated-by=, --verbose --local -uroot -pPa55word! apcffl_phoenix ./data/USER.csv
 
-     /usr/local/mysql/bin/mysqlimport --fields-terminated-by=, --verbose --local -uroot -pPa55word! apcffl_phoenix /Users/daniel.kamp/Documents/Other/APCFFL/Phoenix/db/data/WEEK.csv
+     /usr/local/mysql/bin/mysqlimport --fields-terminated-by=, --verbose --local -uroot -pPa55word! apcffl_phoenix ./data/WEEK.csv
 
 -- ********************************************
 --      Insert via SQL
@@ -64,6 +64,9 @@
 
   insert into apcffl_phoenix.USER (USER_ID, USER_NAME, PASSWORD, USER_GROUP_ID)
     values (9, 'BLIND.2', 'Pa55word!', 2);
+
+  insert into apcffl_phoenix.USER (USER_ID, USER_NAME, PASSWORD, USER_GROUP_ID)
+    values (10, 'brett.labombarda', 'Pa55word!', 1);
 
   -- Owner
 
