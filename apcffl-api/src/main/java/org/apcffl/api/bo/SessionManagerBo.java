@@ -8,7 +8,7 @@ import java.util.Map;
 
 import javax.annotation.PostConstruct;
 
-import org.apcffl.api.config.ApiServiceConfig;
+import org.apcffl.api.config.GeneralPropertiesConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -27,10 +27,10 @@ public class SessionManagerBo {
 	// key: user name, value: password reset token
 	private static Map<String, PasswordResetToken> passwordResetMap;
 	
-	private final ApiServiceConfig config;
+	private final GeneralPropertiesConfig propsConfig;
 	
-	public SessionManagerBo(ApiServiceConfig config) {
-		this.config = config;
+	public SessionManagerBo(final GeneralPropertiesConfig propsConfig) {
+		this.propsConfig = propsConfig;
 	}
 	
 	@PostConstruct
@@ -96,21 +96,11 @@ public class SessionManagerBo {
 			}
 			return false;
 		}
-
-		// get the token timeout from configuration
-		long tokenTimeout = 0;
-		try {
-			tokenTimeout = 
-			new Long(config.retrieveProperty(ApiServiceConfig.SECURITY_TOKEN_EXP).getConfigValue());
-					
-		} catch(Exception ex) {
-			LOG.error("The configured security session token expiration is invalid.");
-		}
 		
 		// is the token expired ?
 		long currTime = (new Date()).getTime();
 		long sessionStart = session.getCreateTime().getTime();
-		if ( (currTime - sessionStart) >= tokenTimeout) {
+		if ( (currTime - sessionStart) >= propsConfig.getSecurityTokenExp()) {
 			sessionMap.remove(userName);
 			if (LOG.isDebugEnabled()) {
 				LOG.debug("Token expired. Removed session token for userName: " + userName);
@@ -142,21 +132,11 @@ public class SessionManagerBo {
 			}
 			return false;
 		}
-
-		// get the token timeout from configuration
-		long tokenTimeout = 0;
-		try {
-			tokenTimeout = 
-			new Long(config.retrieveProperty(ApiServiceConfig.PASSWORD_RESET_TOKEN_EXP).getConfigValue());
-					
-		} catch(Exception ex) {
-			LOG.error("The configured security password reset token expiration is invalid.");
-		}
 		
 		// is the token expired ?
 		long currTime = (new Date()).getTime();
 		long sessionStart = reset.getCreateTime().getTime();
-		if ( (currTime - sessionStart) >= tokenTimeout) {
+		if ( (currTime - sessionStart) >= propsConfig.getSecurityPassResetTokenExp()) {
 			passwordResetMap.remove(userName);
 			if (LOG.isDebugEnabled()) {
 				LOG.debug("Token expired. Removed password reset token for userName: " + userName);

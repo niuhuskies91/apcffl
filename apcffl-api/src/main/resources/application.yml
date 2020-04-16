@@ -1,0 +1,51 @@
+spring:
+  profiles:
+    active: ${env}
+  datasource:
+    driverClassName: com.mysql.cj.jdbc.Driver
+  jpa:
+    show-sql: true
+    properties:
+      hibernate:
+        jdbc:
+          batch_size: 20
+        dialect: org.hibernate.dialect.MySQL5Dialect
+        show_sql: true
+        ddl-auto: update
+      
+server:
+  servlet:
+    context-path: /apcffl-api
+
+management:
+  endpoint:
+    loggers:
+      enabled: true
+  endpoints:
+    web:
+      exposure:
+        include: loggers
+        
+email:
+  username: apcffl.org@gmail.com
+  password: Niuhuskies9!
+  host: smtp.gmail.com
+  port: 587
+  
+security:
+  token-expiration: 21600000
+  password-reset-token-expiration: 300000
+        
+---
+
+spring:
+  profiles: local
+  datasource:
+    url: jdbc:mysql://localhost:3306/apcffl_phoenix?autoReconnect=true&useUnicode=true&characterEncoding=UTF-8&allowMultiQueries=true&useSSL=false&serverTimezone=UTC
+    username: root
+    password: Pa55word!
+  jpa:
+    show-sql: true
+
+server:
+  port: 8080

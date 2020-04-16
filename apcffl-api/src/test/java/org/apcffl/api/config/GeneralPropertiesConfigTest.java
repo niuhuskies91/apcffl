@@ -1,6 +1,7 @@
 package org.apcffl.api.config;
 
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -10,20 +11,19 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = {EmailConfig.class})
+@SpringBootTest(classes = {GeneralPropertiesConfig.class})
 @ActiveProfiles("local")
-public class EmailConfigTest {
+public class GeneralPropertiesConfigTest {
 
 	@Autowired
-	private EmailConfig config;
-
+	private GeneralPropertiesConfig config;
+	
 	@Test
 	public void verify_propertyInjection() {
+		assertNotNull(config.getSecurityPassResetTokenExp());
+		assertTrue(config.getSecurityPassResetTokenExp() > 0);
 		
-		assertNotNull(config.getEmailHost());
-		assertNotNull(config.getEmailPassword());
-		assertNotNull(config.getEmailPort());
-		assertNotNull(config.getEmailUser());
-		assertNotNull(config.getJavaMailSender());
+		assertNotNull(config.getSecurityTokenExp());
+		assertTrue(config.getSecurityTokenExp() > 0);
 	}
 }

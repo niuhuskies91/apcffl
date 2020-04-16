@@ -3,6 +3,7 @@ package org.apcffl.api.controller.security;
 import org.apcffl.api.constants.UIMessages;
 import org.apcffl.api.controller.security.handler.SecurityExceptionHandler;
 import org.apcffl.api.security.dto.PasswordResetRequest;
+import org.apcffl.api.security.dto.AuthorizationRequest;
 import org.apcffl.api.security.dto.GenericSecurityResponse;
 import org.apcffl.api.security.dto.UserDto;
 import org.apcffl.api.security.service.AuthorizationService;
@@ -20,7 +21,7 @@ import io.swagger.annotations.ApiOperation;
 
 @Api(value = "Security / Authorization Services")
 @RestController
-@RequestMapping("/api/security")
+@RequestMapping("/security")
 public class SecurityController implements SecurityExceptionHandler {
 	
 	private final AuthorizationService service;
@@ -29,14 +30,12 @@ public class SecurityController implements SecurityExceptionHandler {
 		this.service = service;
 	}
 
-	@ApiOperation(value="Login Authorization", httpMethod = "GET",
+	@ApiOperation(value="Login Authorization", httpMethod = "POST",
 			produces = MediaType.APPLICATION_JSON_VALUE, response = UserDto.class)
-	@GetMapping(path="/login/userName/{userName}/password/{password}", produces = {MediaType.APPLICATION_JSON_VALUE})
-	public UserDto login(
-			@PathVariable(required=true) String userName, 
-			@PathVariable(required=true) String password) {
+	@RequestMapping(value="/login", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = {MediaType.APPLICATION_JSON_VALUE})
+	public UserDto login(@RequestBody AuthorizationRequest request) { 
 		
-		return service.login(userName, password);
+		return service.login(request.getUserName(), request.getPassword());
 	}
 
 	@ApiOperation(value="Password Reset token request", httpMethod = "GET",

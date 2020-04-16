@@ -2,8 +2,6 @@ package org.apcffl.api.controller.admin;
 
 import org.apcffl.api.admin.dto.AccountRequest;
 import org.apcffl.api.admin.dto.AccountResponse;
-import org.apcffl.api.admin.dto.ConfigurationResponse;
-import org.apcffl.api.admin.dto.ConfigurationRetrievalRequest;
 import org.apcffl.api.admin.service.AdminService;
 import org.apcffl.api.bo.SessionManagerBo;
 import org.apcffl.api.controller.ApcfflController;
@@ -15,7 +13,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.swagger.annotations.Api;
@@ -23,7 +20,7 @@ import io.swagger.annotations.ApiOperation;
 
 @Api(value = "Account Services")
 @RestController
-@RequestMapping("/api/account")
+@RequestMapping("/account")
 public class AccountController extends ApcfflController implements AdminExceptionHandler {
 	
 	private final AdminService service;
@@ -33,10 +30,9 @@ public class AccountController extends ApcfflController implements AdminExceptio
 		this.sessionManager = sessionManager;
 	}
 
-	@ApiOperation(value="User/Owner account retrieval request", httpMethod = "POST",
+	@ApiOperation(value="User/Owner account retrieval request", httpMethod = "POST",  consumes = MediaType.APPLICATION_JSON_VALUE,
 			produces = MediaType.APPLICATION_JSON_VALUE, response = AccountResponse.class)
-	@RequestMapping(method = RequestMethod.POST, value="/accountRetrieval")
-	@ResponseBody
+	@RequestMapping(value="/accountRetrieval", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = {MediaType.APPLICATION_JSON_VALUE})
 	public ResponseEntity<AccountResponse> accountRetrieval(@RequestBody AccountRequest request) {
 		// validate the session token
 		ErrorDto error = isValidSessionToken(request.getSecurityToken(), request.getUserName());
@@ -47,21 +43,5 @@ public class AccountController extends ApcfflController implements AdminExceptio
 		}
 		// retrieve the account
 		return new ResponseEntity<>(service.accountRetrieval(request), HttpStatus.OK);
-	}
-
-	@ApiOperation(value="Configuration retrieval request", httpMethod = "POST",
-			produces = MediaType.APPLICATION_JSON_VALUE, response = ConfigurationResponse.class)
-	@RequestMapping(method = RequestMethod.POST, value="/configRetrieval")
-	@ResponseBody
-	public ResponseEntity<ConfigurationResponse> configurationRetrieval(@RequestBody ConfigurationRetrievalRequest request) {
-		// validate the session token
-		ErrorDto error = isValidSessionToken(request.getSecurityToken(), request.getUserName());
-		if (error != null) {
-			ConfigurationResponse response = new ConfigurationResponse();
-			response.setError(error);
-			return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
-		}
-		// retrieve the account
-		return new ResponseEntity<>(service.configurationRetrieval(request), HttpStatus.OK);
 	}
 }

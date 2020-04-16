@@ -59,20 +59,20 @@ public class UserModelTest {
 	@Test
 	public void testEqualsUserNameNotEquals() {
 		UserModel other = new UserModel();
-		other.setUserId(ApcfflTest.PRIMARY_KEY);
+		other.setUserId(ApcfflTest.ANSWER_TO_THE_UNIVERSE);
 		other.setUserName("other");
 		other.setPassword(ApcfflTest.PASSWORD);
 		other.setUserGroupModel(ApcfflTest.buildUserGroup(ApcfflTest.USER_GROUP_OWNER_ID, ApcfflTest.USER_GROUP_OWNER));
 		assertEquals(model.equals(other), false);
 
-		other.setUserId(ApcfflTest.PRIMARY_KEY);
+		other.setUserId(ApcfflTest.ANSWER_TO_THE_UNIVERSE);
 		model.setUserName(null);
 		other.setUserName("other");
 		other.setPassword(ApcfflTest.PASSWORD);
 		other.setUserGroupModel(ApcfflTest.buildUserGroup(ApcfflTest.USER_GROUP_OWNER_ID, ApcfflTest.USER_GROUP_OWNER));
 		assertEquals(model.equals(other), false);
 
-		other.setUserId(ApcfflTest.PRIMARY_KEY);
+		other.setUserId(ApcfflTest.ANSWER_TO_THE_UNIVERSE);
 		model.setUserName(null);
 		other.setUserName(null);
 		other.setPassword(ApcfflTest.PASSWORD);
@@ -83,20 +83,20 @@ public class UserModelTest {
 	@Test
 	public void testEqualsPasswordNotEquals() {
 		UserModel other = new UserModel();
-		other.setUserId(ApcfflTest.PRIMARY_KEY);
+		other.setUserId(ApcfflTest.ANSWER_TO_THE_UNIVERSE);
 		other.setUserName(ApcfflTest.USER_NAME);
 		other.setPassword("other");
 		other.setUserGroupModel(ApcfflTest.buildUserGroup(ApcfflTest.USER_GROUP_OWNER_ID, ApcfflTest.USER_GROUP_OWNER));
 		assertEquals(model.equals(other), false);
 
-		other.setUserId(ApcfflTest.PRIMARY_KEY);
+		other.setUserId(ApcfflTest.ANSWER_TO_THE_UNIVERSE);
 		other.setUserName(ApcfflTest.USER_NAME);
 		model.setPassword(null);
 		other.setPassword("other");
 		other.setUserGroupModel(ApcfflTest.buildUserGroup(ApcfflTest.USER_GROUP_OWNER_ID, ApcfflTest.USER_GROUP_OWNER));
 		assertEquals(model.equals(other), false);
 
-		other.setUserId(ApcfflTest.PRIMARY_KEY);
+		other.setUserId(ApcfflTest.ANSWER_TO_THE_UNIVERSE);
 		other.setUserName(ApcfflTest.USER_NAME);
 		model.setPassword(null);
 		other.setPassword(null);
@@ -107,20 +107,20 @@ public class UserModelTest {
 	@Test
 	public void testEqualsUserGroupNotEquals() {
 		UserModel other = new UserModel();
-		other.setUserId(ApcfflTest.PRIMARY_KEY);
+		other.setUserId(ApcfflTest.ANSWER_TO_THE_UNIVERSE);
 		other.setUserName(ApcfflTest.USER_NAME);
 		other.setPassword(ApcfflTest.PASSWORD);
 		other.setUserGroupModel(ApcfflTest.buildUserGroup(ApcfflTest.USER_GROUP_GUEST_ID, ApcfflTest.USER_GROUP_GUEST));
 		assertEquals(model.equals(other), false);
 
-		other.setUserId(ApcfflTest.PRIMARY_KEY);
+		other.setUserId(ApcfflTest.ANSWER_TO_THE_UNIVERSE);
 		other.setUserName(ApcfflTest.USER_NAME);
 		other.setPassword(ApcfflTest.PASSWORD);
 		model.setUserGroupModel(null);
 		other.setUserGroupModel(ApcfflTest.buildUserGroup(ApcfflTest.USER_GROUP_GUEST_ID, ApcfflTest.USER_GROUP_GUEST));
 		assertEquals(model.equals(other), false);
 
-		other.setUserId(ApcfflTest.PRIMARY_KEY);
+		other.setUserId(ApcfflTest.ANSWER_TO_THE_UNIVERSE);
 		other.setUserName(ApcfflTest.USER_NAME);
 		other.setPassword(ApcfflTest.PASSWORD);
 		model.setUserGroupModel(null);
@@ -144,7 +144,7 @@ public class UserModelTest {
 	public void testGetters() {
 		assertEquals(model.getPassword(), ApcfflTest.PASSWORD);
 		assertNotNull(model.getUserGroupModel());
-		assertEquals(model.getUserId(), ApcfflTest.PRIMARY_KEY);
+		assertEquals(model.getUserId(), ApcfflTest.ANSWER_TO_THE_UNIVERSE);
 		assertEquals(model.getUserName(), ApcfflTest.USER_NAME);
 	}
 }

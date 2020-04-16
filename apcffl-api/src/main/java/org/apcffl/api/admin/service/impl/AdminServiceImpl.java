@@ -7,22 +7,15 @@ import org.apcffl.api.admin.dto.AccountCreateRequest;
 import org.apcffl.api.admin.dto.AccountRequest;
 import org.apcffl.api.admin.dto.AccountResponse;
 import org.apcffl.api.admin.dto.AllAccountsResponse;
-import org.apcffl.api.admin.dto.ConfigurationDto;
-import org.apcffl.api.admin.dto.ConfigurationResponse;
-import org.apcffl.api.admin.dto.ConfigurationRetrievalRequest;
-import org.apcffl.api.admin.dto.ConfigurationUpdateRequest;
 import org.apcffl.api.admin.dto.mapper.AdminMapper;
 import org.apcffl.api.admin.service.AdminService;
 import org.apcffl.api.bo.EmailManagerBo;
-import org.apcffl.api.config.ApiServiceConfig;
 import org.apcffl.api.constants.UIMessages;
 import org.apcffl.api.dto.ErrorDto;
 import org.apcffl.api.exception.constants.ErrorCodeEnums;
-import org.apcffl.api.persistence.model.ConfigModel;
 import org.apcffl.api.persistence.model.OwnerModel;
 import org.apcffl.api.persistence.model.UserGroupModel;
 import org.apcffl.api.persistence.model.UserModel;
-import org.apcffl.api.persistence.repository.ConfigRepository;
 import org.apcffl.api.persistence.repository.OwnerRepository;
 import org.apcffl.api.persistence.repository.UserGroupRepository;
 import org.apcffl.api.persistence.repository.UserRepository;
@@ -31,26 +24,22 @@ import org.apcffl.api.service.ApcfflService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@Transactional
 public class AdminServiceImpl extends ApcfflService implements AdminService {
 
 	private static final Logger LOG = LoggerFactory.getLogger(AdminServiceImpl.class);
 
-	private final ConfigRepository configRepository;
 	private final OwnerRepository ownerRepository;
 	private final UserRepository userRepository;
 	private final UserGroupRepository userGroupRepository;
 	private final EmailManagerBo emailManager;
 	
-	private final ApiServiceConfig config;
-	
-	public AdminServiceImpl(final ConfigRepository configRepository, final ApiServiceConfig config,
-			final OwnerRepository ownerRepository, final UserRepository userRepository,
+	public AdminServiceImpl(final OwnerRepository ownerRepository, final UserRepository userRepository,
 			final UserGroupRepository userGroupRepository, final EmailManagerBo emailManager) {
 		
-		this.configRepository = configRepository;
-		this.config = config;
 		this.ownerRepository = ownerRepository;
 		this.userRepository = userRepository;
 		this.userGroupRepository = userGroupRepository;
@@ -147,41 +136,6 @@ public class AdminServiceImpl extends ApcfflService implements AdminService {
 		
 		return response;
 	}
-
-	@Override
-	public ConfigurationResponse configurationRetrieval(ConfigurationRetrievalRequest request) {
-		// validate user group access
-		ConfigurationResponse response = 
-				configurationAccessError(request.getUserGroupName(), SecurityConstants.USER_GROUP_TIER_ADMIN);
-		if (response.getError() != null) {
-			return response;
-		}
-		// retrieve all configurations
-		List<ConfigModel> configList = configRepository.findAll();
-
-		// convert configurations
-		List<ConfigurationDto> configs = AdminMapper.convertConfigModel(configList);
-		response.setConfigs(configs);
-		
-		return response;
-	}
-
-	@Override
-	public ConfigurationResponse configurationUpdate(ConfigurationUpdateRequest request) {
-		// validate user group access
-		ConfigurationResponse response = 
-				configurationAccessError(request.getUserGroupName(), SecurityConstants.USER_GROUP_TIER_ADMIN);
-		if (response.getError() == null) {
-			return response;
-		}
-		// persist the configuration changes to the DB
-		configRepository.saveAll( AdminMapper.convertConfigDto(request.getConfigList()) );
-		
-		// reload the configurations to the config cache
-		config.reloadMap();
-		
-		return response;
-	}
 	
 	/**
 	 * Validate the group access level for account activities.
@@ -192,24 +146,6 @@ public class AdminServiceImpl extends ApcfflService implements AdminService {
 	 */
 	private AccountResponse accountAccessError(String userGroup, List<String> accessLevels) {
 		AccountResponse response = new AccountResponse();
-		
-		ErrorDto error = validateGroupRole(userGroup, accessLevels);
-		if (error != null) {
-			LOG.error(error.getMessage());
-			response.setError(error);
-		}
-		return response;
-	}
-	
-	/**
-	 * Validate the group access level for configuration activities.
-	 * 
-	 * @param userGroup : user group name
-	 * @param accessLevels : List<String> all user groups that have access privileges
-	 * @return ConfigurationResponse : contains an error if access is not validated
-	 */
-	private ConfigurationResponse configurationAccessError(String userGroup, List<String> accessLevels) {
-		ConfigurationResponse response = new ConfigurationResponse();
 		
 		ErrorDto error = validateGroupRole(userGroup, accessLevels);
 		if (error != null) {

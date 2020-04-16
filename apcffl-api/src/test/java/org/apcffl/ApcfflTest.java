@@ -4,11 +4,10 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.apcffl.api.admin.dto.AccountCreateRequest;
 import org.apcffl.api.admin.dto.AccountRequest;
 import org.apcffl.api.admin.dto.AccountResponse;
-import org.apcffl.api.admin.dto.ConfigurationDto;
 import org.apcffl.api.persistence.model.ApplicationActivityModel;
-import org.apcffl.api.persistence.model.ConfigModel;
 import org.apcffl.api.persistence.model.GroupActivityMapModel;
 import org.apcffl.api.persistence.model.LeagueModel;
 import org.apcffl.api.persistence.model.OwnerModel;
@@ -20,7 +19,7 @@ public class ApcfflTest {
 	
 	// General constants
 	
-	public static final Long   PRIMARY_KEY = 42L;
+	public static final Long   ANSWER_TO_THE_UNIVERSE = 42L;
 	
 	// General security constants
 	
@@ -133,19 +132,19 @@ public class ApcfflTest {
 				buildActivity(ACTIVITY_LINEUP_CREATE_ID, ACTIVITY_LINEUP_CREATE, ACTIVITY_LINEUP_CREATE_DESC);
 		
 		GroupActivityMapModel groupActivity = new GroupActivityMapModel();
-		groupActivity.setGroupActivityId(PRIMARY_KEY);
+		groupActivity.setGroupActivityId(ANSWER_TO_THE_UNIVERSE);
 		groupActivity.setApplicationActivityModel(userCreate);
 		groupActivity.setUserGroupModel(admin);
 		groupActivities.add(groupActivity);
 		
 		groupActivity = new GroupActivityMapModel();
-		groupActivity.setGroupActivityId(PRIMARY_KEY);
+		groupActivity.setGroupActivityId(ANSWER_TO_THE_UNIVERSE);
 		groupActivity.setApplicationActivityModel(lineupCreate);
 		groupActivity.setUserGroupModel(admin);
 		groupActivities.add(groupActivity);
 		
 		groupActivity = new GroupActivityMapModel();
-		groupActivity.setGroupActivityId(PRIMARY_KEY);
+		groupActivity.setGroupActivityId(ANSWER_TO_THE_UNIVERSE);
 		groupActivity.setApplicationActivityModel(lineupCreate);
 		groupActivity.setUserGroupModel(owner);
 		groupActivities.add(groupActivity);
@@ -157,7 +156,7 @@ public class ApcfflTest {
 		UserModel model = new UserModel();
 		model.setPassword(PASSWORD);
 		model.setUserGroupModel(buildUserGroup(USER_GROUP_OWNER_ID, USER_GROUP_OWNER));
-		model.setUserId(PRIMARY_KEY);
+		model.setUserId(ANSWER_TO_THE_UNIVERSE);
 		model.setUserName(USER_NAME);
 		
 		return model;
@@ -188,7 +187,7 @@ public class ApcfflTest {
 	
 	public static OwnerModel buildOwnerModel() {
 		OwnerModel model = new OwnerModel();
-		model.setOwnerId(PRIMARY_KEY);
+		model.setOwnerId(ANSWER_TO_THE_UNIVERSE);
 		model.setLeagueModel(buildLeagueModel(LEAGUE_1_ID, LEAGUE_1_NAME, LEAGUE_1_NUM_TEAMS, LEAGUE_1_NUM_DIV));
 		model.setUserModel(buildUserModel());
 		model.setFirstName(OWNER_FIRST_NAME);
@@ -201,37 +200,6 @@ public class ApcfflTest {
 		model.setUpdateDate(TEST_DATE);
 		
 		return model;
-	}
-	
-	public static List<ConfigModel> buildConfigModel() {
-		List<ConfigModel> configs = new ArrayList<>();
-		
-		ConfigModel config = new ConfigModel();
-		configs.add(config);
-		config.setConfigDesc(CONFIG_SESSION_DESC);
-		config.setConfigKey(CONFIG_SESSION_KEY);
-		config.setConfigValue(CONFIG_SESSION_VAL);
-		
-		config = new ConfigModel();
-		configs.add(config);
-		config.setConfigDesc(CONFIG_PSWD_RESET_DESC);
-		config.setConfigKey(CONFIG_PSWD_RESET_KEY);
-		config.setConfigValue(CONFIG_PSWD_RESET_VAL);
-		
-		return configs;
-	}
-	
-	public static List<ConfigurationDto> buildConfigDto() {
-		List<ConfigurationDto> configs = new ArrayList<>();
-		
-		ConfigurationDto config = 
-			new ConfigurationDto(CONFIG_SESSION_KEY, CONFIG_SESSION_VAL, CONFIG_SESSION_DESC);
-		configs.add(config);
-		config = 
-				new ConfigurationDto(CONFIG_PSWD_RESET_KEY, CONFIG_PSWD_RESET_VAL, CONFIG_PSWD_RESET_DESC);
-		configs.add(config);
-		
-		return configs;
 	}
 	
 	public static PasswordResetRequest buildPasswordResetRequest() {
@@ -262,5 +230,18 @@ public class ApcfflTest {
 		response.setLeagueName(ApcfflTest.LEAGUE_1_NAME);
 		
 		return response;
+	}
+	
+	public static AccountCreateRequest buildAccountCreateRequest() {
+		
+		AccountCreateRequest request = 
+				new AccountCreateRequest(USER_NAME, PASSWORD);
+		request.setEmail1(OWNER_EMAIL1);
+		request.setEmail2(OWNER_EMAIL2);
+		request.setEmail3(OWNER_EMAIL3);
+		request.setFirstName(OWNER_FIRST_NAME);
+		request.setLastName(OWNER_LAST_NAME);
+		
+		return request;
 	}
 }

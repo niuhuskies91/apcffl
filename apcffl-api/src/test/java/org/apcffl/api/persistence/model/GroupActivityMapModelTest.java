@@ -22,7 +22,7 @@ public class GroupActivityMapModelTest {
 		
 		model = new GroupActivityMapModel();
 		model.setApplicationActivityModel(activityModel);
-		model.setGroupActivityId(ApcfflTest.PRIMARY_KEY);
+		model.setGroupActivityId(ApcfflTest.ANSWER_TO_THE_UNIVERSE);
 		model.setUserGroupModel(userGroupModel);
 	}
 	

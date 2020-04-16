@@ -9,6 +9,7 @@
 .settings
 .springBeans
 .sts4-cache
+catalina.home_IS_UNDEFINED/
 
 ### IntelliJ IDEA ###
 .idea

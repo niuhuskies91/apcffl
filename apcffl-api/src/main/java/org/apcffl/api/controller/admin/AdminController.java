@@ -7,7 +7,7 @@ import io.swagger.annotations.Api;
 
 @Api(value = "Administration Services")
 @RestController
-@RequestMapping("/api/admin")
+@RequestMapping("/admin")
 public class AdminController {
 
 }
