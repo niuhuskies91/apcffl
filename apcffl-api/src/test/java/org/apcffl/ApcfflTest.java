@@ -73,10 +73,16 @@ public class ApcfflTest {
 	
 	public static final String OWNER_LAST_NAME             = "Kamp";
 	public static final String OWNER_FIRST_NAME            = "Dan";
-	public static final String OWNER_EMAIL1                = "email1@gmail.com";
+	public static final String OWNER_EMAIL1                = "niu_huskies91@yahoo.com";
 	public static final String OWNER_EMAIL2                = "email2@gmail.com";
 	public static final String OWNER_EMAIL3                = "email3@gmail.com";
 	public static final Boolean OWNER_ACTIVE               = true;
+	
+	// Guest User
+	
+	public static final String USER_GUEST_NAME             = "guest";
+	public static final String USER_GUEST_PASSWORD         = "Pa55word!";
+	public static final String USER_GUEST_USER_GROUP_NAME  = "GUEST";
 	
 	// Email
 	
