@@ -19,133 +19,125 @@ public class LeagueModelTest {
 	}
 	
 	@Test
-	public void testEqualsOtherObjectNull() {
+	public void verify_equals_otherObjectNull() {
 		LeagueModel other = null;
 		
-		assertEquals(model.equals(other), false);
+		assertEquals(false, model.equals(other));
 	}
 	
 	@SuppressWarnings("unlikely-arg-type")
 	@Test
-	public void testEqualsNotEqualsClassMismatch() {
+	public void verify_equals_notEqualsClassMismatch() {
 		String other = new String();
 		
-		assertEquals(model.equals(other), false);
+		assertEquals(false, model.equals(other));
 	}
 	
 	@Test
-	public void testEqualsLeagueIdNotEquals() {
+	public void verify_equals_leagueIdNotEquals() {
 		LeagueModel other = new LeagueModel();
 		other.setLeagueId(ApcfflTest.LEAGUE_2_ID);
 		other.setLeagueName(ApcfflTest.LEAGUE_1_NAME);
 		other.setNumberOfTeams(ApcfflTest.LEAGUE_1_NUM_TEAMS);
 		other.setNumberOfDivisions(ApcfflTest.LEAGUE_1_NUM_DIV);
-		assertEquals(model.equals(other), false);
+		assertEquals(false, model.equals(other));
 		
 		model.setLeagueId(null);
 		other.setLeagueId(ApcfflTest.LEAGUE_2_ID);
 		other.setLeagueName(ApcfflTest.LEAGUE_1_NAME);
 		other.setNumberOfTeams(ApcfflTest.LEAGUE_1_NUM_TEAMS);
 		other.setNumberOfDivisions(ApcfflTest.LEAGUE_1_NUM_DIV);
-		assertEquals(model.equals(other), false);
+		assertEquals(false, model.equals(other));
 		
 		model.setLeagueId(null);
 		other.setLeagueId(null);
 		other.setLeagueName(ApcfflTest.LEAGUE_1_NAME);
 		other.setNumberOfTeams(ApcfflTest.LEAGUE_1_NUM_TEAMS);
 		other.setNumberOfDivisions(ApcfflTest.LEAGUE_1_NUM_DIV);
-		assertEquals(model.equals(other), true);
+		assertEquals(true, model.equals(other));
 	}
 	
 	@Test
-	public void testEqualsLeagueNameNotEqual() {
+	public void verify_equals_leagueNameNotEqual() {
 		LeagueModel other = new LeagueModel();
 		other.setLeagueId(ApcfflTest.LEAGUE_1_ID);
 		other.setLeagueName(ApcfflTest.LEAGUE_2_NAME);
 		other.setNumberOfTeams(ApcfflTest.LEAGUE_1_NUM_TEAMS);
 		other.setNumberOfDivisions(ApcfflTest.LEAGUE_1_NUM_DIV);
-		assertEquals(model.equals(other), false);
+		assertEquals(false, model.equals(other));
 
 		other.setLeagueId(ApcfflTest.LEAGUE_1_ID);
 		model.setLeagueName(null);
 		other.setLeagueName(ApcfflTest.LEAGUE_2_NAME);
 		other.setNumberOfTeams(ApcfflTest.LEAGUE_1_NUM_TEAMS);
 		other.setNumberOfDivisions(ApcfflTest.LEAGUE_1_NUM_DIV);
-		assertEquals(model.equals(other), false);
+		assertEquals(false, model.equals(other));
 
 		other.setLeagueId(ApcfflTest.LEAGUE_1_ID);
 		model.setLeagueName(null);
 		other.setLeagueName(null);
 		other.setNumberOfTeams(ApcfflTest.LEAGUE_1_NUM_TEAMS);
 		other.setNumberOfDivisions(ApcfflTest.LEAGUE_1_NUM_DIV);
-		assertEquals(model.equals(other), true);
+		assertEquals(true, model.equals(other));
 	}
 	
 	@Test
-	public void testEqualsNumTeamsNotEqual() {
+	public void verify_equals_numTeamsNotEqual() {
 		LeagueModel other = new LeagueModel();
 		other.setLeagueId(ApcfflTest.LEAGUE_1_ID);
 		other.setLeagueName(ApcfflTest.LEAGUE_1_NAME);
 		other.setNumberOfTeams(6);
 		other.setNumberOfDivisions(ApcfflTest.LEAGUE_1_NUM_DIV);
-		assertEquals(model.equals(other), false);
+		assertEquals(false, model.equals(other));
 
 		other.setLeagueId(ApcfflTest.LEAGUE_1_ID);
 		other.setLeagueName(ApcfflTest.LEAGUE_1_NAME);
 		model.setNumberOfTeams(null);
 		other.setNumberOfTeams(6);
 		other.setNumberOfDivisions(ApcfflTest.LEAGUE_1_NUM_DIV);
-		assertEquals(model.equals(other), false);
+		assertEquals(false, model.equals(other));
 
 		other.setLeagueId(ApcfflTest.LEAGUE_1_ID);
 		other.setLeagueName(ApcfflTest.LEAGUE_1_NAME);
 		model.setNumberOfTeams(null);
 		other.setNumberOfTeams(null);
 		other.setNumberOfDivisions(ApcfflTest.LEAGUE_1_NUM_DIV);
-		assertEquals(model.equals(other), true);
+		assertEquals(true, model.equals(other));
 	}
 	
 	@Test
-	public void testEqualsNumDivisionsNotEqual() {
+	public void verify_equals_numDivisionsNotEqual() {
 		LeagueModel other = new LeagueModel();
 		other.setLeagueId(ApcfflTest.LEAGUE_1_ID);
 		other.setLeagueName(ApcfflTest.LEAGUE_1_NAME);
 		other.setNumberOfTeams(ApcfflTest.LEAGUE_1_NUM_TEAMS);
 		other.setNumberOfDivisions(6);
-		assertEquals(model.equals(other), false);
+		assertEquals(false, model.equals(other));
 
 		other.setLeagueId(ApcfflTest.LEAGUE_1_ID);
 		other.setLeagueName(ApcfflTest.LEAGUE_1_NAME);
 		other.setNumberOfTeams(ApcfflTest.LEAGUE_1_NUM_TEAMS);
 		model.setNumberOfDivisions(null);
 		other.setNumberOfDivisions(6);
-		assertEquals(model.equals(other), false);
+		assertEquals(false, model.equals(other));
 
 		other.setLeagueId(ApcfflTest.LEAGUE_1_ID);
 		other.setLeagueName(ApcfflTest.LEAGUE_1_NAME);
 		other.setNumberOfTeams(ApcfflTest.LEAGUE_1_NUM_TEAMS);
 		model.setNumberOfDivisions(null);
 		other.setNumberOfDivisions(null);
-		assertEquals(model.equals(other), true);
+		assertEquals(true, model.equals(other));
 	}
 	
 	@Test
-	public void testEquals() {
+	public void verify_equals() {
 		LeagueModel other = model;
 		
-		assertEquals(model.equals(other), true);
+		assertEquals(true, model.equals(other));
 	}
 	
 	@Test
-	public void testHash() {
+	public void verify_hash() {
 		assertTrue(model.hashCode() > 0);
-	}
-	
-	@Test
-	public void testGetters() {
-		assertEquals(model.getLeagueId(), ApcfflTest.LEAGUE_1_ID);
-		assertEquals(model.getLeagueName(), ApcfflTest.LEAGUE_1_NAME);
-		assertEquals(model.getNumberOfTeams(), ApcfflTest.LEAGUE_1_NUM_TEAMS);
-		assertEquals(model.getNumberOfDivisions(), ApcfflTest.LEAGUE_1_NUM_DIV);
 	}
 }

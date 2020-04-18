@@ -4,6 +4,8 @@ import static org.junit.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import org.apcffl.ApcfflTest;
@@ -17,14 +19,21 @@ import org.apcffl.api.security.dto.PasswordResetRequest;
 import org.apcffl.api.security.dto.UserDto;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.InjectMocks;
+import org.junit.runner.RunWith;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+@RunWith(SpringJUnit4ClassRunner.class)
+@SpringBootTest
+@ActiveProfiles("local")
 public class AuthorizationServiceImplTest {
 	
-	@InjectMocks
 	private AuthorizationServiceImpl service;
 	
 	@Mock
@@ -38,6 +47,21 @@ public class AuthorizationServiceImplTest {
 	
 	@Mock
 	private EmailManagerBo emailManager;
+
+	@Captor
+	private ArgumentCaptor<String> userNameCaptor;
+
+	@Captor
+	private ArgumentCaptor<String> passwordCaptor;
+
+	@Captor
+	private ArgumentCaptor<String> emailAddrCaptor;
+
+	@Captor
+	private ArgumentCaptor<Integer> tokenCaptor;
+	
+	@Captor
+	private ArgumentCaptor<UserModel> userCaptor;
 	
 	@Before
 	public void setUp() {
@@ -46,10 +70,12 @@ public class AuthorizationServiceImplTest {
 		sessionManager.init();
 		
 		when(sessionManager.generateTokenForUser(anyString())).thenReturn(ApcfflTest.TEST_TOKEN);
+		
+		service = new AuthorizationServiceImpl(userRepository, ownerRepository, emailManager, sessionManager);
 	}
 
 	@Test(expected = org.apcffl.api.exception.SecurityException.class)
-	public void testLoginFail() {
+	public void verify_login_fail() {
 		
 		// prepare test data
 		
@@ -62,7 +88,7 @@ public class AuthorizationServiceImplTest {
 	}
 	
 	@Test
-	public void testLogin() {
+	public void verify_login() {
 		
 		// prepare test data
 		
@@ -76,13 +102,22 @@ public class AuthorizationServiceImplTest {
 		
 		// verify results
 		
-		assertEquals(dto.getUserGroupName(), ApcfflTest.USER_GROUP_OWNER);
-		assertEquals(dto.getUserName(), ApcfflTest.USER_NAME);
-		assertEquals(dto.getSecurityToken(), ApcfflTest.TEST_TOKEN);
+		assertEquals(ApcfflTest.USER_GROUP_OWNER, dto.getUserGroupName());
+		assertEquals(ApcfflTest.USER_NAME, dto.getUserName());
+		assertEquals(ApcfflTest.TEST_TOKEN, dto.getSecurityToken());
+		
+		verify(userRepository, times(1))
+		.findByUserNamePassword(userNameCaptor.capture(), passwordCaptor.capture());
+		
+		assertEquals(ApcfflTest.USER_NAME, userNameCaptor.getValue());
+		assertEquals(ApcfflTest.PASSWORD, passwordCaptor.getValue());
+		
+		verify(sessionManager, times(1)).generateTokenForUser(userNameCaptor.capture());
+		assertEquals(ApcfflTest.USER_NAME, userNameCaptor.getValue());
 	}
 	
 	@Test(expected = org.apcffl.api.exception.SecurityException.class)
-	public void testPasswordResetTokenException() {
+	public void verify_passwordResetToken_exception() {
 		
 		// prepare test data
 		
@@ -95,7 +130,7 @@ public class AuthorizationServiceImplTest {
 	}
 	
 	@Test
-	public void testPasswordResetToken() {
+	public void verify_passwordResetToken() {
 		
 		// prepare test data
 		
@@ -108,10 +143,20 @@ public class AuthorizationServiceImplTest {
 		// invoke method
 		
 		service.passwordResetToken(ApcfflTest.USER_NAME);
+		
+		// verify
+		
+		verify(ownerRepository, times(1)).findByUserName(userNameCaptor.capture());
+		assertEquals(ApcfflTest.USER_NAME, userNameCaptor.getValue());
+		
+		verify(sessionManager, times(1)).generatePasswordResetToken(userNameCaptor.capture());
+		assertEquals(ApcfflTest.USER_NAME, userNameCaptor.getValue());
+		
+		verify(emailManager, times(1)).sendEmail(anyString(), anyString(), anyString());
 	}
     
     @Test(expected = org.apcffl.api.exception.SecurityException.class)
-    public void testResetPasswordNullUserName() {
+    public void verify_resetPassword_nullUserName() {
     	
     	// prepare test data
     	
@@ -124,7 +169,7 @@ public class AuthorizationServiceImplTest {
     }
     
     @Test(expected = org.apcffl.api.exception.SecurityException.class)
-    public void testResetPasswordEmptyUserName() {
+    public void verify_resetPassword_emptyUserName() {
     	
     	// prepare test data
     	
@@ -137,7 +182,7 @@ public class AuthorizationServiceImplTest {
     }
     
     @Test(expected = org.apcffl.api.exception.SecurityException.class)
-    public void testResetPasswordMissingPasswordResetToken() {
+    public void verify_resetPassword_missingPasswordResetToken() {
     	
     	// prepare test data
     	
@@ -150,7 +195,7 @@ public class AuthorizationServiceImplTest {
     }
     
     @Test(expected = org.apcffl.api.exception.SecurityException.class)
-    public void testResetPasswordNullPassword() {
+    public void verify_resetPassword_nullPassword() {
     	
     	// prepare test data
     	
@@ -163,7 +208,7 @@ public class AuthorizationServiceImplTest {
     }
     
     @Test(expected = org.apcffl.api.exception.SecurityException.class)
-    public void testResetPasswordEmptyPassword() {
+    public void verify_resetPassword_emptyPassword() {
     	
     	// prepare test data
     	
@@ -176,7 +221,7 @@ public class AuthorizationServiceImplTest {
     }
     
     @Test(expected = org.apcffl.api.exception.SecurityException.class)
-    public void testResetPasswordNoOwnerFound() {
+    public void verify_resetPassword_noOwnerFound() {
     	
     	// prepare test data
     	
@@ -190,7 +235,7 @@ public class AuthorizationServiceImplTest {
     }
     
     @Test(expected = org.apcffl.api.exception.SecurityException.class)
-    public void testResetPasswordInvalidToken() {
+    public void verify_ResetPassword_invalidToken() {
     	
     	// prepare test data
     	
@@ -218,29 +263,43 @@ public class AuthorizationServiceImplTest {
     	
     	when(sessionManager.isValidPasswordResetToken(anyString(), anyInt())).thenReturn(true);
 		
-		when(userRepository.save(any())).thenReturn(new UserModel());
+    	UserModel mockUser = ApcfflTest.buildUserModel();
+		when(userRepository.save(any())).thenReturn(mockUser);
 
     	// invoke method
     	
     	service.resetPassword(request);
+    	
+    	verify(ownerRepository, times(1)).findByUserName(userNameCaptor.capture());
+    	assertEquals(ApcfflTest.USER_NAME, userNameCaptor.getValue());
+    	
+    	verify(sessionManager, times(1))
+    	.isValidPasswordResetToken(userNameCaptor.capture(), tokenCaptor.capture());
+    	
+    	assertEquals(ApcfflTest.USER_NAME, userNameCaptor.getValue());
+    	assertEquals(ApcfflTest.TEST_RESET_PSWD_TOKEN, tokenCaptor.getValue());
+    	
+    	verify(userRepository, times(1)).save(userCaptor.capture());
+    	assertEquals(ApcfflTest.USER_NAME, userCaptor.getValue().getUserName());
+    	assertEquals(ApcfflTest.PASSWORD, userCaptor.getValue().getPassword());
     }
     
     @Test(expected = org.apcffl.api.exception.SecurityException.class)
-    public void testUserNameRecoveryNullEmailParam() {
+    public void verify_userNameRecovery_nullEmailParam() {
     	
     	service.userNameRecovery(null);
     	
     }
     
     @Test(expected = org.apcffl.api.exception.SecurityException.class)
-    public void testUserNameRecoveryEmptyEmailParam() {
+    public void verify_userNameRecovery_emptyEmailParam() {
     	
     	service.userNameRecovery("");
     	
     }
     
     @Test(expected = org.apcffl.api.exception.SecurityException.class)
-    public void testUserNameRecoveryNoOwnerFoud() {
+    public void verify_userNameRecovery_noOwnerFoud() {
     	
     	// prepare test data
     	
@@ -255,7 +314,7 @@ public class AuthorizationServiceImplTest {
     }
     
     @Test(expected = org.apcffl.api.exception.SecurityException.class)
-    public void testUserNameRecoveryNoUserFoud() {
+    public void verify_userNameRecovery_noUserFoud() {
     	
     	// prepare test data
     	
@@ -271,7 +330,7 @@ public class AuthorizationServiceImplTest {
     }
     
     @Test(expected = org.apcffl.api.exception.SecurityException.class)
-    public void testUserNameRecoveryNullUserNameFoud() {
+    public void verify_userNameRecovery_nullUserNameFoud() {
     	
     	// prepare test data
     	
@@ -289,7 +348,7 @@ public class AuthorizationServiceImplTest {
     }
     
     @Test(expected = org.apcffl.api.exception.SecurityException.class)
-    public void testUserNameRecoveryEmptyUserNameFoud() {
+    public void verify_userNameRecovery_emptyUserNameFoud() {
     	
     	// prepare test data
     	
@@ -324,6 +383,13 @@ public class AuthorizationServiceImplTest {
     	// invoke method
     	
     	service.userNameRecovery(ApcfflTest.OWNER_EMAIL1);
+    	
+    	// verify
+    	
+    	verify(ownerRepository, times(1)).findByEmail(emailAddrCaptor.capture());
+    	assertEquals(ApcfflTest.OWNER_EMAIL1, emailAddrCaptor.getValue());
+		
+		verify(emailManager, times(1)).sendEmail(anyString(), anyString(), anyString());
     	
     }
 }

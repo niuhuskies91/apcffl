@@ -24,7 +24,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest(classes = {EmailConfig.class})
 //@SpringBootTest(classes = {EmailConfig.class,RepositoryConfig.class})
-public class TestEmailManagerBo {
+public class EmailManagerBoTest {
 	
 	@SuppressWarnings("unused")
 	@Autowired

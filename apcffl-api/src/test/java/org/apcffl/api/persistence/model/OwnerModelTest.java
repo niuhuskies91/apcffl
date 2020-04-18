@@ -19,22 +19,22 @@ public class OwnerModelTest {
 	}
 
 	@Test
-	public void testEqualsOtherObjectNull() {
+	public void verify_equals_otherObjectNull() {
 		OwnerModel other = null;
 		
-		assertEquals(model.equals(other), false);
+		assertEquals(false, model.equals(other));
 	}
 	
 	@SuppressWarnings("unlikely-arg-type")
 	@Test
-	public void testEqualsNotEqualsClassMismatch() {
+	public void verify_equals_notEqualsClassMismatch() {
 		String other = new String();
 		
-		assertEquals(model.equals(other), false);
+		assertEquals(false, model.equals(other));
 	}
 	
 	@Test
-	public void testEqualsOwnerIdNotEquals() {
+	public void verify_equals_ownerIdNotEquals() {
 		OwnerModel other = new OwnerModel();
 		other.setOwnerId(0L);
 		other.setLeagueModel(ApcfflTest.buildLeagueModel(ApcfflTest.LEAGUE_1_ID, ApcfflTest.LEAGUE_1_NAME, ApcfflTest.LEAGUE_1_NUM_TEAMS, ApcfflTest.LEAGUE_1_NUM_DIV));
@@ -47,7 +47,7 @@ public class OwnerModelTest {
 		other.setActiveFlag(ApcfflTest.OWNER_ACTIVE);
 		other.setCreateDate(ApcfflTest.TEST_DATE);
 		other.setUpdateDate(ApcfflTest.TEST_DATE);
-		assertEquals(model.equals(other), false);
+		assertEquals(false, model.equals(other));
 
 		model.setOwnerId(null);
 		other.setOwnerId(0L);
@@ -61,7 +61,7 @@ public class OwnerModelTest {
 		other.setActiveFlag(ApcfflTest.OWNER_ACTIVE);
 		other.setCreateDate(ApcfflTest.TEST_DATE);
 		other.setUpdateDate(ApcfflTest.TEST_DATE);
-		assertEquals(model.equals(other), false);
+		assertEquals(false, model.equals(other));
 
 		model.setOwnerId(null);
 		other.setOwnerId(null);
@@ -75,11 +75,11 @@ public class OwnerModelTest {
 		other.setActiveFlag(ApcfflTest.OWNER_ACTIVE);
 		other.setCreateDate(ApcfflTest.TEST_DATE);
 		other.setUpdateDate(ApcfflTest.TEST_DATE);
-		assertEquals(model.equals(other), true);
+		assertEquals(true, model.equals(other));
 	}
 	
 	@Test
-	public void testEqualsLeagueModelNotEquals() {
+	public void verify_equals_leagueModelNotEquals() {
 		OwnerModel other = new OwnerModel();
 		other.setOwnerId(ApcfflTest.ANSWER_TO_THE_UNIVERSE);
 		other.setLeagueModel(new LeagueModel());
@@ -92,7 +92,7 @@ public class OwnerModelTest {
 		other.setActiveFlag(ApcfflTest.OWNER_ACTIVE);
 		other.setCreateDate(ApcfflTest.TEST_DATE);
 		other.setUpdateDate(ApcfflTest.TEST_DATE);
-		assertEquals(model.equals(other), false);
+		assertEquals(false, model.equals(other));
 
 		other.setOwnerId(ApcfflTest.ANSWER_TO_THE_UNIVERSE);
 		model.setLeagueModel(null);
@@ -106,7 +106,7 @@ public class OwnerModelTest {
 		other.setActiveFlag(ApcfflTest.OWNER_ACTIVE);
 		other.setCreateDate(ApcfflTest.TEST_DATE);
 		other.setUpdateDate(ApcfflTest.TEST_DATE);
-		assertEquals(model.equals(other), false);
+		assertEquals(false, model.equals(other));
 
 		other.setOwnerId(ApcfflTest.ANSWER_TO_THE_UNIVERSE);
 		model.setLeagueModel(null);
@@ -120,11 +120,11 @@ public class OwnerModelTest {
 		other.setActiveFlag(ApcfflTest.OWNER_ACTIVE);
 		other.setCreateDate(ApcfflTest.TEST_DATE);
 		other.setUpdateDate(ApcfflTest.TEST_DATE);
-		assertEquals(model.equals(other), true);
+		assertEquals(true, model.equals(other));
 	}
 	
 	@Test
-	public void testEqualsUsereModelNotEquals() {
+	public void verify_equals_usereModelNotEquals() {
 		OwnerModel other = new OwnerModel();
 		other.setOwnerId(ApcfflTest.ANSWER_TO_THE_UNIVERSE);
 		other.setLeagueModel(ApcfflTest.buildLeagueModel(ApcfflTest.LEAGUE_1_ID, ApcfflTest.LEAGUE_1_NAME, ApcfflTest.LEAGUE_1_NUM_TEAMS, ApcfflTest.LEAGUE_1_NUM_DIV));
@@ -137,7 +137,7 @@ public class OwnerModelTest {
 		other.setActiveFlag(ApcfflTest.OWNER_ACTIVE);
 		other.setCreateDate(ApcfflTest.TEST_DATE);
 		other.setUpdateDate(ApcfflTest.TEST_DATE);
-		assertEquals(model.equals(other), false);
+		assertEquals(false, model.equals(other));
 
 		other.setOwnerId(ApcfflTest.ANSWER_TO_THE_UNIVERSE);
 		other.setLeagueModel(ApcfflTest.buildLeagueModel(ApcfflTest.LEAGUE_1_ID, ApcfflTest.LEAGUE_1_NAME, ApcfflTest.LEAGUE_1_NUM_TEAMS, ApcfflTest.LEAGUE_1_NUM_DIV));
@@ -151,7 +151,7 @@ public class OwnerModelTest {
 		other.setActiveFlag(ApcfflTest.OWNER_ACTIVE);
 		other.setCreateDate(ApcfflTest.TEST_DATE);
 		other.setUpdateDate(ApcfflTest.TEST_DATE);
-		assertEquals(model.equals(other), false);
+		assertEquals(false, model.equals(other));
 
 		other.setOwnerId(ApcfflTest.ANSWER_TO_THE_UNIVERSE);
 		other.setLeagueModel(ApcfflTest.buildLeagueModel(ApcfflTest.LEAGUE_1_ID, ApcfflTest.LEAGUE_1_NAME, ApcfflTest.LEAGUE_1_NUM_TEAMS, ApcfflTest.LEAGUE_1_NUM_DIV));
@@ -165,11 +165,11 @@ public class OwnerModelTest {
 		other.setActiveFlag(ApcfflTest.OWNER_ACTIVE);
 		other.setCreateDate(ApcfflTest.TEST_DATE);
 		other.setUpdateDate(ApcfflTest.TEST_DATE);
-		assertEquals(model.equals(other), true);
+		assertEquals(true, model.equals(other));
 	}
 	
 	@Test
-	public void testEqualsFirstNameNotEquals() {
+	public void verify_equals_firstNameNotEquals() {
 		OwnerModel other = new OwnerModel();
 		other.setOwnerId(ApcfflTest.ANSWER_TO_THE_UNIVERSE);
 		other.setLeagueModel(ApcfflTest.buildLeagueModel(ApcfflTest.LEAGUE_1_ID, ApcfflTest.LEAGUE_1_NAME, ApcfflTest.LEAGUE_1_NUM_TEAMS, ApcfflTest.LEAGUE_1_NUM_DIV));
@@ -182,7 +182,7 @@ public class OwnerModelTest {
 		other.setActiveFlag(ApcfflTest.OWNER_ACTIVE);
 		other.setCreateDate(ApcfflTest.TEST_DATE);
 		other.setUpdateDate(ApcfflTest.TEST_DATE);
-		assertEquals(model.equals(other), false);
+		assertEquals(false, model.equals(other));
 
 		other.setOwnerId(ApcfflTest.ANSWER_TO_THE_UNIVERSE);
 		other.setLeagueModel(ApcfflTest.buildLeagueModel(ApcfflTest.LEAGUE_1_ID, ApcfflTest.LEAGUE_1_NAME, ApcfflTest.LEAGUE_1_NUM_TEAMS, ApcfflTest.LEAGUE_1_NUM_DIV));
@@ -196,7 +196,7 @@ public class OwnerModelTest {
 		other.setActiveFlag(ApcfflTest.OWNER_ACTIVE);
 		other.setCreateDate(ApcfflTest.TEST_DATE);
 		other.setUpdateDate(ApcfflTest.TEST_DATE);
-		assertEquals(model.equals(other), false);
+		assertEquals(false, model.equals(other));
 
 		other.setOwnerId(ApcfflTest.ANSWER_TO_THE_UNIVERSE);
 		other.setLeagueModel(ApcfflTest.buildLeagueModel(ApcfflTest.LEAGUE_1_ID, ApcfflTest.LEAGUE_1_NAME, ApcfflTest.LEAGUE_1_NUM_TEAMS, ApcfflTest.LEAGUE_1_NUM_DIV));
@@ -210,11 +210,11 @@ public class OwnerModelTest {
 		other.setActiveFlag(ApcfflTest.OWNER_ACTIVE);
 		other.setCreateDate(ApcfflTest.TEST_DATE);
 		other.setUpdateDate(ApcfflTest.TEST_DATE);
-		assertEquals(model.equals(other), true);
+		assertEquals(true, model.equals(other));
 	}
 	
 	@Test
-	public void testEqualsLastNameNotEquals() {
+	public void verify_equals_lastNameNotEquals() {
 		OwnerModel other = new OwnerModel();
 		other.setOwnerId(ApcfflTest.ANSWER_TO_THE_UNIVERSE);
 		other.setLeagueModel(ApcfflTest.buildLeagueModel(ApcfflTest.LEAGUE_1_ID, ApcfflTest.LEAGUE_1_NAME, ApcfflTest.LEAGUE_1_NUM_TEAMS, ApcfflTest.LEAGUE_1_NUM_DIV));
@@ -227,7 +227,7 @@ public class OwnerModelTest {
 		other.setActiveFlag(ApcfflTest.OWNER_ACTIVE);
 		other.setCreateDate(ApcfflTest.TEST_DATE);
 		other.setUpdateDate(ApcfflTest.TEST_DATE);
-		assertEquals(model.equals(other), false);
+		assertEquals(false, model.equals(other));
 
 		other.setOwnerId(ApcfflTest.ANSWER_TO_THE_UNIVERSE);
 		other.setLeagueModel(ApcfflTest.buildLeagueModel(ApcfflTest.LEAGUE_1_ID, ApcfflTest.LEAGUE_1_NAME, ApcfflTest.LEAGUE_1_NUM_TEAMS, ApcfflTest.LEAGUE_1_NUM_DIV));
@@ -241,7 +241,7 @@ public class OwnerModelTest {
 		other.setActiveFlag(ApcfflTest.OWNER_ACTIVE);
 		other.setCreateDate(ApcfflTest.TEST_DATE);
 		other.setUpdateDate(ApcfflTest.TEST_DATE);
-		assertEquals(model.equals(other), false);
+		assertEquals(false, model.equals(other));
 
 		other.setOwnerId(ApcfflTest.ANSWER_TO_THE_UNIVERSE);
 		other.setLeagueModel(ApcfflTest.buildLeagueModel(ApcfflTest.LEAGUE_1_ID, ApcfflTest.LEAGUE_1_NAME, ApcfflTest.LEAGUE_1_NUM_TEAMS, ApcfflTest.LEAGUE_1_NUM_DIV));
@@ -255,11 +255,11 @@ public class OwnerModelTest {
 		other.setActiveFlag(ApcfflTest.OWNER_ACTIVE);
 		other.setCreateDate(ApcfflTest.TEST_DATE);
 		other.setUpdateDate(ApcfflTest.TEST_DATE);
-		assertEquals(model.equals(other), true);
+		assertEquals(true, model.equals(other));
 	}
 	
 	@Test
-	public void testEqualsEmail1NotEquals() {
+	public void verify_equals_email1NotEquals() {
 		OwnerModel other = new OwnerModel();
 		other.setOwnerId(ApcfflTest.ANSWER_TO_THE_UNIVERSE);
 		other.setLeagueModel(ApcfflTest.buildLeagueModel(ApcfflTest.LEAGUE_1_ID, ApcfflTest.LEAGUE_1_NAME, ApcfflTest.LEAGUE_1_NUM_TEAMS, ApcfflTest.LEAGUE_1_NUM_DIV));
@@ -272,7 +272,7 @@ public class OwnerModelTest {
 		other.setActiveFlag(ApcfflTest.OWNER_ACTIVE);
 		other.setCreateDate(ApcfflTest.TEST_DATE);
 		other.setUpdateDate(ApcfflTest.TEST_DATE);
-		assertEquals(model.equals(other), false);
+		assertEquals(false, model.equals(other));
 
 		other.setOwnerId(ApcfflTest.ANSWER_TO_THE_UNIVERSE);
 		other.setLeagueModel(ApcfflTest.buildLeagueModel(ApcfflTest.LEAGUE_1_ID, ApcfflTest.LEAGUE_1_NAME, ApcfflTest.LEAGUE_1_NUM_TEAMS, ApcfflTest.LEAGUE_1_NUM_DIV));
@@ -286,7 +286,7 @@ public class OwnerModelTest {
 		other.setActiveFlag(ApcfflTest.OWNER_ACTIVE);
 		other.setCreateDate(ApcfflTest.TEST_DATE);
 		other.setUpdateDate(ApcfflTest.TEST_DATE);
-		assertEquals(model.equals(other), false);
+		assertEquals(false, model.equals(other));
 
 		other.setOwnerId(ApcfflTest.ANSWER_TO_THE_UNIVERSE);
 		other.setLeagueModel(ApcfflTest.buildLeagueModel(ApcfflTest.LEAGUE_1_ID, ApcfflTest.LEAGUE_1_NAME, ApcfflTest.LEAGUE_1_NUM_TEAMS, ApcfflTest.LEAGUE_1_NUM_DIV));
@@ -300,11 +300,11 @@ public class OwnerModelTest {
 		other.setActiveFlag(ApcfflTest.OWNER_ACTIVE);
 		other.setCreateDate(ApcfflTest.TEST_DATE);
 		other.setUpdateDate(ApcfflTest.TEST_DATE);
-		assertEquals(model.equals(other), true);
+		assertEquals(true, model.equals(other));
 	}
 	
 	@Test
-	public void testEqualsEmail2NotEquals() {
+	public void verify_equals_email2NotEquals() {
 		OwnerModel other = new OwnerModel();
 		other.setOwnerId(ApcfflTest.ANSWER_TO_THE_UNIVERSE);
 		other.setLeagueModel(ApcfflTest.buildLeagueModel(ApcfflTest.LEAGUE_1_ID, ApcfflTest.LEAGUE_1_NAME, ApcfflTest.LEAGUE_1_NUM_TEAMS, ApcfflTest.LEAGUE_1_NUM_DIV));
@@ -317,7 +317,7 @@ public class OwnerModelTest {
 		other.setActiveFlag(ApcfflTest.OWNER_ACTIVE);
 		other.setCreateDate(ApcfflTest.TEST_DATE);
 		other.setUpdateDate(ApcfflTest.TEST_DATE);
-		assertEquals(model.equals(other), false);
+		assertEquals(false, model.equals(other));
 
 		other.setOwnerId(ApcfflTest.ANSWER_TO_THE_UNIVERSE);
 		other.setLeagueModel(ApcfflTest.buildLeagueModel(ApcfflTest.LEAGUE_1_ID, ApcfflTest.LEAGUE_1_NAME, ApcfflTest.LEAGUE_1_NUM_TEAMS, ApcfflTest.LEAGUE_1_NUM_DIV));
@@ -331,7 +331,7 @@ public class OwnerModelTest {
 		other.setActiveFlag(ApcfflTest.OWNER_ACTIVE);
 		other.setCreateDate(ApcfflTest.TEST_DATE);
 		other.setUpdateDate(ApcfflTest.TEST_DATE);
-		assertEquals(model.equals(other), false);
+		assertEquals(false, model.equals(other));
 
 		other.setOwnerId(ApcfflTest.ANSWER_TO_THE_UNIVERSE);
 		other.setLeagueModel(ApcfflTest.buildLeagueModel(ApcfflTest.LEAGUE_1_ID, ApcfflTest.LEAGUE_1_NAME, ApcfflTest.LEAGUE_1_NUM_TEAMS, ApcfflTest.LEAGUE_1_NUM_DIV));
@@ -345,11 +345,11 @@ public class OwnerModelTest {
 		other.setActiveFlag(ApcfflTest.OWNER_ACTIVE);
 		other.setCreateDate(ApcfflTest.TEST_DATE);
 		other.setUpdateDate(ApcfflTest.TEST_DATE);
-		assertEquals(model.equals(other), true);
+		assertEquals(true, model.equals(other));
 	}
 	
 	@Test
-	public void testEqualsEmail3NotEquals() {
+	public void verify_equals_email3NotEquals() {
 		OwnerModel other = new OwnerModel();
 		other.setOwnerId(ApcfflTest.ANSWER_TO_THE_UNIVERSE);
 		other.setLeagueModel(ApcfflTest.buildLeagueModel(ApcfflTest.LEAGUE_1_ID, ApcfflTest.LEAGUE_1_NAME, ApcfflTest.LEAGUE_1_NUM_TEAMS, ApcfflTest.LEAGUE_1_NUM_DIV));
@@ -362,7 +362,7 @@ public class OwnerModelTest {
 		other.setActiveFlag(ApcfflTest.OWNER_ACTIVE);
 		other.setCreateDate(ApcfflTest.TEST_DATE);
 		other.setUpdateDate(ApcfflTest.TEST_DATE);
-		assertEquals(model.equals(other), false);
+		assertEquals(false, model.equals(other));
 
 		other.setOwnerId(ApcfflTest.ANSWER_TO_THE_UNIVERSE);
 		other.setLeagueModel(ApcfflTest.buildLeagueModel(ApcfflTest.LEAGUE_1_ID, ApcfflTest.LEAGUE_1_NAME, ApcfflTest.LEAGUE_1_NUM_TEAMS, ApcfflTest.LEAGUE_1_NUM_DIV));
@@ -376,7 +376,7 @@ public class OwnerModelTest {
 		other.setActiveFlag(ApcfflTest.OWNER_ACTIVE);
 		other.setCreateDate(ApcfflTest.TEST_DATE);
 		other.setUpdateDate(ApcfflTest.TEST_DATE);
-		assertEquals(model.equals(other), false);
+		assertEquals(false, model.equals(other));
 
 		other.setOwnerId(ApcfflTest.ANSWER_TO_THE_UNIVERSE);
 		other.setLeagueModel(ApcfflTest.buildLeagueModel(ApcfflTest.LEAGUE_1_ID, ApcfflTest.LEAGUE_1_NAME, ApcfflTest.LEAGUE_1_NUM_TEAMS, ApcfflTest.LEAGUE_1_NUM_DIV));
@@ -390,11 +390,11 @@ public class OwnerModelTest {
 		other.setActiveFlag(ApcfflTest.OWNER_ACTIVE);
 		other.setCreateDate(ApcfflTest.TEST_DATE);
 		other.setUpdateDate(ApcfflTest.TEST_DATE);
-		assertEquals(model.equals(other), true);
+		assertEquals(true, model.equals(other));
 	}
 	
 	@Test
-	public void testEqualsActiveFlagNotEquals() {
+	public void verify_equals_activeFlagNotEquals() {
 		OwnerModel other = new OwnerModel();
 		other.setOwnerId(ApcfflTest.ANSWER_TO_THE_UNIVERSE);
 		other.setLeagueModel(ApcfflTest.buildLeagueModel(ApcfflTest.LEAGUE_1_ID, ApcfflTest.LEAGUE_1_NAME, ApcfflTest.LEAGUE_1_NUM_TEAMS, ApcfflTest.LEAGUE_1_NUM_DIV));
@@ -407,7 +407,7 @@ public class OwnerModelTest {
 		other.setActiveFlag(false);
 		other.setCreateDate(ApcfflTest.TEST_DATE);
 		other.setUpdateDate(ApcfflTest.TEST_DATE);
-		assertEquals(model.equals(other), false);
+		assertEquals(false, model.equals(other));
 
 		other.setOwnerId(ApcfflTest.ANSWER_TO_THE_UNIVERSE);
 		other.setLeagueModel(ApcfflTest.buildLeagueModel(ApcfflTest.LEAGUE_1_ID, ApcfflTest.LEAGUE_1_NAME, ApcfflTest.LEAGUE_1_NUM_TEAMS, ApcfflTest.LEAGUE_1_NUM_DIV));
@@ -421,7 +421,7 @@ public class OwnerModelTest {
 		other.setActiveFlag(false);
 		other.setCreateDate(ApcfflTest.TEST_DATE);
 		other.setUpdateDate(ApcfflTest.TEST_DATE);
-		assertEquals(model.equals(other), false);
+		assertEquals(false, model.equals(other));
 
 		other.setOwnerId(ApcfflTest.ANSWER_TO_THE_UNIVERSE);
 		other.setLeagueModel(ApcfflTest.buildLeagueModel(ApcfflTest.LEAGUE_1_ID, ApcfflTest.LEAGUE_1_NAME, ApcfflTest.LEAGUE_1_NUM_TEAMS, ApcfflTest.LEAGUE_1_NUM_DIV));
@@ -434,11 +434,11 @@ public class OwnerModelTest {
 		other.setActiveFlag(null);
 		other.setCreateDate(ApcfflTest.TEST_DATE);
 		other.setUpdateDate(ApcfflTest.TEST_DATE);
-		assertEquals(model.equals(other), true);
+		assertEquals(true, model.equals(other));
 	}
 	
 	@Test
-	public void testEqualsCreateDateNotEquals() {
+	public void verify_equals_createDateNotEquals() {
 		OwnerModel other = new OwnerModel();
 		other.setOwnerId(ApcfflTest.ANSWER_TO_THE_UNIVERSE);
 		other.setLeagueModel(ApcfflTest.buildLeagueModel(ApcfflTest.LEAGUE_1_ID, ApcfflTest.LEAGUE_1_NAME, ApcfflTest.LEAGUE_1_NUM_TEAMS, ApcfflTest.LEAGUE_1_NUM_DIV));
@@ -451,7 +451,7 @@ public class OwnerModelTest {
 		other.setActiveFlag(ApcfflTest.OWNER_ACTIVE);
 		other.setCreateDate(new Date());
 		other.setUpdateDate(ApcfflTest.TEST_DATE);
-		assertEquals(model.equals(other), false);
+		assertEquals(false, model.equals(other));
 
 		other.setOwnerId(ApcfflTest.ANSWER_TO_THE_UNIVERSE);
 		other.setLeagueModel(ApcfflTest.buildLeagueModel(ApcfflTest.LEAGUE_1_ID, ApcfflTest.LEAGUE_1_NAME, ApcfflTest.LEAGUE_1_NUM_TEAMS, ApcfflTest.LEAGUE_1_NUM_DIV));
@@ -465,7 +465,7 @@ public class OwnerModelTest {
 		model.setCreateDate(null);
 		other.setCreateDate(new Date());
 		other.setUpdateDate(ApcfflTest.TEST_DATE);
-		assertEquals(model.equals(other), false);
+		assertEquals(false, model.equals(other));
 
 		other.setOwnerId(ApcfflTest.ANSWER_TO_THE_UNIVERSE);
 		other.setLeagueModel(ApcfflTest.buildLeagueModel(ApcfflTest.LEAGUE_1_ID, ApcfflTest.LEAGUE_1_NAME, ApcfflTest.LEAGUE_1_NUM_TEAMS, ApcfflTest.LEAGUE_1_NUM_DIV));
@@ -478,11 +478,11 @@ public class OwnerModelTest {
 		model.setCreateDate(null);
 		other.setCreateDate(null);
 		other.setUpdateDate(ApcfflTest.TEST_DATE);
-		assertEquals(model.equals(other), true);
+		assertEquals(true, model.equals(other));
 	}
 	
 	@Test
-	public void testEqualsUpdateDateNotEquals() {
+	public void verify_equals_updateDateNotEquals() {
 		OwnerModel other = new OwnerModel();
 		other.setOwnerId(ApcfflTest.ANSWER_TO_THE_UNIVERSE);
 		other.setLeagueModel(ApcfflTest.buildLeagueModel(ApcfflTest.LEAGUE_1_ID, ApcfflTest.LEAGUE_1_NAME, ApcfflTest.LEAGUE_1_NUM_TEAMS, ApcfflTest.LEAGUE_1_NUM_DIV));
@@ -495,7 +495,7 @@ public class OwnerModelTest {
 		other.setActiveFlag(ApcfflTest.OWNER_ACTIVE);
 		other.setCreateDate(ApcfflTest.TEST_DATE);
 		other.setUpdateDate(new Date());
-		assertEquals(model.equals(other), false);
+		assertEquals(false, model.equals(other));
 
 		other.setOwnerId(ApcfflTest.ANSWER_TO_THE_UNIVERSE);
 		other.setLeagueModel(ApcfflTest.buildLeagueModel(ApcfflTest.LEAGUE_1_ID, ApcfflTest.LEAGUE_1_NAME, ApcfflTest.LEAGUE_1_NUM_TEAMS, ApcfflTest.LEAGUE_1_NUM_DIV));
@@ -509,7 +509,7 @@ public class OwnerModelTest {
 		other.setCreateDate(ApcfflTest.TEST_DATE);
 		model.setUpdateDate(null);
 		other.setUpdateDate(new Date());
-		assertEquals(model.equals(other), false);
+		assertEquals(false, model.equals(other));
 
 		other.setOwnerId(ApcfflTest.ANSWER_TO_THE_UNIVERSE);
 		other.setLeagueModel(ApcfflTest.buildLeagueModel(ApcfflTest.LEAGUE_1_ID, ApcfflTest.LEAGUE_1_NAME, ApcfflTest.LEAGUE_1_NUM_TEAMS, ApcfflTest.LEAGUE_1_NUM_DIV));
@@ -522,33 +522,13 @@ public class OwnerModelTest {
 		other.setCreateDate(ApcfflTest.TEST_DATE);
 		model.setUpdateDate(null);
 		other.setUpdateDate(null);
-		assertEquals(model.equals(other), true);
+		assertEquals(true, model.equals(other));
 	}
 	
 	@Test
-	public void testEquals() {
+	public void verify_equals() {
 		OwnerModel other = model;
 		
-		assertEquals(model.equals(other), true);
-	}
-	
-	@Test
-	public void testHash() {
-		model.hashCode();
-	}
-	
-	@Test
-	public void testGetters() {
-		assertEquals(model.getActiveFlag(), ApcfflTest.OWNER_ACTIVE);
-		assertEquals(model.getCreateDate(), ApcfflTest.TEST_DATE);
-		assertEquals(model.getEmail1(), ApcfflTest.OWNER_EMAIL1);
-		assertEquals(model.getEmail2(), ApcfflTest.OWNER_EMAIL2);
-		assertEquals(model.getEmail3(), ApcfflTest.OWNER_EMAIL3);
-		assertEquals(model.getFirstName(), ApcfflTest.OWNER_FIRST_NAME);
-		assertEquals(model.getLastName(), ApcfflTest.OWNER_LAST_NAME);
-		assertNotNull(model.getLeagueModel());
-		assertEquals(model.getOwnerId(), ApcfflTest.ANSWER_TO_THE_UNIVERSE);
-		assertEquals(model.getUpdateDate(), ApcfflTest.TEST_DATE);
-		assertNotNull(model.getUserModel());
+		assertEquals(true, model.equals(other));
 	}
 }

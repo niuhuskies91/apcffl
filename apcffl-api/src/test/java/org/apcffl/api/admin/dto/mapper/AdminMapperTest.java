@@ -10,7 +10,7 @@ import org.apcffl.api.admin.dto.AccountResponse;
 import org.apcffl.api.persistence.model.OwnerModel;
 import org.junit.Test;
 
-public class TestAdminMapper {
+public class AdminMapperTest {
 	
 	@Test
 	public void verify_convertAccountModel_noLeague() {

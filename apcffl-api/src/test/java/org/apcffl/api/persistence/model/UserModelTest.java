@@ -1,7 +1,6 @@
 package org.apcffl.api.persistence.model;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import org.apcffl.ApcfflTest;
@@ -18,133 +17,125 @@ public class UserModelTest {
 	}
 
 	@Test
-	public void testEqualsOtherObjectNull() {
+	public void verify_equals_otherObjectNull() {
 		UserModel other = null;
 		
-		assertEquals(model.equals(other), false);
+		assertEquals(false, model.equals(other));
 	}
 	
 	@SuppressWarnings("unlikely-arg-type")
 	@Test
-	public void testEqualsNotEqualsClassMismatch() {
+	public void verify_equals_notEqualsClassMismatch() {
 		String other = new String();
 		
-		assertEquals(model.equals(other), false);
+		assertEquals(false, model.equals(other));
 	}
 	
 	@Test
-	public void testEqualsUserIdNotEquals() {
+	public void verify_equals_userIdNotEquals() {
 		UserModel other = new UserModel();
 		other.setUserId(0L);
 		other.setUserName(ApcfflTest.USER_NAME);
 		other.setPassword(ApcfflTest.PASSWORD);
 		other.setUserGroupModel(ApcfflTest.buildUserGroup(ApcfflTest.USER_GROUP_OWNER_ID, ApcfflTest.USER_GROUP_OWNER));
-		assertEquals(model.equals(other), false);
+		assertEquals(false, model.equals(other));
 		
 		model.setUserId(null);
 		other.setUserId(0L);
 		other.setUserName(ApcfflTest.USER_NAME);
 		other.setPassword(ApcfflTest.PASSWORD);
 		other.setUserGroupModel(ApcfflTest.buildUserGroup(ApcfflTest.USER_GROUP_OWNER_ID, ApcfflTest.USER_GROUP_OWNER));
-		assertEquals(model.equals(other), false);
+		assertEquals(false, model.equals(other));
 		
 		model.setUserId(null);
 		other.setUserId(null);
 		other.setUserName(ApcfflTest.USER_NAME);
 		other.setPassword(ApcfflTest.PASSWORD);
 		other.setUserGroupModel(ApcfflTest.buildUserGroup(ApcfflTest.USER_GROUP_OWNER_ID, ApcfflTest.USER_GROUP_OWNER));
-		assertEquals(model.equals(other), true);
+		assertEquals(true, model.equals(other));
 	}
 	
 	@Test
-	public void testEqualsUserNameNotEquals() {
+	public void verify_equals_userNameNotEquals() {
 		UserModel other = new UserModel();
 		other.setUserId(ApcfflTest.ANSWER_TO_THE_UNIVERSE);
 		other.setUserName("other");
 		other.setPassword(ApcfflTest.PASSWORD);
 		other.setUserGroupModel(ApcfflTest.buildUserGroup(ApcfflTest.USER_GROUP_OWNER_ID, ApcfflTest.USER_GROUP_OWNER));
-		assertEquals(model.equals(other), false);
+		assertEquals(false, model.equals(other));
 
 		other.setUserId(ApcfflTest.ANSWER_TO_THE_UNIVERSE);
 		model.setUserName(null);
 		other.setUserName("other");
 		other.setPassword(ApcfflTest.PASSWORD);
 		other.setUserGroupModel(ApcfflTest.buildUserGroup(ApcfflTest.USER_GROUP_OWNER_ID, ApcfflTest.USER_GROUP_OWNER));
-		assertEquals(model.equals(other), false);
+		assertEquals(false, model.equals(other));
 
 		other.setUserId(ApcfflTest.ANSWER_TO_THE_UNIVERSE);
 		model.setUserName(null);
 		other.setUserName(null);
 		other.setPassword(ApcfflTest.PASSWORD);
 		other.setUserGroupModel(ApcfflTest.buildUserGroup(ApcfflTest.USER_GROUP_OWNER_ID, ApcfflTest.USER_GROUP_OWNER));
-		assertEquals(model.equals(other), true);
+		assertEquals(true, model.equals(other));
 	}
 	
 	@Test
-	public void testEqualsPasswordNotEquals() {
+	public void verify_equals_passwordNotEquals() {
 		UserModel other = new UserModel();
 		other.setUserId(ApcfflTest.ANSWER_TO_THE_UNIVERSE);
 		other.setUserName(ApcfflTest.USER_NAME);
 		other.setPassword("other");
 		other.setUserGroupModel(ApcfflTest.buildUserGroup(ApcfflTest.USER_GROUP_OWNER_ID, ApcfflTest.USER_GROUP_OWNER));
-		assertEquals(model.equals(other), false);
+		assertEquals(false, model.equals(other));
 
 		other.setUserId(ApcfflTest.ANSWER_TO_THE_UNIVERSE);
 		other.setUserName(ApcfflTest.USER_NAME);
 		model.setPassword(null);
 		other.setPassword("other");
 		other.setUserGroupModel(ApcfflTest.buildUserGroup(ApcfflTest.USER_GROUP_OWNER_ID, ApcfflTest.USER_GROUP_OWNER));
-		assertEquals(model.equals(other), false);
+		assertEquals(false, model.equals(other));
 
 		other.setUserId(ApcfflTest.ANSWER_TO_THE_UNIVERSE);
 		other.setUserName(ApcfflTest.USER_NAME);
 		model.setPassword(null);
 		other.setPassword(null);
 		other.setUserGroupModel(ApcfflTest.buildUserGroup(ApcfflTest.USER_GROUP_OWNER_ID, ApcfflTest.USER_GROUP_OWNER));
-		assertEquals(model.equals(other), true);
+		assertEquals(true, model.equals(other));
 	}
 	
 	@Test
-	public void testEqualsUserGroupNotEquals() {
+	public void verify_equals_userGroupNotEquals() {
 		UserModel other = new UserModel();
 		other.setUserId(ApcfflTest.ANSWER_TO_THE_UNIVERSE);
 		other.setUserName(ApcfflTest.USER_NAME);
 		other.setPassword(ApcfflTest.PASSWORD);
 		other.setUserGroupModel(ApcfflTest.buildUserGroup(ApcfflTest.USER_GROUP_GUEST_ID, ApcfflTest.USER_GROUP_GUEST));
-		assertEquals(model.equals(other), false);
+		assertEquals(false, model.equals(other));
 
 		other.setUserId(ApcfflTest.ANSWER_TO_THE_UNIVERSE);
 		other.setUserName(ApcfflTest.USER_NAME);
 		other.setPassword(ApcfflTest.PASSWORD);
 		model.setUserGroupModel(null);
 		other.setUserGroupModel(ApcfflTest.buildUserGroup(ApcfflTest.USER_GROUP_GUEST_ID, ApcfflTest.USER_GROUP_GUEST));
-		assertEquals(model.equals(other), false);
+		assertEquals(false, model.equals(other));
 
 		other.setUserId(ApcfflTest.ANSWER_TO_THE_UNIVERSE);
 		other.setUserName(ApcfflTest.USER_NAME);
 		other.setPassword(ApcfflTest.PASSWORD);
 		model.setUserGroupModel(null);
 		other.setUserGroupModel(null);
-		assertEquals(model.equals(other), true);
+		assertEquals(true, model.equals(other));
 	}
 	
 	@Test
-	public void testEquals() {
+	public void verify_equals() {
 		UserModel other = model;
 		
-		assertEquals(model.equals(other), true);
+		assertEquals(true, model.equals(other));
 	}
 	
 	@Test
-	public void testHash() {
+	public void verify_hash() {
 		assertTrue(model.hashCode() > 0);
-	}
-	
-	@Test
-	public void testGetters() {
-		assertEquals(model.getPassword(), ApcfflTest.PASSWORD);
-		assertNotNull(model.getUserGroupModel());
-		assertEquals(model.getUserId(), ApcfflTest.ANSWER_TO_THE_UNIVERSE);
-		assertEquals(model.getUserName(), ApcfflTest.USER_NAME);
 	}
 }

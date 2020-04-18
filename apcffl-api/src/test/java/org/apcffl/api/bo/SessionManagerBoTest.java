@@ -22,7 +22,7 @@ import ch.qos.logback.classic.Logger;
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest(classes = {GeneralPropertiesConfig.class})
 @ActiveProfiles("local")
-public class TestSessionManagerBo {
+public class SessionManagerBoTest {
 	
 	@Autowired
 	private GeneralPropertiesConfig config;

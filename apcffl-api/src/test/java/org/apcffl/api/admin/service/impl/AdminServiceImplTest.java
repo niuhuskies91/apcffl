@@ -46,7 +46,7 @@ import java.util.List;
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest
 @ActiveProfiles("local")
-public class TestAdminServiceImpl {
+public class AdminServiceImplTest {
 
 	private AdminServiceImpl service;
 

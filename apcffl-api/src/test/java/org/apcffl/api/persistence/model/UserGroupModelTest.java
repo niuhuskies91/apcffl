@@ -17,60 +17,60 @@ public class UserGroupModelTest {
 	}
 	
 	@Test
-	public void testEqualsNotEqualsOtherObjectNull() {
+	public void verify_equals_notEqualsOtherObjectNull() {
 		UserGroupModel other = null;
 		
-		assertEquals(model.equals(other), false);
+		assertEquals(false, model.equals(other));
 	}
 	
 	@SuppressWarnings("unlikely-arg-type")
 	@Test
-	public void testEqualsNotEqualsClassMismatch() {
+	public void verify_equals_notEqualsClassMismatch() {
 		String other = new String();
 		
-		assertEquals(model.equals(other), false);
+		assertEquals(false, model.equals(other));
 	}
 
 	@Test
-	public void testEqualsUserGroupIdNotEquals() {
+	public void verify_equals_userGroupIdNotEquals() {
 		UserGroupModel other = new UserGroupModel();
 		other.setUserGroupId(0L);
 		other.setUserGroupName(ApcfflTest.USER_GROUP_OWNER);
-		assertEquals(model.equals(other), false);
+		assertEquals(false, model.equals(other));
 
 		model.setUserGroupId(null);
 		other.setUserGroupId(0L);
 		other.setUserGroupName(ApcfflTest.USER_GROUP_OWNER);
-		assertEquals(model.equals(other), false);
+		assertEquals(false, model.equals(other));
 
 		model.setUserGroupId(null);
 		other.setUserGroupId(null);
 		other.setUserGroupName(ApcfflTest.USER_GROUP_OWNER);
-		assertEquals(model.equals(other), true);
+		assertEquals(true, model.equals(other));
 	}
 
 	@Test
-	public void testEqualsUserGroupNameNotEquals() {
+	public void verify_equals_userGroupNameNotEquals() {
 		UserGroupModel other = new UserGroupModel();
 		other.setUserGroupId(ApcfflTest.USER_GROUP_OWNER_ID);
 		other.setUserGroupName("other");
-		assertEquals(model.equals(other), false);
+		assertEquals(false, model.equals(other));
 
 		other.setUserGroupId(ApcfflTest.USER_GROUP_OWNER_ID);
 		model.setUserGroupName(null);
 		other.setUserGroupName("other");
-		assertEquals(model.equals(other), false);
+		assertEquals(false, model.equals(other));
 
 		other.setUserGroupId(ApcfflTest.USER_GROUP_OWNER_ID);
 		model.setUserGroupName(null);
 		other.setUserGroupName(null);
-		assertEquals(model.equals(other), true);
+		assertEquals(true, model.equals(other));
 	}
 	
 	@Test
-	public void testEquals() {
+	public void verify_equals() {
 		UserGroupModel other = model;
 		
-		assertEquals(model.equals(other), true);
+		assertEquals(true, model.equals(other));
 	}
 }

@@ -1,7 +1,6 @@
 package org.apcffl.api.persistence.model;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import org.apcffl.ApcfflTest;
@@ -27,99 +26,92 @@ public class GroupActivityMapModelTest {
 	}
 	
 	@Test
-	public void testEqualsNotEqualsOtherObjectNull() {
+	public void verify_equals_notEqualsOtherObjectNull() {
 		GroupActivityMapModel other = null;
 		
-		assertEquals(model.equals(other), false);
+		assertEquals(false, model.equals(other));
 	}
 	
 	@SuppressWarnings("unlikely-arg-type")
 	@Test
-	public void testEqualsNotEqualsClassMismatch() {
+	public void verify_equals_notEqualsClassMismatch() {
 		String other = new String();
 		
-		assertEquals(model.equals(other), false);
+		assertEquals(false, model.equals(other));
 	}
 	
 	@Test
-	public void testEqualsGroupActivityActivityNotEquals() {
+	public void verify_equals_groupActivityActivityNotEquals() {
 		GroupActivityMapModel other = new GroupActivityMapModel();
 		other.setApplicationActivityModel(new ApplicationActivityModel());
 		other.setGroupActivityId(model.getGroupActivityId());
 		other.setUserGroupModel(model.getUserGroupModel());
-		assertEquals(model.equals(other), false);
+		assertEquals(false, model.equals(other));
 
 		model.setApplicationActivityModel(null);
 		other.setApplicationActivityModel(new ApplicationActivityModel());
 		other.setGroupActivityId(model.getGroupActivityId());
 		other.setUserGroupModel(model.getUserGroupModel());
-		assertEquals(model.equals(other), false);
+		assertEquals(false, model.equals(other));
 
 		model.setApplicationActivityModel(null);
 		other.setApplicationActivityModel(null);
 		other.setGroupActivityId(model.getGroupActivityId());
 		other.setUserGroupModel(model.getUserGroupModel());
-		assertEquals(model.equals(other), true);
+		assertEquals(true, model.equals(other));
 	}
 	
 	@Test
-	public void testEqualsGroupActivityIdNotEquals() {
+	public void verify_equals_groupActivityIdNotEquals() {
 		GroupActivityMapModel other = new GroupActivityMapModel();
 		other.setApplicationActivityModel(model.getApplicationActivityModel());
 		other.setGroupActivityId(0L);
 		other.setUserGroupModel(model.getUserGroupModel());
-		assertEquals(model.equals(other), false);
+		assertEquals(false, model.equals(other));
 
 		other.setApplicationActivityModel(model.getApplicationActivityModel());
 		model.setGroupActivityId(null);
 		other.setGroupActivityId(0L);
 		other.setUserGroupModel(model.getUserGroupModel());
-		assertEquals(model.equals(other), false);
+		assertEquals(false, model.equals(other));
 
 		other.setApplicationActivityModel(model.getApplicationActivityModel());
 		model.setGroupActivityId(null);
 		other.setGroupActivityId(null);
 		other.setUserGroupModel(model.getUserGroupModel());
-		assertEquals(model.equals(other), true);
+		assertEquals(true, model.equals(other));
 	}
 	
 	@Test
-	public void testEqualsGroupActivityUserGroupNotEquals() {
+	public void verify_equals_groupActivityUserGroupNotEquals() {
 		GroupActivityMapModel other = new GroupActivityMapModel();
 		other.setApplicationActivityModel(model.getApplicationActivityModel());
 		other.setGroupActivityId(model.getGroupActivityId());
 		other.setUserGroupModel(new UserGroupModel());
-		assertEquals(model.equals(other), false);
+		assertEquals(false, model.equals(other));
 
 		other.setApplicationActivityModel(model.getApplicationActivityModel());
 		other.setGroupActivityId(model.getGroupActivityId());
 		model.setUserGroupModel(null);
 		other.setUserGroupModel(new UserGroupModel());
-		assertEquals(model.equals(other), false);
+		assertEquals(false, model.equals(other));
 
 		other.setApplicationActivityModel(model.getApplicationActivityModel());
 		other.setGroupActivityId(model.getGroupActivityId());
 		model.setUserGroupModel(null);
 		other.setUserGroupModel(null);
-		assertEquals(model.equals(other), true);
+		assertEquals(true, model.equals(other));
 	}
 	
 	@Test
-	public void testEquals() {
+	public void verify_equals() {
 		GroupActivityMapModel other = model;
 		
-		assertEquals(model.equals(other), true);
+		assertEquals(true, model.equals(other));
 	}
 	
 	@Test
-	public void testHash() {
+	public void verify_hash() {
 		assertTrue(model.hashCode() > 0);
-	}
-	
-	@Test
-	public void testGetters() {
-		assertNotNull(model.getApplicationActivityModel());
-		assertNotNull(model.getGroupActivityId());
-		assertNotNull(model.getUserGroupModel());
 	}
 }
