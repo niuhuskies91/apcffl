@@ -1,7 +1,7 @@
 package org.apcffl.api.controller.admin.handler;
 
 import org.apcffl.api.exception.PersistenceException;
-import org.apcffl.api.exception.constants.ErrorCodeEnums;
+import static org.apcffl.api.exception.constants.Enums.ErrorCodeEnums.*;
 import org.apcffl.api.dto.ErrorDto;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,7 +12,7 @@ public interface AdminExceptionHandler {
 	@ExceptionHandler(PersistenceException.class)
 	default ResponseEntity<ErrorDto> handlePersistenceException(PersistenceException ex) {
 		return new ResponseEntity<ErrorDto>(
-				createErrorFromException(ErrorCodeEnums.AdminError.toString(), ex.getMessage()),
+				createErrorFromException(AdminError.toString(), ex.getMessage()),
 				HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 	

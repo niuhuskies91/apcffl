@@ -7,9 +7,12 @@ import java.util.List;
 import org.apcffl.api.admin.dto.AccountCreateRequest;
 import org.apcffl.api.admin.dto.AccountRequest;
 import org.apcffl.api.admin.dto.AccountResponse;
+import org.apcffl.api.comm.dto.MessageBoard;
+import org.apcffl.api.comm.dto.MessageBoardRequest;
 import org.apcffl.api.persistence.model.ApplicationActivityModel;
 import org.apcffl.api.persistence.model.GroupActivityMapModel;
 import org.apcffl.api.persistence.model.LeagueModel;
+import org.apcffl.api.persistence.model.MessageBoardModel;
 import org.apcffl.api.persistence.model.OwnerModel;
 import org.apcffl.api.persistence.model.UserGroupModel;
 import org.apcffl.api.persistence.model.UserModel;
@@ -89,6 +92,11 @@ public class ApcfflTest {
 	public static final String EMAIL_RECIPIENT             = "test@gmail.com";
 	public static final String EMAIL_SUBJECT               = "test email";
 	public static final String EMAIL_MESSAGE               = "This is a test email";
+	
+	// Communications
+	
+	public static final String MESSAGE_BOARD_MSG           = "My hovercraft is full of eels.";
+	public static final Long   MESSAGE_ID                  = 10001L;
 	
 	public static final UserGroupModel buildUserGroup(Long id, String name) {
 		UserGroupModel group = new UserGroupModel();
@@ -249,5 +257,41 @@ public class ApcfflTest {
 		request.setLastName(OWNER_LAST_NAME);
 		
 		return request;
+	}
+	
+	public static MessageBoard buildMessageBoard() {
+		
+		MessageBoard dto = new MessageBoard();
+		dto.setSecurityToken(TEST_TOKEN);
+		dto.setUserGroupName(USER_GROUP_OWNER);
+		dto.setUserName(USER_NAME);
+		dto.setLeagueName(LEAGUE_1_NAME);
+		dto.setMessage(MESSAGE_BOARD_MSG);
+		
+		return dto;
+	}
+	
+	public static MessageBoardRequest buildMessageBoardRequest() {
+		
+		MessageBoardRequest request = new MessageBoardRequest();
+		request.setSecurityToken(TEST_TOKEN);
+		request.setUserGroupName(USER_GROUP_OWNER);
+		request.setUserName(USER_NAME);
+		request.setLeagueName(LEAGUE_1_NAME);
+		request.setStartDate(TEST_DATE);
+		request.setEndDate(TEST_DATE);
+		
+		return request;
+	}
+	
+	public static MessageBoardModel buildMessageBoardModel() {
+		MessageBoardModel model = new MessageBoardModel();
+		model.setMessageId(MESSAGE_ID);
+		model.setCreateDate( new java.sql.Date(TEST_DATE.getTime()) );
+		model.setLeagueModel(buildLeagueModel(LEAGUE_1_ID, LEAGUE_1_NAME, 1, 2));
+		model.setMessage(MESSAGE_BOARD_MSG);
+		model.setOwnerModel(buildOwnerModel());
+		
+		return model;
 	}
 }

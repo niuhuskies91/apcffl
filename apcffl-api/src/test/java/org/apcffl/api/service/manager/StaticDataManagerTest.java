@@ -1,4 +1,4 @@
-package org.apcffl.api.bo;
+package org.apcffl.api.service.manager;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.when;
@@ -14,13 +14,14 @@ import org.apcffl.api.persistence.model.GroupActivityMapModel;
 import org.apcffl.api.persistence.model.UserGroupModel;
 import org.apcffl.api.persistence.repository.GroupActivityMapRepository;
 import org.apcffl.api.persistence.repository.UserGroupRepository;
+import org.apcffl.api.service.manager.StaticDataManager;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-public class StaticDataBoTest {
+public class StaticDataManagerTest {
 
 	@Mock
 	private UserGroupRepository userGroupRepository;
@@ -30,7 +31,7 @@ public class StaticDataBoTest {
 	
 	@InjectMocks
 	@Resource
-	private StaticDataBo bo;
+	private StaticDataManager manager;
 	
 	@Before
 	public void setUp() throws Exception {
@@ -42,12 +43,12 @@ public class StaticDataBoTest {
 		List<GroupActivityMapModel> mockGroupActivity = ApcfflTest.buildGroupActivityList();	
 		when(groupActivityRepository.findAll()).thenReturn(mockGroupActivity);
 		
-		bo.init();
+		manager.init();
 	}
 	
 	@Test
 	public void testGetUserGroupMap() {
-		Map<String, Long> userGroups = StaticDataBo.getUserGroupMap();
+		Map<String, Long> userGroups = StaticDataManager.getUserGroupMap();
 		assertEquals(userGroups.size(), 3);
 		assertEquals(userGroups.get(ApcfflTest.USER_GROUP_ADMIN), ApcfflTest.USER_GROUP_ADMIN_ID);
 		assertEquals(userGroups.get(ApcfflTest.USER_GROUP_OWNER), ApcfflTest.USER_GROUP_OWNER_ID);
@@ -56,7 +57,7 @@ public class StaticDataBoTest {
 	
 	@Test
 	public void testGetGroupActivityMap() {
-		Map<String, GroupActivityMapDto> groupMap = StaticDataBo.getGroupActivityMap();
+		Map<String, GroupActivityMapDto> groupMap = StaticDataManager.getGroupActivityMap();
 		assertEquals(groupMap.size(), 2);
 		
 		assertEquals(groupMap.get(ApcfflTest.USER_GROUP_ADMIN).getGroupName(), ApcfflTest.USER_GROUP_ADMIN);

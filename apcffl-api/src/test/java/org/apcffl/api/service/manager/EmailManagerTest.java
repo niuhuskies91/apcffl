@@ -1,4 +1,4 @@
-package org.apcffl.api.bo;
+package org.apcffl.api.service.manager;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.isA;
@@ -7,6 +7,7 @@ import static org.mockito.Mockito.verify;
 
 import org.apcffl.ApcfflTest;
 import org.apcffl.api.config.EmailConfig;
+import org.apcffl.api.service.manager.EmailManager;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -24,7 +25,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest(classes = {EmailConfig.class})
 //@SpringBootTest(classes = {EmailConfig.class,RepositoryConfig.class})
-public class EmailManagerBoTest {
+public class EmailManagerTest {
 	
 	@SuppressWarnings("unused")
 	@Autowired
@@ -33,7 +34,7 @@ public class EmailManagerBoTest {
 	@Mock
 	private JavaMailSender javaMailSender;
 
-	private EmailManagerBo bo;
+	private EmailManager manager;
 
 	@Captor
 	private ArgumentCaptor<SimpleMailMessage> emailCaptor;
@@ -42,7 +43,7 @@ public class EmailManagerBoTest {
 	public void setUp() {
 		MockitoAnnotations.initMocks(this);
 		
-		bo = new EmailManagerBo(javaMailSender);
+		manager = new EmailManager(javaMailSender);
 	}
 	
 	@Test
@@ -54,7 +55,7 @@ public class EmailManagerBoTest {
 		
 		// invoke
 		
-		bo.sendEmail(ApcfflTest.EMAIL_RECIPIENT, ApcfflTest.EMAIL_SUBJECT, ApcfflTest.EMAIL_MESSAGE);
+		manager.sendEmail(ApcfflTest.EMAIL_RECIPIENT, ApcfflTest.EMAIL_SUBJECT, ApcfflTest.EMAIL_MESSAGE);
 		
 		// verify
 		
@@ -73,7 +74,7 @@ public class EmailManagerBoTest {
 		
 		// invoke
 		
-		bo.sendEmail(ApcfflTest.EMAIL_RECIPIENT, ApcfflTest.EMAIL_SUBJECT, ApcfflTest.EMAIL_MESSAGE);
+		manager.sendEmail(ApcfflTest.EMAIL_RECIPIENT, ApcfflTest.EMAIL_SUBJECT, ApcfflTest.EMAIL_MESSAGE);
 		
 		// verify
 		

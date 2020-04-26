@@ -1,4 +1,4 @@
-package org.apcffl.api.bo;
+package org.apcffl.api.service.manager;
 
 import java.security.SecureRandom;
 import java.util.Base64;
@@ -14,9 +14,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 @Component
-public class SessionManagerBo {
+public class SessionManager {
 
-	private static final Logger LOG = LoggerFactory.getLogger(SessionManagerBo.class);
+	private static final Logger LOG = LoggerFactory.getLogger(SessionManager.class);
 	
 	// Ensures 128 bit token
 	private static final int TOKEN_SIZE = 16;
@@ -29,7 +29,7 @@ public class SessionManagerBo {
 	
 	private final GeneralPropertiesConfig propsConfig;
 	
-	public SessionManagerBo(final GeneralPropertiesConfig propsConfig) {
+	public SessionManager(final GeneralPropertiesConfig propsConfig) {
 		this.propsConfig = propsConfig;
 	}
 	

@@ -6,9 +6,9 @@ import org.apcffl.api.admin.dto.AccountCreateRequest;
 import org.apcffl.api.admin.dto.AccountRequest;
 import org.apcffl.api.admin.dto.AccountResponse;
 import org.apcffl.api.admin.dto.AllAccountsResponse;
-import org.apcffl.api.bo.EmailManagerBo;
+import org.apcffl.api.config.EmailConfig;
 import org.apcffl.api.constants.UIMessages;
-import org.apcffl.api.exception.constants.ErrorCodeEnums;
+import static org.apcffl.api.exception.constants.Enums.ErrorCodeEnums.*;
 import org.apcffl.api.persistence.model.OwnerModel;
 import org.apcffl.api.persistence.model.UserGroupModel;
 import org.apcffl.api.persistence.model.UserModel;
@@ -16,6 +16,7 @@ import org.apcffl.api.persistence.repository.OwnerRepository;
 import org.apcffl.api.persistence.repository.UserGroupRepository;
 import org.apcffl.api.persistence.repository.UserRepository;
 import org.apcffl.api.security.constants.SecurityConstants;
+import org.apcffl.api.service.manager.EmailManager;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -60,7 +61,10 @@ public class AdminServiceImplTest {
 	private UserGroupRepository userGroupRepository;
 	
 	@Mock
-	private EmailManagerBo emailManager;
+	private EmailManager emailManager;
+	
+	@Mock
+	private EmailConfig emailConfig;
 
 	@Captor
 	private ArgumentCaptor<String> userNameCaptor;
@@ -70,22 +74,13 @@ public class AdminServiceImplTest {
 	
 	@Captor
 	private ArgumentCaptor<OwnerModel> ownerCaptor;
-
-	@Captor
-	private ArgumentCaptor<String> emailAddrCaptor;
-
-	@Captor
-	private ArgumentCaptor<String> emailSubjectCaptor;
-
-	@Captor
-	private ArgumentCaptor<String> emailMsgCaptor;
 	
 	@Before
 	public void setUp() {
 		MockitoAnnotations.initMocks(this);
 		
 		service = 
-				new AdminServiceImpl(ownerRepository, userRepository, userGroupRepository, emailManager);
+				new AdminServiceImpl(ownerRepository, userRepository, userGroupRepository, emailManager, emailConfig);
 
 	    final Logger logger = (Logger)LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME);
 	    logger.setLevel(Level.DEBUG);
@@ -110,7 +105,7 @@ public class AdminServiceImplTest {
 		
 		// verify results
 		
-		assertEquals(ErrorCodeEnums.UserGroupAccessError.toString(), response.getError().getErrorCode());
+		assertEquals(UserGroupAccessError.toString(), response.getError().getErrorCode());
 		assertEquals(UIMessages.ERROR_USER_GROUP_ACCESS, response.getError().getMessage());
 		assertEquals(null, response.getActiveFlag());
 		assertEquals(null, response.getEmail1());
@@ -142,7 +137,7 @@ public class AdminServiceImplTest {
 		
 		// verify results
 		
-		assertEquals(ErrorCodeEnums.AccountError.toString(), response.getError().getErrorCode());
+		assertEquals(AccountError.toString(), response.getError().getErrorCode());
 		assertEquals(UIMessages.ACCOUNT_NOT_FOUND, response.getError().getMessage());
 		assertEquals(null, response.getActiveFlag());
 		assertEquals(null, response.getEmail1());
@@ -205,7 +200,7 @@ public class AdminServiceImplTest {
 		
 		// verify results
 		
-		assertEquals(ErrorCodeEnums.UserGroupAccessError.toString(), response.getError().getErrorCode());
+		assertEquals(UserGroupAccessError.toString(), response.getError().getErrorCode());
 		assertEquals(UIMessages.ERROR_USER_GROUP_ACCESS, response.getError().getMessage());
 		assertEquals(null, response.getAccounts());
 		
@@ -292,12 +287,6 @@ public class AdminServiceImplTest {
 		assertNotNull(resultOwner.getUpdateDate());
 		assertEquals(ApcfflTest.PASSWORD, resultOwner.getUserModel().getPassword());
 		assertEquals(ApcfflTest.USER_NAME, resultOwner.getUserModel().getUserName());
-		
-		verify(emailManager, times(1))
-		.sendEmail(emailAddrCaptor.capture(), emailSubjectCaptor.capture(), emailMsgCaptor.capture());
-		assertEquals(ApcfflTest.OWNER_EMAIL1, emailAddrCaptor.getValue());
-		assertEquals(UIMessages.EMAIL_WELCOME_SUBJECT, emailSubjectCaptor.getValue());
-		assertEquals(UIMessages.EMAIL_WELCOME_MESSAGE, emailMsgCaptor.getValue());
 	}
 	
 	@Test
@@ -321,7 +310,7 @@ public class AdminServiceImplTest {
 		
 		// verify results
 		
-		assertEquals(ErrorCodeEnums.UserGroupAccessError.toString(), response.getError().getErrorCode());
+		assertEquals(UserGroupAccessError.toString(), response.getError().getErrorCode());
 		assertEquals(UIMessages.ERROR_USER_GROUP_ACCESS, response.getError().getMessage());
 		
 		verify(ownerRepository, never()).findByUserName(userNameCaptor.capture());

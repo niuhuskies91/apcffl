@@ -9,14 +9,14 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import org.apcffl.ApcfflTest;
-import org.apcffl.api.bo.EmailManagerBo;
-import org.apcffl.api.bo.SessionManagerBo;
 import org.apcffl.api.persistence.model.OwnerModel;
 import org.apcffl.api.persistence.model.UserModel;
 import org.apcffl.api.persistence.repository.OwnerRepository;
 import org.apcffl.api.persistence.repository.UserRepository;
 import org.apcffl.api.security.dto.PasswordResetRequest;
 import org.apcffl.api.security.dto.UserDto;
+import org.apcffl.api.service.manager.EmailManager;
+import org.apcffl.api.service.manager.SessionManager;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -43,10 +43,10 @@ public class AuthorizationServiceImplTest {
 	private OwnerRepository ownerRepository;
 	
 	@Mock
-	private SessionManagerBo sessionManager;
+	private SessionManager sessionManager;
 	
 	@Mock
-	private EmailManagerBo emailManager;
+	private EmailManager emailManager;
 
 	@Captor
 	private ArgumentCaptor<String> userNameCaptor;
@@ -137,7 +137,7 @@ public class AuthorizationServiceImplTest {
 		OwnerModel mockOwner = ApcfflTest.buildOwnerModel();
 		when(ownerRepository.findByUserName(anyString())).thenReturn(mockOwner);
 		
-		EmailManagerBo spy = Mockito.spy(emailManager);
+		EmailManager spy = Mockito.spy(emailManager);
 		Mockito.doNothing().when(spy).sendEmail(anyString(), anyString(), anyString());
 		
 		// invoke method
@@ -377,7 +377,7 @@ public class AuthorizationServiceImplTest {
     	when(ownerRepository.findByEmail(anyString())).thenReturn(mockOwner);
 
 		
-		EmailManagerBo spy = Mockito.spy(emailManager);
+		EmailManager spy = Mockito.spy(emailManager);
 		Mockito.doNothing().when(spy).sendEmail(anyString(), anyString(), anyString());
     	
     	// invoke method

@@ -1,4 +1,4 @@
-package org.apcffl.api.bo;
+package org.apcffl.api.service.manager;
 
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -16,7 +16,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
 @Component
-public class StaticDataBo {
+public class StaticDataManager {
 
 	@Autowired
 	UserGroupRepository userGroupRepository;

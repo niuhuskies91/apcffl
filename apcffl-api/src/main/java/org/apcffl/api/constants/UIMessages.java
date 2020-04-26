@@ -6,6 +6,7 @@ public class UIMessages {
 
 	public static final String ERROR_AUTH_FAIL                     = "Authorization failed for user name: ";
 	public static final String ERROR_AUTH_PSWD_RESET_USER_NOTFOUND = "The username is not found. No password reset token was generated.";
+	public static final String ERROR_MISSING_LEAGUE_AFFILIATION    = "The functionality is not available as no league affiliation is present.";
 	public static final String ERROR_RESET_PSWD_PARAMS             = "Missing required parameters. The password cannot be reset.";
 	public static final String ERROR_RESET_PSWD_USER_NOTFOUND      = "The username is not found. The password cannot be reset.";
 	public static final String ERROR_RESET_TOKEN_INVALID           = "The password reset token is invalid. The password cannot be reset.";
@@ -27,7 +28,9 @@ public class UIMessages {
 	public static final String EMAIL_USERNAME_RECOVER_SUBJECT = "Apcffl: User name recovery";
 	public static final String EMAIL_BODY_USERNAME_RECOVER    = "Your user name is: ";
 	public static final String EMAIL_WELCOME_SUBJECT          = "Welcome to the APCFFL";
-	public static final String EMAIL_WELCOME_MESSAGE          = "Welcome to the APCFFL (Academic Probation College Fantasy Football League). Remember, college football is always in season.";
+	public static final String EMAIL_WELCOME_MESSAGE          = "Welcome to the APCFFL (Academic Probation College Fantasy Football League). Remember, college football is always in season. A message has been sent to the administrator notifying that you have created this account.";
+	public static final String EMAIL_ADMIN_NEW_ACCOUNT_SUBJECT= "New account created.";
+	public static final String EMAIL_ADMIN_NEW_ACCOUNT_MESSAGE= "A new account has been created. username: %1, email: %2";
 	
 	// account management errors
 	

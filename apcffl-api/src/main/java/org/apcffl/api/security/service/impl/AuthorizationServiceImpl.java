@@ -1,8 +1,6 @@
 package org.apcffl.api.security.service.impl;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apcffl.api.bo.EmailManagerBo;
-import org.apcffl.api.bo.SessionManagerBo;
 import org.apcffl.api.constants.UIMessages;
 import org.apcffl.api.exception.SecurityException;
 import org.apcffl.api.persistence.model.OwnerModel;
@@ -12,6 +10,8 @@ import org.apcffl.api.persistence.repository.UserRepository;
 import org.apcffl.api.security.dto.PasswordResetRequest;
 import org.apcffl.api.security.dto.UserDto;
 import org.apcffl.api.security.service.AuthorizationService;
+import org.apcffl.api.service.manager.EmailManager;
+import org.apcffl.api.service.manager.SessionManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -25,11 +25,11 @@ public class AuthorizationServiceImpl implements AuthorizationService {
 	
 	private final UserRepository userRepository;
 	private final OwnerRepository ownerRepository;
-	private final EmailManagerBo emailManager;
-	private final SessionManagerBo sessionManager;
+	private final EmailManager emailManager;
+	private final SessionManager sessionManager;
 	
 	public AuthorizationServiceImpl(final UserRepository userRepository, final OwnerRepository ownerRepository,
-			final EmailManagerBo emailManager, final SessionManagerBo sessionManager) {
+			final EmailManager emailManager, final SessionManager sessionManager) {
 		
 		this.userRepository = userRepository;
 		this.ownerRepository = ownerRepository;

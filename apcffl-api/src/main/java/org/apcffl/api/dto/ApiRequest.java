@@ -4,6 +4,7 @@ public abstract class ApiRequest {
 	protected String userName;
 	protected String userGroupName;
 	protected String securityToken;
+	protected String leagueName;
 	
 	public String getUserName() {
 		return userName;
@@ -23,4 +24,11 @@ public abstract class ApiRequest {
 	public void setSecurityToken(String securityToken) {
 		this.securityToken = securityToken;
 	}
+	public String getLeagueName() {
+		return leagueName;
+	}
+	public void setLeagueName(String leagueName) {
+		this.leagueName = leagueName;
+	}
+	
 }

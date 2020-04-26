@@ -4,19 +4,12 @@ import org.apcffl.api.dto.ApiRequest;
 
 public class AccountRequest extends ApiRequest {
 
-	private String leagueName;
 	private String firstName;
 	private String lastName;
 	private String email1;
 	private String email2;
 	private String email3;
 	
-	public String getLeagueName() {
-		return leagueName;
-	}
-	public void setLeagueName(String leagueName) {
-		this.leagueName = leagueName;
-	}
 	public String getFirstName() {
 		return firstName;
 	}

@@ -9,10 +9,10 @@ import org.apcffl.api.admin.dto.AccountResponse;
 import org.apcffl.api.admin.dto.AllAccountsResponse;
 import org.apcffl.api.admin.dto.mapper.AdminMapper;
 import org.apcffl.api.admin.service.AdminService;
-import org.apcffl.api.bo.EmailManagerBo;
+import org.apcffl.api.config.EmailConfig;
 import org.apcffl.api.constants.UIMessages;
 import org.apcffl.api.dto.ErrorDto;
-import org.apcffl.api.exception.constants.ErrorCodeEnums;
+import static org.apcffl.api.exception.constants.Enums.ErrorCodeEnums.*;
 import org.apcffl.api.persistence.model.OwnerModel;
 import org.apcffl.api.persistence.model.UserGroupModel;
 import org.apcffl.api.persistence.model.UserModel;
@@ -21,6 +21,7 @@ import org.apcffl.api.persistence.repository.UserGroupRepository;
 import org.apcffl.api.persistence.repository.UserRepository;
 import org.apcffl.api.security.constants.SecurityConstants;
 import org.apcffl.api.service.ApcfflService;
+import org.apcffl.api.service.manager.EmailManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -35,15 +36,18 @@ public class AdminServiceImpl extends ApcfflService implements AdminService {
 	private final OwnerRepository ownerRepository;
 	private final UserRepository userRepository;
 	private final UserGroupRepository userGroupRepository;
-	private final EmailManagerBo emailManager;
+	private final EmailManager emailManager;
+	private final EmailConfig emailConfig;
 	
 	public AdminServiceImpl(final OwnerRepository ownerRepository, final UserRepository userRepository,
-			final UserGroupRepository userGroupRepository, final EmailManagerBo emailManager) {
+			final UserGroupRepository userGroupRepository, final EmailManager emailManager,
+			final EmailConfig emailConfig) {
 		
 		this.ownerRepository = ownerRepository;
 		this.userRepository = userRepository;
 		this.userGroupRepository = userGroupRepository;
 		this.emailManager = emailManager;
+		this.emailConfig = emailConfig;
 	}
 
 	@Override
@@ -58,7 +62,7 @@ public class AdminServiceImpl extends ApcfflService implements AdminService {
 		OwnerModel owner = ownerRepository.findByUserName(request.getUserName());
 		if (owner == null) {
 			response.setError( 
-					new ErrorDto(ErrorCodeEnums.AccountError.toString(), UIMessages.ACCOUNT_NOT_FOUND));
+					new ErrorDto(AccountError.toString(), UIMessages.ACCOUNT_NOT_FOUND));
 			LOG.error(response.getError().getMessage());
 			return response;
 		}
@@ -109,6 +113,12 @@ public class AdminServiceImpl extends ApcfflService implements AdminService {
 				request.getEmail1(), 
 				UIMessages.EMAIL_WELCOME_SUBJECT, 
 				UIMessages.EMAIL_WELCOME_MESSAGE);
+		
+		// notify the admin a new account has been created
+		emailManager.sendEmail(
+				emailConfig.getEmailUser(), 
+				UIMessages.EMAIL_ADMIN_NEW_ACCOUNT_SUBJECT, 
+				UIMessages.EMAIL_ADMIN_NEW_ACCOUNT_MESSAGE);
 		
 		return UIMessages.MSG_GENERIC_CHECK_EMAIL;
 	}

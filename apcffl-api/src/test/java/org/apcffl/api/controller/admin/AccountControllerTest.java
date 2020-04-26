@@ -4,8 +4,8 @@ import org.apcffl.ApcfflTest;
 import org.apcffl.api.admin.dto.AccountRequest;
 import org.apcffl.api.admin.dto.AccountResponse;
 import org.apcffl.api.admin.service.AdminService;
-import org.apcffl.api.bo.SessionManagerBo;
 import org.apcffl.api.exception.PersistenceException;
+import org.apcffl.api.service.manager.SessionManager;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -47,7 +47,7 @@ public class AccountControllerTest {
 	AdminService service;
 	
 	@MockBean
-	SessionManagerBo sessionManager;
+	SessionManager sessionManager;
 	
 	private ObjectMapper objectMapper;
 	

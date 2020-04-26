@@ -1,7 +1,7 @@
 package org.apcffl.api.persistence.model;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import java.util.Date;
 
@@ -530,5 +530,10 @@ public class OwnerModelTest {
 		OwnerModel other = model;
 		
 		assertEquals(true, model.equals(other));
+	}
+	
+	@Test
+	public void verify_hash() {
+		assertTrue(model.hashCode() != 0 );
 	}
 }

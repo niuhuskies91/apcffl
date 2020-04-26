@@ -1,4 +1,4 @@
-package org.apcffl.api.bo;
+package org.apcffl.api.service.manager;
 
 import org.apcffl.api.exception.EmailException;
 import org.slf4j.Logger;
@@ -8,13 +8,13 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Component;
 
 @Component
-public class EmailManagerBo {
+public class EmailManager {
 
-	private static final Logger LOG = LoggerFactory.getLogger(EmailManagerBo.class);
+	private static final Logger LOG = LoggerFactory.getLogger(EmailManager.class);
 
     private final JavaMailSender javaMailSender;
     
-    public EmailManagerBo(final JavaMailSender javaMailSender) {
+    public EmailManager(final JavaMailSender javaMailSender) {
     	this.javaMailSender = javaMailSender;
     }
 	

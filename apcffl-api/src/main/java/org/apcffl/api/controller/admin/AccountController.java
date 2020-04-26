@@ -3,10 +3,10 @@ package org.apcffl.api.controller.admin;
 import org.apcffl.api.admin.dto.AccountRequest;
 import org.apcffl.api.admin.dto.AccountResponse;
 import org.apcffl.api.admin.service.AdminService;
-import org.apcffl.api.bo.SessionManagerBo;
 import org.apcffl.api.controller.ApcfflController;
 import org.apcffl.api.controller.admin.handler.AdminExceptionHandler;
 import org.apcffl.api.dto.ErrorDto;
+import org.apcffl.api.service.manager.SessionManager;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -25,7 +25,7 @@ public class AccountController extends ApcfflController implements AdminExceptio
 	
 	private final AdminService service;
 	
-	public AccountController(final AdminService service, final SessionManagerBo sessionManager) {
+	public AccountController(final AdminService service, final SessionManager sessionManager) {
 		this.service = service;
 		this.sessionManager = sessionManager;
 	}

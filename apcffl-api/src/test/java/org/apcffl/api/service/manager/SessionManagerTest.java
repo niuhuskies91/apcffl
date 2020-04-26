@@ -1,4 +1,4 @@
-package org.apcffl.api.bo;
+package org.apcffl.api.service.manager;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -6,6 +6,7 @@ import static org.junit.Assert.assertTrue;
 
 import org.apcffl.ApcfflTest;
 import org.apcffl.api.config.GeneralPropertiesConfig;
+import org.apcffl.api.service.manager.SessionManager;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -22,43 +23,43 @@ import ch.qos.logback.classic.Logger;
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest(classes = {GeneralPropertiesConfig.class})
 @ActiveProfiles("local")
-public class SessionManagerBoTest {
+public class SessionManagerTest {
 	
 	@Autowired
 	private GeneralPropertiesConfig config;
 
-	private SessionManagerBo bo;
+	private SessionManager manager;
 	
 	@Before
 	public void setUp() {
 		MockitoAnnotations.initMocks(this);
 		
-		bo = new SessionManagerBo(config);
+		manager = new SessionManager(config);
 		
-		bo.init();
+		manager.init();
 		
-		Logger root = (Logger) LoggerFactory.getLogger(SessionManagerBo.class);
+		Logger root = (Logger) LoggerFactory.getLogger(SessionManager.class);
 		root.setLevel(Level.DEBUG);
 	}
 	
 	@Test
 	public void verify_generatePasswordToken() {
 		
-		int token = bo.generatePasswordResetToken(ApcfflTest.USER_NAME);
+		int token = manager.generatePasswordResetToken(ApcfflTest.USER_NAME);
 		
-		assertTrue(bo.isValidPasswordResetToken(ApcfflTest.USER_NAME, token));
-		assertFalse(bo.isValidPasswordResetToken(ApcfflTest.USER_NAME, 0));
-		assertFalse(bo.isValidPasswordResetToken("invalid", token));
+		assertTrue(manager.isValidPasswordResetToken(ApcfflTest.USER_NAME, token));
+		assertFalse(manager.isValidPasswordResetToken(ApcfflTest.USER_NAME, 0));
+		assertFalse(manager.isValidPasswordResetToken("invalid", token));
 	}
 	
 	@Test
 	public void verify_generateTokenForUser() {
 		
-		String token = bo.generateTokenForUser(ApcfflTest.USER_NAME);
+		String token = manager.generateTokenForUser(ApcfflTest.USER_NAME);
 		
-		assertTrue(bo.isValidSessionToken(ApcfflTest.USER_NAME, token));
-		assertFalse(bo.isValidSessionToken(ApcfflTest.USER_NAME, "invalid"));
-		assertFalse(bo.isValidSessionToken("invalid", token));
+		assertTrue(manager.isValidSessionToken(ApcfflTest.USER_NAME, token));
+		assertFalse(manager.isValidSessionToken(ApcfflTest.USER_NAME, "invalid"));
+		assertFalse(manager.isValidSessionToken("invalid", token));
 	}
 	
 	@Test
@@ -68,14 +69,14 @@ public class SessionManagerBoTest {
 		
 		Long originalExp = config.getSecurityTokenExp();
 
-		String token = bo.generateTokenForUser(ApcfflTest.USER_NAME);
+		String token = manager.generateTokenForUser(ApcfflTest.USER_NAME);
 		
 		config.setSecurityTokenExp(100L);
 		Thread.sleep(100);
 		
 		// invoke method
 		
-		boolean flag = bo.isValidSessionToken(ApcfflTest.USER_NAME, token);
+		boolean flag = manager.isValidSessionToken(ApcfflTest.USER_NAME, token);
 		
 		// verify results
 		
@@ -91,14 +92,14 @@ public class SessionManagerBoTest {
 		
 		Long originalExp = config.getSecurityPassResetTokenExp();
 
-		int token = bo.generatePasswordResetToken(ApcfflTest.USER_NAME);
+		int token = manager.generatePasswordResetToken(ApcfflTest.USER_NAME);
 		
 		config.setSecurityPassResetTokenExp(100L);
 		Thread.sleep(100);
 		
 		// invoke method
 		
-		boolean flag = bo.isValidPasswordResetToken(ApcfflTest.USER_NAME, token);
+		boolean flag = manager.isValidPasswordResetToken(ApcfflTest.USER_NAME, token);
 		
 		// verify results
 		
