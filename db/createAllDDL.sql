@@ -145,7 +145,7 @@ on update no action;
 
 create table apcffl_phoenix.OWNER (
        OWNER_ID             bigint (15) not null auto_increment primary key,
-       LEAGUE_ID            bigint (15) not null,
+       LEAGUE_ID            bigint (15),
        FIRST_NAME           varchar(20) not null,
        LAST_NAME            varchar(25) not null,
        EMAIL1               varchar(60) not null,
@@ -511,6 +511,7 @@ create table apcffl_phoenix.ANNOUNCEMENTS (
 create table apcffl_phoenix.MESSAGE_BOARD (
        MESSAGE_ID           bigint (15) not null auto_increment primary key,
        OWNER_ID             bigint (15) not null,
+       LEAGUE_ID            bigint (15) not null,
        CREATE_DATE          datetime not null,
        ARCHIVE_DATE         datetime,
        MESSAGE              varchar(250) not null
@@ -519,6 +520,12 @@ create table apcffl_phoenix.MESSAGE_BOARD (
 alter table apcffl_phoenix.MESSAGE_BOARD
 add foreign key fk_owner_message_board(OWNER_ID)
 references apcffl_phoenix.OWNER(OWNER_ID)
+on delete no action
+on update no action;
+
+alter table apcffl_phoenix.MESSAGE_BOARD
+add foreign key fk_league_message_board(LEAGUE_ID)
+references apcffl_phoenix.LEAGUE(LEAGUE_ID)
 on delete no action
 on update no action;
 
