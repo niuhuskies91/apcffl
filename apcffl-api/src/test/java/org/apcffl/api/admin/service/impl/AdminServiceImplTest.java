@@ -87,6 +87,38 @@ public class AdminServiceImplTest {
 	}
 	
 	@Test
+	public void verify_accountRetrieval_findByUserNameException() {
+
+		// prepare test data
+		
+		AccountRequest request = new AccountRequest();
+		request.setUserGroupName(SecurityConstants.USER_GROUP_OWNER);
+		
+		request.setUserName(ApcfflTest.USER_NAME);
+		
+		when(ownerRepository.findByUserName(anyString())).thenThrow(new NullPointerException("error"));
+		
+		// invoke
+		
+		AccountResponse response = service.accountRetrieval(request);
+		
+		// verify results
+
+		assertEquals(AccountError.toString(), response.getError().getErrorCode());
+		assertEquals(UIMessages.ERROR_GENERAL_INTERNAL_EXCEPTION, response.getError().getMessage());
+		assertEquals(null, response.getActiveFlag());
+		assertEquals(null, response.getEmail1());
+		assertEquals(null, response.getEmail2());
+		assertEquals(null, response.getEmail3());
+		assertEquals(null, response.getFirstName());
+		assertEquals(null, response.getLastName());
+		assertEquals(null, response.getLeagueName());
+		
+		verify(ownerRepository, times(1)).findByUserName(userNameCaptor.capture());
+		assertEquals(ApcfflTest.USER_NAME, userNameCaptor.getValue());
+	}
+	
+	@Test
 	public void verify_accountRetrieval_notValidGroupTier() {
 
 		// prepare test data
@@ -119,7 +151,7 @@ public class AdminServiceImplTest {
 	}
 	
 	@Test
-	public void testAccountRetrieval_accountNotExist() {
+	public void verify_accountRetrieval_accountNotExist() {
 
 		// prepare test data
 		
@@ -184,6 +216,29 @@ public class AdminServiceImplTest {
 	}
 	
 	@Test
+	public void verify_accountRetrievalAll_findAllException() {
+
+		// prepare test data
+		
+		AccountRequest request = new AccountRequest();
+		request.setUserGroupName(SecurityConstants.USER_GROUP_ADMIN);
+		
+		when(ownerRepository.findAll()).thenThrow(new NullPointerException("error"));
+		
+		// invoke
+		
+		AllAccountsResponse response = service.accountRetrievalAll(request);
+		
+		// verify results
+
+		assertEquals(AccountError.toString(), response.getError().getErrorCode());
+		assertEquals(UIMessages.ERROR_GENERAL_INTERNAL_EXCEPTION, response.getError().getMessage());
+		assertEquals(null, response.getAccounts());
+		
+		verify(ownerRepository, times(1)).findAll();
+	}
+	
+	@Test
 	public void verify_accountRetrievalAll_notValidGroupTier() {
 
 		// prepare test data
@@ -238,11 +293,169 @@ public class AdminServiceImplTest {
 	}
 	
 	@Test
+	public void verify_accountCreate_findByUserGroupNameException() {
+		
+		// prepare test data
+		
+		AccountCreateRequest request = ApcfflTest.buildAccountCreateRequest();
+		
+		when(userGroupRepository.findByUserGroupName(anyString()))
+		.thenThrow(new NullPointerException("error"));
+		
+		UserModel user = ApcfflTest.buildUserModel();
+		when(userRepository.save(any())).thenReturn(user);
+		
+		when(ownerRepository.save(any())).thenReturn(new OwnerModel());
+		
+		doNothing().when(emailManager).sendEmail(anyString(), anyString(), anyString());
+		
+		// invoke
+		
+		String result = service.accountCreate(request);
+		
+		// verify results
+		
+		assertEquals(UIMessages.ERROR_GENERAL_INTERNAL_EXCEPTION, result);
+		
+		verify(userGroupRepository, times(1)).findByUserGroupName(userNameCaptor.capture());
+		assertEquals(SecurityConstants.USER_GROUP_GUEST, userNameCaptor.getValue());
+		
+		verify(userRepository, never()).save(userCaptor.capture());
+		
+		verify(ownerRepository, never()).save(ownerCaptor.capture());
+	}
+	
+	@Test
+	public void verify_accountCreate_userSaveException() {
+		
+		// prepare test data
+		
+		AccountCreateRequest request = ApcfflTest.buildAccountCreateRequest();
+		
+		UserGroupModel userGroup = 
+				ApcfflTest.buildUserGroup(ApcfflTest.USER_GROUP_GUEST_ID, 
+				ApcfflTest.USER_GROUP_GUEST);
+		when(userGroupRepository.findByUserGroupName(anyString()))
+		.thenReturn(userGroup);
+		
+		when(userRepository.save(any())).thenThrow(new NullPointerException("error"));
+		
+		when(ownerRepository.save(any())).thenReturn(new OwnerModel());
+		
+		doNothing().when(emailManager).sendEmail(anyString(), anyString(), anyString());
+		
+		// invoke
+		
+		String result = service.accountCreate(request);
+		
+		// verify results
+		
+		assertEquals(UIMessages.ERROR_GENERAL_INTERNAL_EXCEPTION, result);
+		
+		verify(userGroupRepository, times(1)).findByUserGroupName(userNameCaptor.capture());
+		assertEquals(SecurityConstants.USER_GROUP_GUEST, userNameCaptor.getValue());
+		
+		verify(userRepository, times(1)).save(userCaptor.capture());
+		UserModel resultUser = userCaptor.getValue();
+		assertEquals(ApcfflTest.PASSWORD, resultUser.getPassword());
+		assertEquals(ApcfflTest.USER_NAME, resultUser.getUserName());
+		assertEquals(ApcfflTest.USER_GROUP_GUEST_ID, resultUser.getUserGroupModel().getUserGroupId());
+		assertEquals(ApcfflTest.USER_GROUP_GUEST, resultUser.getUserGroupModel().getUserGroupName());
+		
+		verify(ownerRepository, never()).save(ownerCaptor.capture());
+	}
+	
+	@Test
+	public void verify_accountCreate_userNameAlreadyExists() {
+		
+		// prepare test data
+		
+		AccountCreateRequest request = ApcfflTest.buildAccountCreateRequest();
+		
+		when(userRepository.findByUserName(anyString())).thenReturn(ApcfflTest.buildUserModel());
+		when(ownerRepository.findByEmail(anyString())).thenReturn(null);
+		
+		UserGroupModel userGroup = 
+				ApcfflTest.buildUserGroup(ApcfflTest.USER_GROUP_GUEST_ID, 
+				ApcfflTest.USER_GROUP_GUEST);
+		when(userGroupRepository.findByUserGroupName(anyString()))
+		.thenReturn(userGroup);
+		
+		UserModel user = ApcfflTest.buildUserModel();
+		when(userRepository.save(any())).thenReturn(user);
+		
+		when(ownerRepository.save(any())).thenReturn(new OwnerModel());
+		
+		doNothing().when(emailManager).sendEmail(anyString(), anyString(), anyString());
+		
+		// invoke
+		
+		String result = service.accountCreate(request);
+		
+		// verify results
+		
+		assertEquals(UIMessages.ERROR_USERNAME_OR_PRIMARY_EMAIL_EXISTS_ON_CREATE, result);
+		
+		verify(userRepository, times(1)).findByUserName(userNameCaptor.capture());
+		assertEquals(ApcfflTest.USER_NAME, userNameCaptor.getValue());
+		
+		verify(userGroupRepository, never()).findByUserGroupName(userNameCaptor.capture());
+		
+		verify(userRepository, never()).save(userCaptor.capture());
+		
+		verify(ownerRepository, never()).save(ownerCaptor.capture());
+	}
+	
+	@Test
+	public void verify_accountCreate_primaryEmailAlreadyExists() {
+		
+		// prepare test data
+		
+		AccountCreateRequest request = ApcfflTest.buildAccountCreateRequest();
+		
+		when(userRepository.findByUserName(anyString())).thenReturn(null);
+		when(ownerRepository.findByEmail(anyString())).thenReturn(ApcfflTest.buildOwnerModel());
+		
+		UserGroupModel userGroup = 
+				ApcfflTest.buildUserGroup(ApcfflTest.USER_GROUP_GUEST_ID, 
+				ApcfflTest.USER_GROUP_GUEST);
+		when(userGroupRepository.findByUserGroupName(anyString()))
+		.thenReturn(userGroup);
+		
+		UserModel user = ApcfflTest.buildUserModel();
+		when(userRepository.save(any())).thenReturn(user);
+		
+		when(ownerRepository.save(any())).thenReturn(new OwnerModel());
+		
+		doNothing().when(emailManager).sendEmail(anyString(), anyString(), anyString());
+		
+		// invoke
+		
+		String result = service.accountCreate(request);
+		
+		// verify results
+		
+		assertEquals(UIMessages.ERROR_USERNAME_OR_PRIMARY_EMAIL_EXISTS_ON_CREATE, result);
+		
+		verify(userRepository, times(1)).findByUserName(userNameCaptor.capture());
+		assertEquals(ApcfflTest.USER_NAME, userNameCaptor.getValue());
+		
+		verify(userGroupRepository, never()).findByUserGroupName(userNameCaptor.capture());
+		
+		verify(userRepository, never()).save(userCaptor.capture());
+		
+		verify(ownerRepository, never()).save(ownerCaptor.capture());
+	}
+	
+	@Test
 	public void verify_accountCreate() {
 		
 		// prepare test data
 		
 		AccountCreateRequest request = ApcfflTest.buildAccountCreateRequest();
+		
+		when(userRepository.findByUserName(anyString())).thenReturn(null);
+		when(ownerRepository.findByEmail(anyString())).thenReturn(null);
 		
 		UserGroupModel userGroup = 
 				ApcfflTest.buildUserGroup(ApcfflTest.USER_GROUP_GUEST_ID, 
@@ -264,6 +477,9 @@ public class AdminServiceImplTest {
 		// verify results
 		
 		assertEquals(UIMessages.MSG_GENERIC_CHECK_EMAIL, result);
+		
+		verify(userRepository, times(1)).findByUserName(userNameCaptor.capture());
+		assertEquals(ApcfflTest.USER_NAME, userNameCaptor.getValue());
 		
 		verify(userGroupRepository, times(1)).findByUserGroupName(userNameCaptor.capture());
 		assertEquals(SecurityConstants.USER_GROUP_GUEST, userNameCaptor.getValue());
@@ -290,6 +506,101 @@ public class AdminServiceImplTest {
 	}
 	
 	@Test
+	public void verify_accountUpdate_findByUserNameException() {
+		
+		//prepare test data
+		
+		AccountRequest request = new AccountRequest();
+		request.setUserGroupName(SecurityConstants.USER_GROUP_OWNER);
+		
+		request.setUserName(ApcfflTest.USER_NAME);
+		request.setEmail1(ApcfflTest.OWNER_EMAIL1 + "request");
+		request.setEmail2(ApcfflTest.OWNER_EMAIL2 + "request");
+		request.setEmail3(ApcfflTest.OWNER_EMAIL3 + "request");
+		request.setFirstName(ApcfflTest.OWNER_FIRST_NAME + "request");
+		request.setLastName(ApcfflTest.OWNER_LAST_NAME + "request");
+		
+		when(ownerRepository.findByUserName(anyString())).thenThrow(new NullPointerException("error"));
+		
+		when(ownerRepository.save(any())).thenReturn(new OwnerModel());
+		
+		// invoke
+		
+		AccountResponse response = service.accountUpdate(request);
+		
+		// verify results
+
+		assertEquals(AccountError.toString(), response.getError().getErrorCode());
+		assertEquals(UIMessages.ERROR_GENERAL_INTERNAL_EXCEPTION, response.getError().getMessage());
+		assertEquals(null, response.getActiveFlag());
+		assertEquals(null, response.getEmail1());
+		assertEquals(null, response.getEmail2());
+		assertEquals(null, response.getEmail3());
+		assertEquals(null, response.getFirstName());
+		assertEquals(null, response.getLastName());
+		assertEquals(null, response.getLeagueName());
+		
+		verify(ownerRepository, times(1)).findByUserName(userNameCaptor.capture());
+		assertEquals(ApcfflTest.USER_NAME, userNameCaptor.getValue());
+
+		verify(ownerRepository, never()).save(ownerCaptor.capture());
+		
+	}
+	
+	@Test
+	public void verify_accountUpdate_saveException() {
+		
+		//prepare test data
+		
+		AccountRequest request = new AccountRequest();
+		request.setUserGroupName(SecurityConstants.USER_GROUP_OWNER);
+		
+		request.setUserName(ApcfflTest.USER_NAME);
+		request.setEmail1(ApcfflTest.OWNER_EMAIL1 + "request");
+		request.setEmail2(ApcfflTest.OWNER_EMAIL2 + "request");
+		request.setEmail3(ApcfflTest.OWNER_EMAIL3 + "request");
+		request.setFirstName(ApcfflTest.OWNER_FIRST_NAME + "request");
+		request.setLastName(ApcfflTest.OWNER_LAST_NAME + "request");
+		
+		OwnerModel mockOwner = ApcfflTest.buildOwnerModel();
+		when(ownerRepository.findByUserName(anyString())).thenReturn(mockOwner);
+		
+		when(ownerRepository.save(any())).thenThrow(new NullPointerException("error"));
+		
+		// invoke
+		
+		AccountResponse response = service.accountUpdate(request);
+		
+		// verify results
+		
+		assertEquals(AccountError.toString(), response.getError().getErrorCode());
+		assertEquals(UIMessages.ERROR_GENERAL_INTERNAL_EXCEPTION, response.getError().getMessage());
+		assertEquals(null, response.getActiveFlag());
+		assertEquals(null, response.getEmail1());
+		assertEquals(null, response.getEmail2());
+		assertEquals(null, response.getEmail3());
+		assertEquals(null, response.getFirstName());
+		assertEquals(null, response.getLastName());
+		assertEquals(null, response.getLeagueName());
+		
+		verify(ownerRepository, times(1)).findByUserName(userNameCaptor.capture());
+		assertEquals(ApcfflTest.USER_NAME, userNameCaptor.getValue());
+
+		verify(ownerRepository, times(1)).save(ownerCaptor.capture());
+		OwnerModel resultOwner = ownerCaptor.getValue();
+		assertNotNull(resultOwner.getCreateDate());
+		assertEquals(request.getEmail1(), resultOwner.getEmail1());
+		assertEquals(request.getEmail2(), resultOwner.getEmail2());
+		assertEquals(request.getEmail3(), resultOwner.getEmail3());
+		assertEquals(request.getFirstName(), resultOwner.getFirstName());
+		assertEquals(request.getLastName(), resultOwner.getLastName());
+		assertNotNull(resultOwner.getUpdateDate());
+		assertEquals(ApcfflTest.PASSWORD, resultOwner.getUserModel().getPassword());
+		assertEquals(ApcfflTest.USER_NAME, resultOwner.getUserModel().getUserName());
+		
+	}
+	
+	@Test
 	public void verify_accountUpdate_notValidGroupTier() {
 		
 		//prepare test data
@@ -312,8 +623,18 @@ public class AdminServiceImplTest {
 		
 		assertEquals(UserGroupAccessError.toString(), response.getError().getErrorCode());
 		assertEquals(UIMessages.ERROR_USER_GROUP_ACCESS, response.getError().getMessage());
+		assertEquals(null, response.getActiveFlag());
+		assertEquals(null, response.getEmail1());
+		assertEquals(null, response.getEmail2());
+		assertEquals(null, response.getEmail3());
+		assertEquals(null, response.getFirstName());
+		assertEquals(null, response.getLastName());
+		assertEquals(null, response.getLeagueName());
+
 		
 		verify(ownerRepository, never()).findByUserName(userNameCaptor.capture());
+
+		verify(ownerRepository, never()).save(ownerCaptor.capture());
 	}
 	
 	@Test
@@ -343,6 +664,13 @@ public class AdminServiceImplTest {
 		// verify results
 		
 		assertEquals(null, response.getError());
+		assertEquals(null, response.getActiveFlag());
+		assertEquals(null, response.getEmail1());
+		assertEquals(null, response.getEmail2());
+		assertEquals(null, response.getEmail3());
+		assertEquals(null, response.getFirstName());
+		assertEquals(null, response.getLastName());
+		assertEquals(null, response.getLeagueName());
 		
 		verify(ownerRepository, times(1)).findByUserName(userNameCaptor.capture());
 		assertEquals(ApcfflTest.USER_NAME, userNameCaptor.getValue());

@@ -9,6 +9,7 @@ public class Enums {
 		AdminError("AdminError"), 
 		AuthorizationError("AuthorizationError"), 
 		EmailSenderError("EmailSenderError"), 
+		LeagueError("LeagueError"),
 		LeagueNotAssignedError("LeagueNotAssignedError"), 
 		SessionTokenExpired("SessionTokenExpired"),
 		UserGroupAccessError("UserGroupAccessError");

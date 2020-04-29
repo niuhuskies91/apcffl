@@ -1,10 +1,12 @@
 package org.apcffl.api.controller.admin;
 
 import org.apcffl.ApcfflTest;
+import org.apcffl.api.admin.dto.AccountCreateRequest;
 import org.apcffl.api.admin.dto.AccountRequest;
 import org.apcffl.api.admin.dto.AccountResponse;
+import org.apcffl.api.admin.dto.AllAccountsResponse;
 import org.apcffl.api.admin.service.AdminService;
-import org.apcffl.api.exception.PersistenceException;
+import org.apcffl.api.constants.UIMessages;
 import org.apcffl.api.service.manager.SessionManager;
 import org.junit.Before;
 import org.junit.Test;
@@ -38,7 +40,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @WebMvcTest(value = AccountController.class)
 public class AccountControllerTest {
 
-	private static final String ACCOUNT_RETRIEVAL_URL = "/account/accountRetrieval";
+	private static final String ACCOUNT_RETRIEVAL_URL     = "/account/accountRetrieval";
+	private static final String ACCOUNT_RETRIEVAL_ALL_URL = "/account/accountRetrievalAll";
+	private static final String ACCOUNT_CREATION_URL      = "/account/accountCreation";
+	private static final String ACCOUNT_UPDATE_URL        = "/account/accountUpdate";
 
 	@Autowired
 	private MockMvc mockMvc;
@@ -59,6 +64,9 @@ public class AccountControllerTest {
 	
 	@Captor
 	private ArgumentCaptor<AccountRequest> accountRequestCaptor;
+	
+	@Captor
+	private ArgumentCaptor<AccountCreateRequest> accountCreateRequestCaptor;
  
     @Before
     public void setUp() {
@@ -68,41 +76,6 @@ public class AccountControllerTest {
 		
 		sessionManager.init();
 		when(sessionManager.isValidSessionToken(anyString(), anyString())).thenReturn(true);
-    }
-    
-    @Test
-    public void verify_accountRetrieval_persistenceException() throws Exception {
-    	
-    	// prepare test data
-    	
-		AccountRequest request = ApcfflTest.buildAccountRequest();
-
-		when(service.accountRetrieval(any())).thenThrow(new PersistenceException("error1"));
-		
-		// perform the mock REST call
-		
-		String jsonRequest = objectMapper.writeValueAsString(request);
-		
-		mockMvc.perform(
-				post(ACCOUNT_RETRIEVAL_URL)
-				.contentType(MediaType.APPLICATION_JSON)
-				.content(jsonRequest)
-				.accept(MediaType.APPLICATION_JSON))
-			.andDo(print())
-			.andExpect(status().isInternalServerError());
-    	
-    	// verify results
-    	
-		verify(sessionManager, times(1))
-		.isValidSessionToken(userNameCaptor.capture(), tokenCaptor.capture());
-		assertEquals(ApcfflTest.USER_NAME, userNameCaptor.getValue());
-		assertEquals(ApcfflTest.TEST_TOKEN, tokenCaptor.getValue());
-		
-    	verify(service, times(1)).accountRetrieval(accountRequestCaptor.capture());
-    	AccountRequest verifyRequest = accountRequestCaptor.getValue();
-    	assertEquals(ApcfflTest.USER_GROUP_OWNER, verifyRequest.getUserGroupName());
-    	assertEquals(ApcfflTest.USER_NAME, verifyRequest.getUserName());
-    	assertEquals(ApcfflTest.TEST_TOKEN, verifyRequest.getSecurityToken());
     }
     
     @Test
@@ -137,7 +110,7 @@ public class AccountControllerTest {
     }
 	
 	@Test
-	public void testAccountRetrieval() throws Exception {
+	public void verify_AccountRetrieval() throws Exception {
 		
 		// prepare test data
 		
@@ -172,6 +145,147 @@ public class AccountControllerTest {
 		assertEquals(ApcfflTest.TEST_TOKEN, tokenCaptor.getValue());
 		
     	verify(service, times(1)).accountRetrieval(accountRequestCaptor.capture());
+    	AccountRequest verifyRequest = accountRequestCaptor.getValue();
+    	assertEquals(ApcfflTest.USER_GROUP_OWNER, verifyRequest.getUserGroupName());
+    	assertEquals(ApcfflTest.USER_NAME, verifyRequest.getUserName());
+    	assertEquals(ApcfflTest.TEST_TOKEN, verifyRequest.getSecurityToken());
+	}
+    
+    @Test
+    public void verify_accountRetrievalAll_invalidSessionToken() throws Exception {
+    	
+    	// prepare test data
+    	
+		AccountRequest request = ApcfflTest.buildAccountRequest();
+
+		when(sessionManager.isValidSessionToken(anyString(), anyString())).thenReturn(false);
+		
+		// perform the mock REST call
+		
+		String jsonRequest = objectMapper.writeValueAsString(request);
+		
+		mockMvc.perform(
+				post(ACCOUNT_RETRIEVAL_ALL_URL)
+				.contentType(MediaType.APPLICATION_JSON)
+				.content(jsonRequest)
+				.accept(MediaType.APPLICATION_JSON))
+			.andDo(print())
+			.andExpect(status().isUnauthorized());
+    	
+    	// verify results
+    	
+		verify(sessionManager, times(1))
+		.isValidSessionToken(userNameCaptor.capture(), tokenCaptor.capture());
+		assertEquals(ApcfflTest.USER_NAME, userNameCaptor.getValue());
+		assertEquals(ApcfflTest.TEST_TOKEN, tokenCaptor.getValue());
+    	
+    	verify(service, never()).accountRetrievalAll(accountRequestCaptor.capture());
+    }
+	
+	@Test
+	public void verify_AccountRetrievalAll() throws Exception {
+		
+		// prepare test data
+		
+		AccountRequest request = ApcfflTest.buildAccountRequest();
+		AllAccountsResponse mockResponse = ApcfflTest.buildAllAccountsResponse();
+		
+		when(service.accountRetrievalAll(any())).thenReturn(mockResponse);
+		
+		// perform the mock REST call
+		
+		String jsonRequest = objectMapper.writeValueAsString(request);
+		
+		mockMvc.perform(
+				post(ACCOUNT_RETRIEVAL_ALL_URL)
+				.contentType(MediaType.APPLICATION_JSON)
+				.content(jsonRequest)
+				.accept(MediaType.APPLICATION_JSON))
+			.andDo(print())
+			.andExpect(status().isOk())
+			.andExpect(jsonPath("$.accounts[0].email1").value(ApcfflTest.OWNER_EMAIL1))
+			.andExpect(jsonPath("$.accounts[0].email2").value(ApcfflTest.OWNER_EMAIL2))
+			.andExpect(jsonPath("$.accounts[0].email3").value(ApcfflTest.OWNER_EMAIL3))
+			.andExpect(jsonPath("$.accounts[0].firstName").value(ApcfflTest.OWNER_FIRST_NAME))
+			.andExpect(jsonPath("$.accounts[0].lastName").value(ApcfflTest.OWNER_LAST_NAME))
+			.andExpect(jsonPath("$.accounts[0].leagueName").value(ApcfflTest.LEAGUE_1_NAME));
+    	
+    	// verify results
+    	
+		verify(sessionManager, times(1))
+		.isValidSessionToken(userNameCaptor.capture(), tokenCaptor.capture());
+		assertEquals(ApcfflTest.USER_NAME, userNameCaptor.getValue());
+		assertEquals(ApcfflTest.TEST_TOKEN, tokenCaptor.getValue());
+		
+    	verify(service, times(1)).accountRetrievalAll(accountRequestCaptor.capture());
+    	AccountRequest verifyRequest = accountRequestCaptor.getValue();
+    	assertEquals(ApcfflTest.USER_GROUP_OWNER, verifyRequest.getUserGroupName());
+    	assertEquals(ApcfflTest.USER_NAME, verifyRequest.getUserName());
+    	assertEquals(ApcfflTest.TEST_TOKEN, verifyRequest.getSecurityToken());
+	}
+	
+	@Test
+	public void verify_accountCreation() throws Exception {
+		
+		// prepare test data
+		
+		AccountCreateRequest request = 
+				new AccountCreateRequest(ApcfflTest.USER_NAME, ApcfflTest.PASSWORD);
+		
+		when(service.accountCreate(any())).thenReturn(UIMessages.MSG_GENERIC_CHECK_EMAIL);
+		
+		// perform the mock REST call
+		
+		String jsonRequest = objectMapper.writeValueAsString(request);
+		
+		mockMvc.perform(
+				post(ACCOUNT_CREATION_URL)
+				.contentType(MediaType.APPLICATION_JSON)
+				.content(jsonRequest)
+				.accept(MediaType.APPLICATION_JSON))
+			.andDo(print())
+			.andExpect(status().isOk())
+			.andExpect(jsonPath("$").value(UIMessages.MSG_GENERIC_CHECK_EMAIL));
+    	
+    	// verify results
+		
+    	verify(service, times(1)).accountCreate(accountCreateRequestCaptor.capture());
+    	AccountCreateRequest verifyRequest = accountCreateRequestCaptor.getValue();
+    	assertEquals(ApcfflTest.USER_NAME, verifyRequest.getUserName());
+    	assertEquals(ApcfflTest.PASSWORD, verifyRequest.getPassword());
+	}
+	
+	@Test
+	public void verify_accountUpdate() throws Exception {
+		
+		// prepare test data
+		
+		AccountRequest request = ApcfflTest.buildAccountRequest();
+		
+		AccountResponse mockResponse = ApcfflTest.buildAccountResponse();
+		when(service.accountUpdate(any())).thenReturn(mockResponse);
+		
+		// perform the mock REST call
+		
+		String jsonRequest = objectMapper.writeValueAsString(request);
+		
+		mockMvc.perform(
+				post(ACCOUNT_UPDATE_URL)
+				.contentType(MediaType.APPLICATION_JSON)
+				.content(jsonRequest)
+				.accept(MediaType.APPLICATION_JSON))
+			.andDo(print())
+			.andExpect(status().isOk())
+			.andExpect(jsonPath("$.email1").value(ApcfflTest.OWNER_EMAIL1))
+			.andExpect(jsonPath("$.email2").value(ApcfflTest.OWNER_EMAIL2))
+			.andExpect(jsonPath("$.email3").value(ApcfflTest.OWNER_EMAIL3))
+			.andExpect(jsonPath("$.firstName").value(ApcfflTest.OWNER_FIRST_NAME))
+			.andExpect(jsonPath("$.lastName").value(ApcfflTest.OWNER_LAST_NAME))
+			.andExpect(jsonPath("$.leagueName").value(ApcfflTest.LEAGUE_1_NAME));
+    	
+    	// verify results
+		
+    	verify(service, times(1)).accountUpdate(accountRequestCaptor.capture());
     	AccountRequest verifyRequest = accountRequestCaptor.getValue();
     	assertEquals(ApcfflTest.USER_GROUP_OWNER, verifyRequest.getUserGroupName());
     	assertEquals(ApcfflTest.USER_NAME, verifyRequest.getUserName());

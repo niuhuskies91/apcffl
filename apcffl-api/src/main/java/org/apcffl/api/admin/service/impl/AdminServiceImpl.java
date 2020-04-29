@@ -53,74 +53,94 @@ public class AdminServiceImpl extends ApcfflService implements AdminService {
 	@Override
 	public AccountResponse accountRetrieval(AccountRequest request) {
 		// validate user group access
-		AccountResponse response =
-				accountAccessError(request.getUserGroupName(), SecurityConstants.USER_GROUP_TIER_OWNER);
+		AccountResponse response = accountAccessError(request.getUserGroupName(),
+				SecurityConstants.USER_GROUP_TIER_OWNER);
 		if (response.getError() != null) {
 			return response;
 		}
-		// retrieve the owner's account
-		OwnerModel owner = ownerRepository.findByUserName(request.getUserName());
-		if (owner == null) {
-			response.setError( 
-					new ErrorDto(AccountError.toString(), UIMessages.ACCOUNT_NOT_FOUND));
-			LOG.error(response.getError().getMessage());
-			return response;
+		try {
+			// retrieve the owner's account
+			OwnerModel owner = ownerRepository.findByUserName(request.getUserName());
+			if (owner != null) {
+				return AdminMapper.convertAccountModel(owner);
+			} else {
+				response.setError(new ErrorDto(AccountError.toString(), UIMessages.ACCOUNT_NOT_FOUND));
+				LOG.error(response.getError().getMessage());
+			}
+		} catch (Exception e) {
+			response.setError(new ErrorDto(AccountError.toString(), UIMessages.ERROR_GENERAL_INTERNAL_EXCEPTION));
+			LOG.error(response.getError().getMessage(), e);
 		}
-		return AdminMapper.convertAccountModel(owner);
+		return response;
 	}
 
 	@Override
 	public AllAccountsResponse accountRetrievalAll(AccountRequest request) {
 		// validate user group access
-		AllAccountsResponse response =
-				allAccountsAccessError(request.getUserGroupName(), SecurityConstants.USER_GROUP_TIER_ADMIN);
+		AllAccountsResponse response = allAccountsAccessError(request.getUserGroupName(),
+				SecurityConstants.USER_GROUP_TIER_ADMIN);
 		if (response.getError() != null) {
 			return response;
 		}
-		List<OwnerModel> owners = ownerRepository.findAll();
-		response.setAccounts( AdminMapper.convertAccounts(owners) );
-		
+		try {
+			List<OwnerModel> owners = ownerRepository.findAll();
+			response.setAccounts(AdminMapper.convertAccounts(owners));
+		} catch (Exception e) {
+			response.setError(new ErrorDto(AccountError.toString(), UIMessages.ERROR_GENERAL_INTERNAL_EXCEPTION));
+			LOG.error(response.getError().getMessage(), e);
+		}
 		return response;
 	}
 
 	@Override
 	public String accountCreate(AccountCreateRequest request) {
-		UserGroupModel userGroup = userGroupRepository.findByUserGroupName(SecurityConstants.USER_GROUP_GUEST);
-		
-		// first create the user record
-		UserModel user = new UserModel();
-		user.setPassword(request.getPassword());
-		user.setUserName(request.getUserName());
-		user.setUserGroupModel(userGroup);
-		user = userRepository.save(user);
-		
-		// create the owner record
-		OwnerModel owner = new OwnerModel();
-		Date now = new Date();
-		owner.setActiveFlag(false);
-		owner.setCreateDate(now);
-		owner.setEmail1(request.getEmail1());
-		owner.setEmail2(request.getEmail2());
-		owner.setEmail3(request.getEmail3());
-		owner.setFirstName(request.getFirstName());
-		owner.setLastName(request.getLastName());
-		owner.setUpdateDate(now);
-		owner.setUserModel(user);
-		ownerRepository.save(owner);
-		
-		// send welcome message to the newly registered user
-		emailManager.sendEmail(
-				request.getEmail1(), 
-				UIMessages.EMAIL_WELCOME_SUBJECT, 
-				UIMessages.EMAIL_WELCOME_MESSAGE);
-		
-		// notify the admin a new account has been created
-		emailManager.sendEmail(
-				emailConfig.getEmailUser(), 
-				UIMessages.EMAIL_ADMIN_NEW_ACCOUNT_SUBJECT, 
-				UIMessages.EMAIL_ADMIN_NEW_ACCOUNT_MESSAGE);
-		
-		return UIMessages.MSG_GENERIC_CHECK_EMAIL;
+		try {
+			
+			// verify the username does not already exist
+			if (userRepository.findByUserName(request.getUserName()) != null ||
+					ownerRepository.findByEmail(request.getEmail1()) != null) {
+				LOG.error(UIMessages.ERROR_USERNAME_OR_PRIMARY_EMAIL_EXISTS_ON_CREATE);
+				return UIMessages.ERROR_USERNAME_OR_PRIMARY_EMAIL_EXISTS_ON_CREATE;
+			}
+			
+			// we need the user group model for the user repo
+			UserGroupModel userGroup = userGroupRepository.findByUserGroupName(SecurityConstants.USER_GROUP_GUEST);
+
+			// first create the user record
+			UserModel user = new UserModel();
+			user.setPassword(request.getPassword());
+			user.setUserName(request.getUserName());
+			user.setUserGroupModel(userGroup);
+			user = userRepository.save(user);
+
+			// create the owner record
+			OwnerModel owner = new OwnerModel();
+			Date now = new Date();
+			owner.setActiveFlag(false);
+			owner.setCreateDate(now);
+			owner.setEmail1(request.getEmail1());
+			owner.setEmail2(request.getEmail2());
+			owner.setEmail3(request.getEmail3());
+			owner.setFirstName(request.getFirstName());
+			owner.setLastName(request.getLastName());
+			owner.setUpdateDate(now);
+			owner.setUserModel(user);
+			ownerRepository.save(owner);
+
+			// send welcome message to the newly registered user
+			emailManager.sendEmail(request.getEmail1(), UIMessages.EMAIL_WELCOME_SUBJECT,
+					UIMessages.EMAIL_WELCOME_MESSAGE);
+
+			// notify the admin a new account has been created
+			emailManager.sendEmail(emailConfig.getEmailUser(), UIMessages.EMAIL_ADMIN_NEW_ACCOUNT_SUBJECT,
+					UIMessages.EMAIL_ADMIN_NEW_ACCOUNT_MESSAGE);
+
+			return UIMessages.MSG_GENERIC_CHECK_EMAIL;
+		} catch (Exception e) {
+			String error = UIMessages.ERROR_GENERAL_INTERNAL_EXCEPTION;
+			LOG.error(error, e);
+			return error;
+		}
 	}
 
 	@Override
@@ -131,7 +151,7 @@ public class AdminServiceImpl extends ApcfflService implements AdminService {
 		if (response.getError() != null) {
 			return response;
 		}
-		
+		try {
 		// retrieve the existing owner record
 		OwnerModel owner = ownerRepository.findByUserName(request.getUserName());
 
@@ -142,8 +162,13 @@ public class AdminServiceImpl extends ApcfflService implements AdminService {
 		owner.setFirstName(request.getFirstName());
 		owner.setLastName(request.getLastName());
 		owner.setUpdateDate(new Date());
+		
 		ownerRepository.save(owner);
 		
+		} catch (Exception e) {
+			response.setError(new ErrorDto(AccountError.toString(), UIMessages.ERROR_GENERAL_INTERNAL_EXCEPTION));
+			LOG.error(response.getError().getMessage(), e);
+		}
 		return response;
 	}
 	

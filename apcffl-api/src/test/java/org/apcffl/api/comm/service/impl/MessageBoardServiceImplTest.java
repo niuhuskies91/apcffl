@@ -81,6 +81,38 @@ public class MessageBoardServiceImplTest {
 	}
 	
 	@Test
+	public void verify_findAll_findByDateRangeException() {
+		
+		// prepare test data
+		
+		MessageBoardRequest request = ApcfflTest.buildMessageBoardRequest();
+		
+		request.setStartDate(null);
+		
+		when(messageBoardRepository.findByDateRange(any(), any(), anyString()))
+		.thenThrow(new NullPointerException("error"));
+		
+		// invoke
+		
+		MessageBoardResponse response = service.findAll(request);
+		
+		// verify
+		
+		assertEquals(AccountError.toString(), response.getError().getErrorCode());
+		assertEquals(UIMessages.ERROR_GENERAL_INTERNAL_EXCEPTION, response.getError().getMessage());
+		assertEquals(null, response.getMessageBoard());
+		
+		verify(messageBoardRepository, times(1)).findByDateRange(
+				startDateCaptor.capture(), endDateCaptor.capture(), leagueNameCaptor.capture());
+		
+		assertNotNull(startDateCaptor.getValue());
+		assertNotEquals(ApcfflTest.TEST_DATE, startDateCaptor.getValue());
+		assertNotNull(endDateCaptor.getValue());
+		assertNotEquals(ApcfflTest.TEST_DATE, endDateCaptor.getValue());
+		assertEquals(ApcfflTest.LEAGUE_1_NAME, leagueNameCaptor.getValue());
+	}
+	
+	@Test
 	public void verify_findAll_userGroupInvalid() {
 		
 		// prepare test data
@@ -236,6 +268,117 @@ public class MessageBoardServiceImplTest {
 		assertEquals(ApcfflTest.TEST_DATE, startDateCaptor.getValue());
 		assertNotNull(endDateCaptor.getValue());
 		assertEquals(ApcfflTest.TEST_DATE, endDateCaptor.getValue());
+		assertEquals(ApcfflTest.LEAGUE_1_NAME, leagueNameCaptor.getValue());
+	}
+	
+	@Test
+	public void verify_newMessage_findByUserNameException() {
+		
+		// prepare test data
+		
+		MessageBoard request = ApcfflTest.buildMessageBoard();
+		
+		when(ownerRepository.findByUserName(anyString())).thenThrow(new NullPointerException("error"));
+		
+		when(messageBoardRepository.save(any())).thenReturn(new MessageBoardModel());
+		
+		MessageBoardModel mockModel = ApcfflTest.buildMessageBoardModel();
+		List<MessageBoardModel> mockModelList = Arrays.asList(mockModel);
+		when(messageBoardRepository.findByDateRange(any(), any(), anyString()))
+		.thenReturn(mockModelList);
+		
+		// invoke 
+		
+		MessageBoardResponse response = service.newMessage(request);
+		
+		// verify
+		
+		assertEquals(AccountError.toString(), response.getError().getErrorCode());
+		assertEquals(UIMessages.ERROR_GENERAL_INTERNAL_EXCEPTION, response.getError().getMessage());
+		assertEquals(null, response.getMessageBoard());
+
+		verify(ownerRepository, times(1)).findByUserName(userNameCaptor.capture());
+		assertEquals(ApcfflTest.USER_NAME, userNameCaptor.getValue());
+		
+		verify(messageBoardRepository, never()).save(messageBoardModelCaptor.capture());
+		
+		verify(messageBoardRepository, never()).findByDateRange(
+				startDateCaptor.capture(), endDateCaptor.capture(), leagueNameCaptor.capture());
+	}
+	
+	@Test
+	public void verify_newMessage_saveException() {
+		
+		// prepare test data
+		
+		MessageBoard request = ApcfflTest.buildMessageBoard();
+		
+		OwnerModel mockOwner = ApcfflTest.buildOwnerModel();
+		when(ownerRepository.findByUserName(anyString())).thenReturn(mockOwner);
+		
+		when(messageBoardRepository.save(any())).thenThrow(new NullPointerException("error"));
+		
+		MessageBoardModel mockModel = ApcfflTest.buildMessageBoardModel();
+		List<MessageBoardModel> mockModelList = Arrays.asList(mockModel);
+		when(messageBoardRepository.findByDateRange(any(), any(), anyString()))
+		.thenReturn(mockModelList);
+		
+		// invoke 
+		
+		MessageBoardResponse response = service.newMessage(request);
+		
+		// verify
+		
+		assertEquals(AccountError.toString(), response.getError().getErrorCode());
+		assertEquals(UIMessages.ERROR_GENERAL_INTERNAL_EXCEPTION, response.getError().getMessage());
+		assertEquals(null, response.getMessageBoard());
+
+		verify(ownerRepository, times(1)).findByUserName(userNameCaptor.capture());
+		assertEquals(ApcfflTest.USER_NAME, userNameCaptor.getValue());
+		
+		verify(messageBoardRepository, times(1)).save(messageBoardModelCaptor.capture());
+		
+		verify(messageBoardRepository, never()).findByDateRange(
+				startDateCaptor.capture(), endDateCaptor.capture(), leagueNameCaptor.capture());
+	}
+	
+	@Test
+	public void verify_newMessage_findByDateRangeException() {
+		
+		// prepare test data
+		
+		MessageBoard request = ApcfflTest.buildMessageBoard();
+
+		OwnerModel mockOwner = ApcfflTest.buildOwnerModel();
+		when(ownerRepository.findByUserName(anyString())).thenReturn(mockOwner);
+		
+		when(messageBoardRepository.save(any())).thenReturn(new MessageBoardModel());
+		
+		when(messageBoardRepository.findByDateRange(any(), any(), anyString()))
+		.thenThrow(new NullPointerException("error"));
+		
+		// invoke 
+		
+		MessageBoardResponse response = service.newMessage(request);
+		
+		// verify
+		
+		assertEquals(AccountError.toString(), response.getError().getErrorCode());
+		assertEquals(UIMessages.ERROR_GENERAL_INTERNAL_EXCEPTION, response.getError().getMessage());
+		assertEquals(null, response.getMessageBoard());
+
+		verify(ownerRepository, times(1)).findByUserName(userNameCaptor.capture());
+		assertEquals(ApcfflTest.USER_NAME, userNameCaptor.getValue());
+		
+		verify(messageBoardRepository, times(1)).save(messageBoardModelCaptor.capture());
+		
+		verify(messageBoardRepository, times(1)).findByDateRange(
+				startDateCaptor.capture(), endDateCaptor.capture(), leagueNameCaptor.capture());
+		
+		assertNotNull(startDateCaptor.getValue());
+		assertNotEquals(ApcfflTest.TEST_DATE, startDateCaptor.getValue());
+		assertNotNull(endDateCaptor.getValue());
+		assertNotEquals(ApcfflTest.TEST_DATE, endDateCaptor.getValue());
 		assertEquals(ApcfflTest.LEAGUE_1_NAME, leagueNameCaptor.getValue());
 	}
 	

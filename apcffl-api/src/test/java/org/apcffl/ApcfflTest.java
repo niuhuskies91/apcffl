@@ -1,14 +1,18 @@
 package org.apcffl;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
 import org.apcffl.api.admin.dto.AccountCreateRequest;
 import org.apcffl.api.admin.dto.AccountRequest;
 import org.apcffl.api.admin.dto.AccountResponse;
+import org.apcffl.api.admin.dto.AllAccountsResponse;
 import org.apcffl.api.comm.dto.MessageBoard;
 import org.apcffl.api.comm.dto.MessageBoardRequest;
+import org.apcffl.api.dto.ApiRequest;
+import org.apcffl.api.league.dto.League;
 import org.apcffl.api.persistence.model.ApplicationActivityModel;
 import org.apcffl.api.persistence.model.GroupActivityMapModel;
 import org.apcffl.api.persistence.model.LeagueModel;
@@ -97,6 +101,16 @@ public class ApcfflTest {
 	
 	public static final String MESSAGE_BOARD_MSG           = "My hovercraft is full of eels.";
 	public static final Long   MESSAGE_ID                  = 10001L;
+	
+	public static final ApiRequest buildApiRequest() {
+		ApiRequest request = new ApiRequest();
+		request.setLeagueName(LEAGUE_1_NAME);
+		request.setSecurityToken(TEST_TOKEN);
+		request.setUserGroupName(USER_GROUP_OWNER);
+		request.setUserName(USER_NAME);
+		
+		return request;
+	}
 	
 	public static final UserGroupModel buildUserGroup(Long id, String name) {
 		UserGroupModel group = new UserGroupModel();
@@ -199,6 +213,18 @@ public class ApcfflTest {
 		return models;
 	}
 	
+	public static List<League> buildLeagues() {
+		List<League> leagues = new ArrayList<League>();
+		
+		League league = new League();
+		league.setLeagueName(LEAGUE_1_NAME);
+		league.setNumDivisions(LEAGUE_1_NUM_DIV);
+		league.setNumTeams(LEAGUE_1_NUM_TEAMS);
+		leagues.add(league);
+		
+		return leagues;
+	}
+	
 	public static OwnerModel buildOwnerModel() {
 		OwnerModel model = new OwnerModel();
 		model.setOwnerId(ANSWER_TO_THE_UNIVERSE);
@@ -232,6 +258,14 @@ public class ApcfflTest {
 		request.setUserName(ApcfflTest.USER_NAME);
 		
 		return request;
+	}
+	
+	public static AllAccountsResponse buildAllAccountsResponse() {
+		AllAccountsResponse response = new AllAccountsResponse();
+		
+		response.setAccounts( Arrays.asList( buildAccountResponse() ) );
+		
+		return response;
 	}
 	
 	public static AccountResponse buildAccountResponse() {

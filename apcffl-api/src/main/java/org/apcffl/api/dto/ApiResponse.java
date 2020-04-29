@@ -2,7 +2,7 @@ package org.apcffl.api.dto;
 
 public class ApiResponse {
 
-	private ErrorDto error;
+	protected ErrorDto error;
 
 	public ErrorDto getError() {
 		return error;

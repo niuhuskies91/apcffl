@@ -2,18 +2,21 @@ package org.apcffl.api.constants;
 
 public class UIMessages {
 	
+	public static final String ERROR_GENERAL_INTERNAL_EXCEPTION = "A general internal error occurred. Please contact the administrator if issues persist.";
+
 	// authentication errors
 
-	public static final String ERROR_AUTH_FAIL                     = "Authorization failed for user name: ";
-	public static final String ERROR_AUTH_PSWD_RESET_USER_NOTFOUND = "The username is not found. No password reset token was generated.";
-	public static final String ERROR_MISSING_LEAGUE_AFFILIATION    = "The functionality is not available as no league affiliation is present.";
-	public static final String ERROR_RESET_PSWD_PARAMS             = "Missing required parameters. The password cannot be reset.";
-	public static final String ERROR_RESET_PSWD_USER_NOTFOUND      = "The username is not found. The password cannot be reset.";
-	public static final String ERROR_RESET_TOKEN_INVALID           = "The password reset token is invalid. The password cannot be reset.";
-	public static final String ERROR_TOKEN_EXPIRED                 = "The login session has expired.";
-	public static final String ERROR_USER_GROUP_ACCESS             = "This functionality is not available at your access level.";
-	public static final String ERROR_USERNAME_RECOVER_MISSING_EMAIL= "The email is not privided. The the user name cannot be recovered.";
-	public static final String ERROR_USERNAME_RECOVER_NOT_FOUND    = "The username is not found. The password cannot be reset.";
+	public static final String ERROR_AUTH_FAIL                                  = "Authorization failed for user name: ";
+	public static final String ERROR_AUTH_PSWD_RESET_USER_NOTFOUND              = "The username is not found. No password reset token was generated.";
+	public static final String ERROR_MISSING_LEAGUE_AFFILIATION                 = "The functionality is not available as no league affiliation is present.";
+	public static final String ERROR_RESET_PSWD_PARAMS                          = "Missing required parameters. The password cannot be reset.";
+	public static final String ERROR_RESET_PSWD_USER_NOTFOUND                   = "The username is not found. The password cannot be reset.";
+	public static final String ERROR_RESET_TOKEN_INVALID                        = "The password reset token is invalid. The password cannot be reset.";
+	public static final String ERROR_TOKEN_EXPIRED                              = "The login session has expired.";
+	public static final String ERROR_USER_GROUP_ACCESS                          = "This functionality is not available at your access level.";
+	public static final String ERROR_USERNAME_RECOVER_MISSING_EMAIL             = "The email is not privided. The the user name cannot be recovered.";
+	public static final String ERROR_USERNAME_RECOVER_NOT_FOUND                 = "The username is not found. The password cannot be reset.";
+	public static final String ERROR_USERNAME_OR_PRIMARY_EMAIL_EXISTS_ON_CREATE = "The username or primary email already exists and cannot be created.";
 
 	// messages
 	

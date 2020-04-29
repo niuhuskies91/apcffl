@@ -1,6 +1,6 @@
 package org.apcffl.api.dto;
 
-public abstract class ApiRequest {
+public class ApiRequest {
 	protected String userName;
 	protected String userGroupName;
 	protected String securityToken;
