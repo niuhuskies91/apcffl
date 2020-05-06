@@ -4,8 +4,10 @@ import org.apcffl.api.admin.dto.AccountCreateRequest;
 import org.apcffl.api.admin.dto.AccountRequest;
 import org.apcffl.api.admin.dto.AccountResponse;
 import org.apcffl.api.admin.dto.AllAccountsResponse;
+import org.apcffl.api.admin.dto.LeagueAssignmentRequest;
 import org.apcffl.api.admin.service.AdminService;
 import org.apcffl.api.controller.ApcfflController;
+import org.apcffl.api.dto.ApiResponse;
 import org.apcffl.api.dto.ErrorDto;
 import org.apcffl.api.service.manager.SessionManager;
 import org.springframework.http.HttpStatus;
@@ -74,14 +76,32 @@ public class AccountController extends ApcfflController {
 			produces = MediaType.APPLICATION_JSON_VALUE, response = AccountResponse.class)
 	@RequestMapping(value="/accountUpdate", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = {MediaType.APPLICATION_JSON_VALUE})
 	public ResponseEntity<AccountResponse> accountUpdate(@RequestBody AccountRequest request) {
+		
+		// validate the session token
+		ErrorDto error = isValidSessionToken(request.getSecurityToken(), request.getUserName());
+		if (error != null) {
+			AccountResponse response = new AccountResponse();
+			response.setError(error);
+			return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
+		}
 
 		return new ResponseEntity<>(service.accountUpdate(request), HttpStatus.OK);
 	}
 
-//	@ApiOperation(value="User/Owner account update request", httpMethod = "POST",  consumes = MediaType.APPLICATION_JSON_VALUE,
-//			produces = MediaType.APPLICATION_JSON_VALUE, response = AccountResponse.class)
-//	@RequestMapping(value="/accountUpdate", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = {MediaType.APPLICATION_JSON_VALUE})
-//	public ResponseEntity<List<League>> allLeagues(@RequestBody ApiRequest request) {
-//		
-//	}
+	@ApiOperation(value="Assign a league to an owner request", httpMethod = "POST",  consumes = MediaType.APPLICATION_JSON_VALUE,
+			produces = MediaType.APPLICATION_JSON_VALUE, response = ApiResponse.class)
+	@RequestMapping(value="/ownerLeagueAssignment", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = {MediaType.APPLICATION_JSON_VALUE})
+	public ResponseEntity<ApiResponse> ownerLeagueAssignment(@RequestBody LeagueAssignmentRequest request) {
+		
+		// validate the session token
+		ErrorDto error = isValidSessionToken(request.getSecurityToken(), request.getUserName());
+		if (error != null) {
+			ApiResponse response = new AccountResponse();
+			response.setError(error);
+			return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
+		}
+
+		ApiResponse response = service.ownerLeagueAssignment(request);
+		return new ResponseEntity<>(response, HttpStatus.OK);
+	}
 }

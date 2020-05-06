@@ -9,9 +9,6 @@ import org.apcffl.api.comm.dto.MessageBoard;
 import org.apcffl.api.comm.dto.MessageBoardRequest;
 import org.apcffl.api.comm.dto.MessageBoardResponse;
 import org.apcffl.api.constants.UIMessages;
-
-import static org.apcffl.api.exception.constants.Enums.ErrorCodeEnums.*;
-
 import org.apcffl.api.persistence.model.MessageBoardModel;
 import org.apcffl.api.persistence.model.OwnerModel;
 import org.apcffl.api.persistence.repository.MessageBoardRepository;
@@ -26,6 +23,7 @@ import org.mockito.MockitoAnnotations;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.apcffl.api.constants.Enums.ErrorCodeEnums.*;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;

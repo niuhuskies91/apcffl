@@ -23,7 +23,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import static org.apcffl.api.constants.ApcfflConstants.MESSAGE_BOARD_DAYS_DEFAULT;
-import static org.apcffl.api.exception.constants.Enums.ErrorCodeEnums.AccountError;
+import static org.apcffl.api.constants.Enums.ErrorCodeEnums.AccountError;
 
 @Service
 @Transactional

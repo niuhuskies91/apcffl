@@ -1,4 +1,4 @@
-package org.apcffl.api.exception.constants;
+package org.apcffl.api.constants;
 
 public class Enums {
 	

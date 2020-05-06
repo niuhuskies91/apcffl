@@ -1,5 +1,7 @@
 package org.apcffl.api.admin.service.impl;
 
+import static org.apcffl.api.constants.Enums.ErrorCodeEnums.*;
+
 import java.util.Date;
 import java.util.List;
 
@@ -7,15 +9,18 @@ import org.apcffl.api.admin.dto.AccountCreateRequest;
 import org.apcffl.api.admin.dto.AccountRequest;
 import org.apcffl.api.admin.dto.AccountResponse;
 import org.apcffl.api.admin.dto.AllAccountsResponse;
+import org.apcffl.api.admin.dto.LeagueAssignmentRequest;
 import org.apcffl.api.admin.dto.mapper.AdminMapper;
 import org.apcffl.api.admin.service.AdminService;
 import org.apcffl.api.config.EmailConfig;
 import org.apcffl.api.constants.UIMessages;
+import org.apcffl.api.dto.ApiResponse;
 import org.apcffl.api.dto.ErrorDto;
-import static org.apcffl.api.exception.constants.Enums.ErrorCodeEnums.*;
+import org.apcffl.api.persistence.model.LeagueModel;
 import org.apcffl.api.persistence.model.OwnerModel;
 import org.apcffl.api.persistence.model.UserGroupModel;
 import org.apcffl.api.persistence.model.UserModel;
+import org.apcffl.api.persistence.repository.LeagueRepository;
 import org.apcffl.api.persistence.repository.OwnerRepository;
 import org.apcffl.api.persistence.repository.UserGroupRepository;
 import org.apcffl.api.persistence.repository.UserRepository;
@@ -33,6 +38,7 @@ public class AdminServiceImpl extends ApcfflService implements AdminService {
 
 	private static final Logger LOG = LoggerFactory.getLogger(AdminServiceImpl.class);
 
+	private final LeagueRepository leagueRepository;
 	private final OwnerRepository ownerRepository;
 	private final UserRepository userRepository;
 	private final UserGroupRepository userGroupRepository;
@@ -41,13 +47,14 @@ public class AdminServiceImpl extends ApcfflService implements AdminService {
 	
 	public AdminServiceImpl(final OwnerRepository ownerRepository, final UserRepository userRepository,
 			final UserGroupRepository userGroupRepository, final EmailManager emailManager,
-			final EmailConfig emailConfig) {
+			final EmailConfig emailConfig, final LeagueRepository leagueRepository) {
 		
 		this.ownerRepository = ownerRepository;
 		this.userRepository = userRepository;
 		this.userGroupRepository = userGroupRepository;
 		this.emailManager = emailManager;
 		this.emailConfig = emailConfig;
+		this.leagueRepository = leagueRepository;
 	}
 
 	@Override
@@ -85,6 +92,34 @@ public class AdminServiceImpl extends ApcfflService implements AdminService {
 		try {
 			List<OwnerModel> owners = ownerRepository.findAll();
 			response.setAccounts(AdminMapper.convertAccounts(owners));
+		} catch (Exception e) {
+			response.setError(new ErrorDto(AccountError.toString(), UIMessages.ERROR_GENERAL_INTERNAL_EXCEPTION));
+			LOG.error(response.getError().getMessage(), e);
+		}
+		return response;
+	}
+	
+	@Override
+	public ApiResponse ownerLeagueAssignment(LeagueAssignmentRequest request) {
+	
+		// validate user group access
+		ApiResponse response = new ApiResponse();
+		if (!SecurityConstants.USER_GROUP_ADMIN.contentEquals(request.getUserGroupName())) {
+			ErrorDto error = new ErrorDto(AccountError.toString(), UIMessages.ACCOUNT_ADMIN_REQUIRED);
+			response.setError(error);
+			LOG.error(error.getMessage());
+			return response;
+		}
+		try {
+			UserGroupModel userGroup = userGroupRepository.findByUserGroupName(SecurityConstants.USER_GROUP_OWNER);
+			OwnerModel owner = ownerRepository.findByUserName(request.getOwnerUserName());
+			LeagueModel league = leagueRepository.findByLeagueName(request.getOwnerLeagueName());
+			owner.getUserModel().setUserGroupModel(userGroup);
+			owner.setActiveFlag(true);
+			owner.setLeagueModel(league);
+			
+			ownerRepository.save(owner);
+			
 		} catch (Exception e) {
 			response.setError(new ErrorDto(AccountError.toString(), UIMessages.ERROR_GENERAL_INTERNAL_EXCEPTION));
 			LOG.error(response.getError().getMessage(), e);
@@ -154,6 +189,17 @@ public class AdminServiceImpl extends ApcfflService implements AdminService {
 		try {
 		// retrieve the existing owner record
 		OwnerModel owner = ownerRepository.findByUserName(request.getUserName());
+		
+		// verify the primary email to ensure it is not already assigned to a different user
+		OwnerModel verifyOwner = ownerRepository.findByEmail(request.getEmail1());
+		if (verifyOwner != null && 
+				!verifyOwner.getUserModel().getUserName().equals(request.getUserName())) {
+			ErrorDto error = 
+					new ErrorDto(AccountError.toString(), UIMessages.ACCOUNT_UPDATE_PRIMARY_EMAIL_NOT_UNIQUE);
+			LOG.error(error.getMessage());
+			response.setError(error);
+			return response;
+		}
 
 		// set the new values and save
 		owner.setEmail1(request.getEmail1());

@@ -6,12 +6,15 @@ import org.apcffl.api.admin.dto.AccountCreateRequest;
 import org.apcffl.api.admin.dto.AccountRequest;
 import org.apcffl.api.admin.dto.AccountResponse;
 import org.apcffl.api.admin.dto.AllAccountsResponse;
+import org.apcffl.api.admin.dto.LeagueAssignmentRequest;
 import org.apcffl.api.config.EmailConfig;
 import org.apcffl.api.constants.UIMessages;
-import static org.apcffl.api.exception.constants.Enums.ErrorCodeEnums.*;
+import org.apcffl.api.dto.ApiResponse;
+import org.apcffl.api.persistence.model.LeagueModel;
 import org.apcffl.api.persistence.model.OwnerModel;
 import org.apcffl.api.persistence.model.UserGroupModel;
 import org.apcffl.api.persistence.model.UserModel;
+import org.apcffl.api.persistence.repository.LeagueRepository;
 import org.apcffl.api.persistence.repository.OwnerRepository;
 import org.apcffl.api.persistence.repository.UserGroupRepository;
 import org.apcffl.api.persistence.repository.UserRepository;
@@ -34,6 +37,7 @@ import ch.qos.logback.classic.Logger;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.apcffl.api.constants.Enums.ErrorCodeEnums.*;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.Mockito.doNothing;
@@ -61,6 +65,9 @@ public class AdminServiceImplTest {
 	private UserGroupRepository userGroupRepository;
 	
 	@Mock
+	private LeagueRepository leagueRepository;
+	
+	@Mock
 	private EmailManager emailManager;
 	
 	@Mock
@@ -70,17 +77,27 @@ public class AdminServiceImplTest {
 	private ArgumentCaptor<String> userNameCaptor;
 	
 	@Captor
+	private ArgumentCaptor<String> leagueNameCaptor;
+	
+	@Captor
 	private ArgumentCaptor<UserModel> userCaptor;
 	
 	@Captor
 	private ArgumentCaptor<OwnerModel> ownerCaptor;
+	
+	@Captor
+	private ArgumentCaptor<LeagueModel> leagueCaptor;
+	
+	@Captor
+	private ArgumentCaptor<String> emailCaptor;
 	
 	@Before
 	public void setUp() {
 		MockitoAnnotations.initMocks(this);
 		
 		service = 
-				new AdminServiceImpl(ownerRepository, userRepository, userGroupRepository, emailManager, emailConfig);
+				new AdminServiceImpl(ownerRepository, userRepository, userGroupRepository, 
+						emailManager, emailConfig, leagueRepository);
 
 	    final Logger logger = (Logger)LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME);
 	    logger.setLevel(Level.DEBUG);
@@ -522,6 +539,9 @@ public class AdminServiceImplTest {
 		
 		when(ownerRepository.findByUserName(anyString())).thenThrow(new NullPointerException("error"));
 		
+		OwnerModel verifyOwner = ApcfflTest.buildOwnerModel();
+		when(ownerRepository.findByEmail(anyString())).thenReturn(verifyOwner);
+		
 		when(ownerRepository.save(any())).thenReturn(new OwnerModel());
 		
 		// invoke
@@ -542,6 +562,57 @@ public class AdminServiceImplTest {
 		
 		verify(ownerRepository, times(1)).findByUserName(userNameCaptor.capture());
 		assertEquals(ApcfflTest.USER_NAME, userNameCaptor.getValue());
+		
+		verify(ownerRepository, never()).findByEmail(emailCaptor.capture());
+
+		verify(ownerRepository, never()).save(ownerCaptor.capture());
+		
+	}
+	
+	@Test
+	public void verify_accountUpdate_duplicatePrimaryEmail_differentUser() {
+		
+		//prepare test data
+		
+		AccountRequest request = new AccountRequest();
+		request.setUserGroupName(SecurityConstants.USER_GROUP_OWNER);
+		
+		request.setUserName(ApcfflTest.USER_NAME);
+		request.setEmail1(ApcfflTest.OWNER_EMAIL1 + "request");
+		request.setEmail2(ApcfflTest.OWNER_EMAIL2 + "request");
+		request.setEmail3(ApcfflTest.OWNER_EMAIL3 + "request");
+		request.setFirstName(ApcfflTest.OWNER_FIRST_NAME + "request");
+		request.setLastName(ApcfflTest.OWNER_LAST_NAME + "request");
+
+		OwnerModel mockOwner = ApcfflTest.buildOwnerModel();
+		when(ownerRepository.findByUserName(anyString())).thenReturn(mockOwner);
+		
+		OwnerModel verifyOwner = ApcfflTest.buildOwnerModel();
+		verifyOwner.getUserModel().setUserName("invalid");
+		when(ownerRepository.findByEmail(anyString())).thenReturn(verifyOwner);
+		
+		when(ownerRepository.save(any())).thenReturn(new OwnerModel());
+		
+		// invoke
+		
+		AccountResponse response = service.accountUpdate(request);
+		
+		// verify results
+
+		assertEquals(AccountError.toString(), response.getError().getErrorCode());
+		assertEquals(UIMessages.ACCOUNT_UPDATE_PRIMARY_EMAIL_NOT_UNIQUE, response.getError().getMessage());
+		assertEquals(null, response.getActiveFlag());
+		assertEquals(null, response.getEmail1());
+		assertEquals(null, response.getEmail2());
+		assertEquals(null, response.getEmail3());
+		assertEquals(null, response.getFirstName());
+		assertEquals(null, response.getLastName());
+		assertEquals(null, response.getLeagueName());
+		
+		verify(ownerRepository, times(1)).findByUserName(userNameCaptor.capture());
+		assertEquals(ApcfflTest.USER_NAME, userNameCaptor.getValue());
+		
+		verify(ownerRepository, times(1)).findByEmail(emailCaptor.capture());
 
 		verify(ownerRepository, never()).save(ownerCaptor.capture());
 		
@@ -565,6 +636,10 @@ public class AdminServiceImplTest {
 		OwnerModel mockOwner = ApcfflTest.buildOwnerModel();
 		when(ownerRepository.findByUserName(anyString())).thenReturn(mockOwner);
 		
+		OwnerModel verifyOwner = ApcfflTest.buildOwnerModel();
+		verifyOwner.setEmail1(ApcfflTest.OWNER_EMAIL2);
+		when(ownerRepository.findByEmail(anyString())).thenReturn(verifyOwner);
+		
 		when(ownerRepository.save(any())).thenThrow(new NullPointerException("error"));
 		
 		// invoke
@@ -585,6 +660,8 @@ public class AdminServiceImplTest {
 		
 		verify(ownerRepository, times(1)).findByUserName(userNameCaptor.capture());
 		assertEquals(ApcfflTest.USER_NAME, userNameCaptor.getValue());
+		
+		verify(ownerRepository, times(1)).findByEmail(emailCaptor.capture());
 
 		verify(ownerRepository, times(1)).save(ownerCaptor.capture());
 		OwnerModel resultOwner = ownerCaptor.getValue();
@@ -613,6 +690,10 @@ public class AdminServiceImplTest {
 		OwnerModel mockOwner = ApcfflTest.buildOwnerModel();
 		when(ownerRepository.findByUserName(anyString())).thenReturn(mockOwner);
 		
+		OwnerModel verifyOwner = ApcfflTest.buildOwnerModel();
+		verifyOwner.setEmail1(ApcfflTest.OWNER_EMAIL2);
+		when(ownerRepository.findByEmail(anyString())).thenReturn(verifyOwner);
+		
 		when(ownerRepository.save(any())).thenReturn(new OwnerModel());
 		
 		// invoke
@@ -631,14 +712,15 @@ public class AdminServiceImplTest {
 		assertEquals(null, response.getLastName());
 		assertEquals(null, response.getLeagueName());
 
-		
 		verify(ownerRepository, never()).findByUserName(userNameCaptor.capture());
+		
+		verify(ownerRepository, never()).findByEmail(emailCaptor.capture());
 
 		verify(ownerRepository, never()).save(ownerCaptor.capture());
 	}
 	
 	@Test
-	public void verify_accountUpdate() {
+	public void verify_accountUpdate_primaryEmailNotExists() {
 		
 		//prepare test data
 		
@@ -654,6 +736,8 @@ public class AdminServiceImplTest {
 		
 		OwnerModel mockOwner = ApcfflTest.buildOwnerModel();
 		when(ownerRepository.findByUserName(anyString())).thenReturn(mockOwner);
+		
+		when(ownerRepository.findByEmail(anyString())).thenReturn(null);
 		
 		when(ownerRepository.save(any())).thenReturn(new OwnerModel());
 		
@@ -674,6 +758,8 @@ public class AdminServiceImplTest {
 		
 		verify(ownerRepository, times(1)).findByUserName(userNameCaptor.capture());
 		assertEquals(ApcfflTest.USER_NAME, userNameCaptor.getValue());
+		
+		verify(ownerRepository, times(1)).findByEmail(emailCaptor.capture());
 
 		verify(ownerRepository, times(1)).save(ownerCaptor.capture());
 		OwnerModel resultOwner = ownerCaptor.getValue();
@@ -687,5 +773,223 @@ public class AdminServiceImplTest {
 		assertEquals(ApcfflTest.PASSWORD, resultOwner.getUserModel().getPassword());
 		assertEquals(ApcfflTest.USER_NAME, resultOwner.getUserModel().getUserName());
 		
+	}
+	
+	@Test
+	public void verify_accountUpdate() {
+		
+		//prepare test data
+		
+		AccountRequest request = new AccountRequest();
+		request.setUserGroupName(SecurityConstants.USER_GROUP_OWNER);
+		
+		request.setUserName(ApcfflTest.USER_NAME);
+		request.setEmail1(ApcfflTest.OWNER_EMAIL1 + "request");
+		request.setEmail2(ApcfflTest.OWNER_EMAIL2 + "request");
+		request.setEmail3(ApcfflTest.OWNER_EMAIL3 + "request");
+		request.setFirstName(ApcfflTest.OWNER_FIRST_NAME + "request");
+		request.setLastName(ApcfflTest.OWNER_LAST_NAME + "request");
+		
+		OwnerModel mockOwner = ApcfflTest.buildOwnerModel();
+		when(ownerRepository.findByUserName(anyString())).thenReturn(mockOwner);
+		
+		OwnerModel verifyOwner = ApcfflTest.buildOwnerModel();
+		verifyOwner.setEmail1(ApcfflTest.OWNER_EMAIL2);
+		when(ownerRepository.findByEmail(anyString())).thenReturn(verifyOwner);
+		
+		when(ownerRepository.save(any())).thenReturn(new OwnerModel());
+		
+		// invoke
+		
+		AccountResponse response = service.accountUpdate(request);
+		
+		// verify results
+		
+		assertEquals(null, response.getError());
+		assertEquals(null, response.getActiveFlag());
+		assertEquals(null, response.getEmail1());
+		assertEquals(null, response.getEmail2());
+		assertEquals(null, response.getEmail3());
+		assertEquals(null, response.getFirstName());
+		assertEquals(null, response.getLastName());
+		assertEquals(null, response.getLeagueName());
+		
+		verify(ownerRepository, times(1)).findByUserName(userNameCaptor.capture());
+		assertEquals(ApcfflTest.USER_NAME, userNameCaptor.getValue());
+		
+		verify(ownerRepository, times(1)).findByEmail(emailCaptor.capture());
+
+		verify(ownerRepository, times(1)).save(ownerCaptor.capture());
+		OwnerModel resultOwner = ownerCaptor.getValue();
+		assertNotNull(resultOwner.getCreateDate());
+		assertEquals(request.getEmail1(), resultOwner.getEmail1());
+		assertEquals(request.getEmail2(), resultOwner.getEmail2());
+		assertEquals(request.getEmail3(), resultOwner.getEmail3());
+		assertEquals(request.getFirstName(), resultOwner.getFirstName());
+		assertEquals(request.getLastName(), resultOwner.getLastName());
+		assertNotNull(resultOwner.getUpdateDate());
+		assertEquals(ApcfflTest.PASSWORD, resultOwner.getUserModel().getPassword());
+		assertEquals(ApcfflTest.USER_NAME, resultOwner.getUserModel().getUserName());
+	}
+	
+	@Test
+	public void verify_ownerLeagueAssignment_findByUserNameException() {
+		
+		// prepare test data
+		
+		LeagueAssignmentRequest request = ApcfflTest.buildLeagueAssignmentRequest();
+		
+		when(ownerRepository.findByUserName(anyString())).thenThrow(new NullPointerException("invalid"));
+		
+		LeagueModel mockLeague = ApcfflTest.buildLeagueModels().get(0);
+		when(leagueRepository.findByLeagueName(anyString())).thenReturn(mockLeague);
+		
+		OwnerModel mockSaveOwner = ApcfflTest.buildOwnerModel();
+		when(ownerRepository.save(any())).thenReturn(mockSaveOwner);
+		
+		// invoke
+		
+		ApiResponse response = service.ownerLeagueAssignment(request);
+		
+		// verify
+		
+		assertEquals(AccountError.toString(), response.getError().getErrorCode());
+		assertEquals(UIMessages.ERROR_GENERAL_INTERNAL_EXCEPTION, response.getError().getMessage());
+		
+		verify(ownerRepository, times(1)).findByUserName(userNameCaptor.capture());
+		assertEquals(ApcfflTest.USER_GUEST_NAME, userNameCaptor.getValue());
+		
+		verify(leagueRepository, never()).findByLeagueName(leagueNameCaptor.capture());
+		
+		verify(ownerRepository, never()).save(ownerCaptor.capture());
+	}
+	
+	@Test
+	public void verify_ownerLeagueAssignment_findByLeagueNameException() {
+		
+		// prepare test data
+		
+		LeagueAssignmentRequest request = ApcfflTest.buildLeagueAssignmentRequest();
+		
+		OwnerModel mockOwner = ApcfflTest.buildOwnerModel();
+		when(ownerRepository.findByUserName(anyString())).thenReturn(mockOwner);
+		
+		when(leagueRepository.findByLeagueName(anyString())).thenThrow(new NullPointerException("invalid"));
+		
+		when(ownerRepository.save(any())).thenReturn(mockOwner);
+		
+		// invoke
+		
+		ApiResponse response = service.ownerLeagueAssignment(request);
+		
+		// verify
+		
+		assertEquals(AccountError.toString(), response.getError().getErrorCode());
+		assertEquals(UIMessages.ERROR_GENERAL_INTERNAL_EXCEPTION, response.getError().getMessage());
+		
+		verify(ownerRepository, times(1)).findByUserName(userNameCaptor.capture());
+		assertEquals(ApcfflTest.USER_GUEST_NAME, userNameCaptor.getValue());
+		
+		verify(leagueRepository, times(1)).findByLeagueName(leagueNameCaptor.capture());
+		assertEquals(ApcfflTest.LEAGUE_1_NAME, leagueNameCaptor.getValue());
+		
+		verify(ownerRepository, never()).save(ownerCaptor.capture());
+	}
+	
+	@Test
+	public void verify_ownerLeagueAssignment_ownerSaveException() {
+		
+		// prepare test data
+		
+		LeagueAssignmentRequest request = ApcfflTest.buildLeagueAssignmentRequest();
+		
+		OwnerModel mockOwner = ApcfflTest.buildOwnerModel();
+		when(ownerRepository.findByUserName(anyString())).thenReturn(mockOwner);
+		
+		LeagueModel mockLeague = ApcfflTest.buildLeagueModels().get(0);
+		when(leagueRepository.findByLeagueName(anyString())).thenReturn(mockLeague);
+		
+		when(ownerRepository.save(any())).thenThrow(new NullPointerException("invalid"));
+		
+		// invoke
+		
+		ApiResponse response = service.ownerLeagueAssignment(request);
+		
+		// verify
+		
+		assertEquals(AccountError.toString(), response.getError().getErrorCode());
+		assertEquals(UIMessages.ERROR_GENERAL_INTERNAL_EXCEPTION, response.getError().getMessage());
+		
+		verify(ownerRepository, times(1)).findByUserName(userNameCaptor.capture());
+		assertEquals(ApcfflTest.USER_GUEST_NAME, userNameCaptor.getValue());
+		
+		verify(leagueRepository, times(1)).findByLeagueName(leagueNameCaptor.capture());
+		assertEquals(ApcfflTest.LEAGUE_1_NAME, leagueNameCaptor.getValue());
+		
+		verify(ownerRepository, times(1)).save(ownerCaptor.capture());
+	}
+	
+	@Test
+	public void verify_ownerLeagueAssignment_invalidGroupAccess() {
+		
+		// prepare test data
+		
+		LeagueAssignmentRequest request = ApcfflTest.buildLeagueAssignmentRequest();
+		request.setUserGroupName(ApcfflTest.USER_GROUP_OWNER);
+		
+		OwnerModel mockOwner = ApcfflTest.buildOwnerModel();
+		when(ownerRepository.findByUserName(anyString())).thenReturn(mockOwner);
+		
+		LeagueModel mockLeague = ApcfflTest.buildLeagueModels().get(0);
+		when(leagueRepository.findByLeagueName(anyString())).thenReturn(mockLeague);
+		
+		when(ownerRepository.save(any())).thenReturn(mockOwner);
+		
+		// invoke
+		
+		ApiResponse response = service.ownerLeagueAssignment(request);
+		
+		// verify
+		
+		assertEquals(AccountError.toString(), response.getError().getErrorCode());
+		assertEquals(UIMessages.ACCOUNT_ADMIN_REQUIRED, response.getError().getMessage());
+		
+		verify(ownerRepository, never()).findByUserName(userNameCaptor.capture());
+		
+		verify(leagueRepository, never()).findByLeagueName(leagueNameCaptor.capture());
+		
+		verify(ownerRepository, never()).save(ownerCaptor.capture());
+	}
+	
+	@Test
+	public void verify_ownerLeagueAssignment() {
+		
+		// prepare test data
+		
+		LeagueAssignmentRequest request = ApcfflTest.buildLeagueAssignmentRequest();
+		
+		OwnerModel mockOwner = ApcfflTest.buildOwnerModel();
+		when(ownerRepository.findByUserName(anyString())).thenReturn(mockOwner);
+		
+		LeagueModel mockLeague = ApcfflTest.buildLeagueModels().get(0);
+		when(leagueRepository.findByLeagueName(anyString())).thenReturn(mockLeague);
+		
+		when(ownerRepository.save(any())).thenReturn(mockOwner);
+		
+		// invoke
+		
+		ApiResponse response = service.ownerLeagueAssignment(request);
+		
+		// verify
+		
+		assertEquals(null, response.getError());
+		
+		verify(ownerRepository, times(1)).findByUserName(userNameCaptor.capture());
+		assertEquals(ApcfflTest.USER_GUEST_NAME, userNameCaptor.getValue());
+		
+		verify(leagueRepository, times(1)).findByLeagueName(leagueNameCaptor.capture());
+		assertEquals(ApcfflTest.LEAGUE_1_NAME, leagueNameCaptor.getValue());
+		
+		verify(ownerRepository, times(1)).save(ownerCaptor.capture());
 	}
 }

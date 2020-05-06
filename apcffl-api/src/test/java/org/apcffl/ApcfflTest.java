@@ -9,6 +9,7 @@ import org.apcffl.api.admin.dto.AccountCreateRequest;
 import org.apcffl.api.admin.dto.AccountRequest;
 import org.apcffl.api.admin.dto.AccountResponse;
 import org.apcffl.api.admin.dto.AllAccountsResponse;
+import org.apcffl.api.admin.dto.LeagueAssignmentRequest;
 import org.apcffl.api.comm.dto.MessageBoard;
 import org.apcffl.api.comm.dto.MessageBoardRequest;
 import org.apcffl.api.dto.ApiRequest;
@@ -327,5 +328,16 @@ public class ApcfflTest {
 		model.setOwnerModel(buildOwnerModel());
 		
 		return model;
+	}
+	
+	public static LeagueAssignmentRequest buildLeagueAssignmentRequest() {
+		LeagueAssignmentRequest request = new LeagueAssignmentRequest();
+		request.setSecurityToken(TEST_TOKEN);
+		request.setUserGroupName(USER_GROUP_ADMIN);
+		request.setUserName(USER_NAME);
+		request.setOwnerLeagueName(LEAGUE_1_NAME);
+		request.setOwnerUserName(USER_GUEST_NAME);
+		
+		return request;
 	}
 }

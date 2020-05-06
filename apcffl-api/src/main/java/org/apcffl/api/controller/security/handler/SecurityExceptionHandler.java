@@ -2,7 +2,8 @@ package org.apcffl.api.controller.security.handler;
 
 import org.apcffl.api.exception.EmailException;
 import org.apcffl.api.exception.SecurityException;
-import static org.apcffl.api.exception.constants.Enums.ErrorCodeEnums.*;
+
+import static org.apcffl.api.constants.Enums.ErrorCodeEnums.*;
 
 import org.apcffl.api.constants.UIMessages;
 import org.apcffl.api.dto.ErrorDto;

@@ -17,7 +17,7 @@ public class UIMessages {
 	public static final String ERROR_USERNAME_RECOVER_MISSING_EMAIL             = "The email is not privided. The the user name cannot be recovered.";
 	public static final String ERROR_USERNAME_RECOVER_NOT_FOUND                 = "The username is not found. The password cannot be reset.";
 	public static final String ERROR_USERNAME_OR_PRIMARY_EMAIL_EXISTS_ON_CREATE = "The username or primary email already exists and cannot be created.";
-
+	
 	// messages
 	
 	public static final String MSG_GENERIC_CHECK_EMAIL = "Please check your email.";
@@ -37,7 +37,9 @@ public class UIMessages {
 	
 	// account management errors
 	
-	public static final String ACCOUNT_NOT_FOUND              = "The account profile could not be found.";
+	public static final String ACCOUNT_ADMIN_REQUIRED                  = "Administrator privileges are required to perform this function.";
+	public static final String ACCOUNT_NOT_FOUND                       = "The account profile could not be found.";
+	public static final String ACCOUNT_UPDATE_PRIMARY_EMAIL_NOT_UNIQUE = "The primary email is already assigned to a different user name and cannot be duplicate.";
 	
 	private UIMessages() {}
 }

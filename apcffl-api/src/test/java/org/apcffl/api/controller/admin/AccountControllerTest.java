@@ -5,8 +5,10 @@ import org.apcffl.api.admin.dto.AccountCreateRequest;
 import org.apcffl.api.admin.dto.AccountRequest;
 import org.apcffl.api.admin.dto.AccountResponse;
 import org.apcffl.api.admin.dto.AllAccountsResponse;
+import org.apcffl.api.admin.dto.LeagueAssignmentRequest;
 import org.apcffl.api.admin.service.AdminService;
 import org.apcffl.api.constants.UIMessages;
+import org.apcffl.api.dto.ApiResponse;
 import org.apcffl.api.service.manager.SessionManager;
 import org.junit.Before;
 import org.junit.Test;
@@ -40,10 +42,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @WebMvcTest(value = AccountController.class)
 public class AccountControllerTest {
 
-	private static final String ACCOUNT_RETRIEVAL_URL     = "/account/accountRetrieval";
-	private static final String ACCOUNT_RETRIEVAL_ALL_URL = "/account/accountRetrievalAll";
-	private static final String ACCOUNT_CREATION_URL      = "/account/accountCreation";
-	private static final String ACCOUNT_UPDATE_URL        = "/account/accountUpdate";
+	private static final String ACCOUNT_RETRIEVAL_URL       = "/account/accountRetrieval";
+	private static final String ACCOUNT_RETRIEVAL_ALL_URL   = "/account/accountRetrievalAll";
+	private static final String ACCOUNT_CREATION_URL        = "/account/accountCreation";
+	private static final String ACCOUNT_UPDATE_URL          = "/account/accountUpdate";
+	private static final String ACCOUNT_OWNER_LEAGUE_ASSIGN = "/account/ownerLeagueAssignment";
 
 	@Autowired
 	private MockMvc mockMvc;
@@ -67,6 +70,9 @@ public class AccountControllerTest {
 	
 	@Captor
 	private ArgumentCaptor<AccountCreateRequest> accountCreateRequestCaptor;
+	
+	@Captor
+	private ArgumentCaptor<LeagueAssignmentRequest> leagueAssignmentCaptor;
  
     @Before
     public void setUp() {
@@ -256,6 +262,35 @@ public class AccountControllerTest {
 	}
 	
 	@Test
+	public void verify_accountUpdate_invalidSessionToken() throws Exception {
+		
+		// prepare test data
+		
+		AccountRequest request = ApcfflTest.buildAccountRequest();
+
+		when(sessionManager.isValidSessionToken(anyString(), anyString())).thenReturn(false);
+		
+		AccountResponse mockResponse = ApcfflTest.buildAccountResponse();
+		when(service.accountUpdate(any())).thenReturn(mockResponse);
+		
+		// perform the mock REST call
+		
+		String jsonRequest = objectMapper.writeValueAsString(request);
+		
+		mockMvc.perform(
+				post(ACCOUNT_UPDATE_URL)
+				.contentType(MediaType.APPLICATION_JSON)
+				.content(jsonRequest)
+				.accept(MediaType.APPLICATION_JSON))
+			.andDo(print())
+			.andExpect(status().isUnauthorized());
+    	
+    	// verify results
+		
+    	verify(service, never()).accountUpdate(accountRequestCaptor.capture());
+	}
+	
+	@Test
 	public void verify_accountUpdate() throws Exception {
 		
 		// prepare test data
@@ -291,4 +326,72 @@ public class AccountControllerTest {
     	assertEquals(ApcfflTest.USER_NAME, verifyRequest.getUserName());
     	assertEquals(ApcfflTest.TEST_TOKEN, verifyRequest.getSecurityToken());
 	}
+    
+    @Test
+    public void verify_ownerLeagueAssignment_invalidSessionToken() throws Exception {
+    	
+    	// prepare test data
+    	
+    	LeagueAssignmentRequest request = ApcfflTest.buildLeagueAssignmentRequest();
+
+		when(sessionManager.isValidSessionToken(anyString(), anyString())).thenReturn(false);
+		
+		// perform the mock REST call
+		
+		String jsonRequest = objectMapper.writeValueAsString(request);
+		
+		mockMvc.perform(
+				post(ACCOUNT_OWNER_LEAGUE_ASSIGN)
+				.contentType(MediaType.APPLICATION_JSON)
+				.content(jsonRequest)
+				.accept(MediaType.APPLICATION_JSON))
+			.andDo(print())
+			.andExpect(status().isUnauthorized());
+    	
+    	// verify results
+    	
+		verify(sessionManager, times(1))
+		.isValidSessionToken(userNameCaptor.capture(), tokenCaptor.capture());
+		assertEquals(ApcfflTest.USER_NAME, userNameCaptor.getValue());
+		assertEquals(ApcfflTest.TEST_TOKEN, tokenCaptor.getValue());
+    	
+    	verify(service, never()).ownerLeagueAssignment(leagueAssignmentCaptor.capture());
+    }
+    
+    @Test
+    public void verify_ownerLeagueAssignment() throws Exception {
+    	
+    	// prepare test data
+    	
+    	LeagueAssignmentRequest request = ApcfflTest.buildLeagueAssignmentRequest();
+    	
+    	when(service.ownerLeagueAssignment(any())).thenReturn(new ApiResponse());
+		
+		// perform the mock REST call
+		
+		String jsonRequest = objectMapper.writeValueAsString(request);
+		
+		mockMvc.perform(
+				post(ACCOUNT_OWNER_LEAGUE_ASSIGN)
+				.contentType(MediaType.APPLICATION_JSON)
+				.content(jsonRequest)
+				.accept(MediaType.APPLICATION_JSON))
+			.andDo(print())
+			.andExpect(status().isOk());
+    	
+    	// verify results
+    	
+		verify(sessionManager, times(1))
+		.isValidSessionToken(userNameCaptor.capture(), tokenCaptor.capture());
+		assertEquals(ApcfflTest.USER_NAME, userNameCaptor.getValue());
+		assertEquals(ApcfflTest.TEST_TOKEN, tokenCaptor.getValue());
+    	
+    	verify(service, times(1)).ownerLeagueAssignment(leagueAssignmentCaptor.capture());
+    	LeagueAssignmentRequest leagueCaptorValue = leagueAssignmentCaptor.getValue();
+    	assertEquals(ApcfflTest.TEST_TOKEN, leagueCaptorValue.getSecurityToken());
+    	assertEquals(ApcfflTest.USER_GROUP_ADMIN, leagueCaptorValue.getUserGroupName());
+    	assertEquals(ApcfflTest.USER_NAME, leagueCaptorValue.getUserName());
+    	assertEquals(ApcfflTest.LEAGUE_1_NAME, leagueCaptorValue.getOwnerLeagueName());
+    	assertEquals(ApcfflTest.USER_GUEST_NAME, leagueCaptorValue.getOwnerUserName());
+    }
 }
