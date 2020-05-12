@@ -1,7 +1,7 @@
 package org.apcffl.api.persistence.model;
 
 import java.io.Serializable;
-import java.util.Objects;
+import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -9,6 +9,7 @@ import javax.persistence.EntityListeners;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -36,6 +37,9 @@ public class LeagueModel implements Serializable {
 	
 	@Column(name = "NUMBER_OF_DIVISIONS")
 	private Integer numberOfDivisions;
+	
+	@OneToMany(mappedBy="league")
+	private Set<DivisionModel> divisions;
 
 	public Long getLeagueId() {
 		return leagueId;
@@ -69,40 +73,11 @@ public class LeagueModel implements Serializable {
 		this.numberOfDivisions = numberOfDivisions;
 	}
 
-	@Override
-	public int hashCode() {
-		return Objects.hash(leagueId, leagueName, numberOfTeams, numberOfDivisions);
+	public Set<DivisionModel> getDivisions() {
+		return divisions;
 	}
 
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		LeagueModel other = (LeagueModel) obj;
-		if (leagueId == null) {
-			if (other.leagueId != null)
-				return false;
-		} else if (!leagueId.equals(other.leagueId))
-			return false;
-		if (leagueName == null) {
-			if (other.leagueName != null)
-				return false;
-		} else if (!leagueName.equals(other.leagueName))
-			return false;
-		if (numberOfDivisions == null) {
-			if (other.numberOfDivisions != null)
-				return false;
-		} else if (!numberOfDivisions.equals(other.numberOfDivisions))
-			return false;
-		if (numberOfTeams == null) {
-			if (other.numberOfTeams != null)
-				return false;
-		} else if (!numberOfTeams.equals(other.numberOfTeams))
-			return false;
-		return true;
+	public void setDivisions(Set<DivisionModel> divisions) {
+		this.divisions = divisions;
 	}
 }

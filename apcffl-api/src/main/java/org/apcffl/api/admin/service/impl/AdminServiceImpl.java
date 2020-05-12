@@ -18,10 +18,12 @@ import org.apcffl.api.dto.ApiResponse;
 import org.apcffl.api.dto.ErrorDto;
 import org.apcffl.api.persistence.model.LeagueModel;
 import org.apcffl.api.persistence.model.OwnerModel;
+import org.apcffl.api.persistence.model.TeamModel;
 import org.apcffl.api.persistence.model.UserGroupModel;
 import org.apcffl.api.persistence.model.UserModel;
 import org.apcffl.api.persistence.repository.LeagueRepository;
 import org.apcffl.api.persistence.repository.OwnerRepository;
+import org.apcffl.api.persistence.repository.TeamRepository;
 import org.apcffl.api.persistence.repository.UserGroupRepository;
 import org.apcffl.api.persistence.repository.UserRepository;
 import org.apcffl.api.security.constants.SecurityConstants;
@@ -40,12 +42,14 @@ public class AdminServiceImpl extends ApcfflService implements AdminService {
 
 	private final LeagueRepository leagueRepository;
 	private final OwnerRepository ownerRepository;
+	private final TeamRepository teamRepository;
 	private final UserRepository userRepository;
 	private final UserGroupRepository userGroupRepository;
 	private final EmailManager emailManager;
 	private final EmailConfig emailConfig;
 	
 	public AdminServiceImpl(final OwnerRepository ownerRepository, final UserRepository userRepository,
+			final TeamRepository teamRepository,
 			final UserGroupRepository userGroupRepository, final EmailManager emailManager,
 			final EmailConfig emailConfig, final LeagueRepository leagueRepository) {
 		
@@ -55,6 +59,7 @@ public class AdminServiceImpl extends ApcfflService implements AdminService {
 		this.emailManager = emailManager;
 		this.emailConfig = emailConfig;
 		this.leagueRepository = leagueRepository;
+		this.teamRepository = teamRepository;
 	}
 
 	@Override
@@ -101,6 +106,8 @@ public class AdminServiceImpl extends ApcfflService implements AdminService {
 	
 	@Override
 	public ApiResponse ownerLeagueAssignment(LeagueAssignmentRequest request) {
+		
+		Date now = new Date();
 	
 		// validate user group access
 		ApiResponse response = new ApiResponse();
@@ -111,13 +118,22 @@ public class AdminServiceImpl extends ApcfflService implements AdminService {
 			return response;
 		}
 		try {
+			
 			UserGroupModel userGroup = userGroupRepository.findByUserGroupName(SecurityConstants.USER_GROUP_OWNER);
 			OwnerModel owner = ownerRepository.findByUserName(request.getOwnerUserName());
 			LeagueModel league = leagueRepository.findByLeagueName(request.getOwnerLeagueName());
+			
+			// create a new team for the owner
+			TeamModel team = new TeamModel();
+			team.setLeagueModel(league);
+			team.setTeamName(request.getOwnerTeamName());
+			team.setCreateDate(now);
+			team = teamRepository.save(team);
+			
 			owner.getUserModel().setUserGroupModel(userGroup);
 			owner.setActiveFlag(true);
-			owner.setLeagueModel(league);
-			
+			owner.setTeamModel(team);
+			owner.setUpdateDate(now);
 			ownerRepository.save(owner);
 			
 		} catch (Exception e) {

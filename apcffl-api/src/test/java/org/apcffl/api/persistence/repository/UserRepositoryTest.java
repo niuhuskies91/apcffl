@@ -40,19 +40,12 @@ public class UserRepositoryTest {
 		
 		// invoke
 		
-		UserModel user = repository.findByUserName(ApcfflTest.USER_GUEST_NAME);
+		UserModel user = repository.findByUserName(ApcfflTest.USER_NAME);
 		
 		// verify
 		
-		assertEquals(ApcfflTest.USER_GUEST_NAME, user.getUserName());
-		assertEquals(ApcfflTest.USER_GUEST_PASSWORD, user.getPassword());
-		assertEquals(ApcfflTest.USER_GUEST_USER_GROUP_NAME, user.getUserGroupModel().getUserGroupName());
+		assertEquals(ApcfflTest.USER_NAME, user.getUserName());
 	}
-	
-	
-	
-	
-
 	
 	@Test
 	public void verify_findByUserNamePassword_userName_notFoud() {
@@ -76,21 +69,6 @@ public class UserRepositoryTest {
 		// verify
 		
 		assertEquals(null, user);
-	}
-	
-	@Test
-	public void verify_findByUserNamePassword() {
-		
-		// invoke
-		
-		UserModel user = 
-				repository.findByUserNamePassword(ApcfflTest.USER_GUEST_NAME, ApcfflTest.USER_GUEST_PASSWORD);
-		
-		// verify
-		
-		assertEquals(ApcfflTest.USER_GUEST_NAME, user.getUserName());
-		assertEquals(ApcfflTest.USER_GUEST_PASSWORD, user.getPassword());
-		assertEquals(ApcfflTest.USER_GUEST_USER_GROUP_NAME, user.getUserGroupModel().getUserGroupName());
 	}
 
 }

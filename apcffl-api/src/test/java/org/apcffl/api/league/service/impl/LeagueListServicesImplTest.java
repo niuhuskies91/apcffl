@@ -2,23 +2,32 @@ package org.apcffl.api.league.service.impl;
 
 import static org.apcffl.api.constants.Enums.ErrorCodeEnums.*;
 import static org.junit.Assert.assertEquals;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.util.Arrays;
 import java.util.List;
 
 import org.apcffl.ApcfflTest;
 import org.apcffl.api.constants.UIMessages;
 import org.apcffl.api.dto.ApiRequest;
 import org.apcffl.api.league.dto.LeagueListsResponse;
+import org.apcffl.api.league.dto.LeagueOwner;
+import org.apcffl.api.league.dto.LeagueOwnersRequest;
+import org.apcffl.api.league.dto.LeagueOwnersResponse;
 import org.apcffl.api.persistence.model.LeagueModel;
+import org.apcffl.api.persistence.model.OwnerModel;
 import org.apcffl.api.persistence.repository.LeagueRepository;
+import org.apcffl.api.persistence.repository.OwnerRepository;
 import org.apcffl.api.security.constants.SecurityConstants;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.slf4j.LoggerFactory;
@@ -39,13 +48,19 @@ public class LeagueListServicesImplTest {
 	@Mock
 	private LeagueRepository leagueRepository;
 	
+	@Mock
+	private OwnerRepository ownerRepository;
+	
+	@Captor
+	private ArgumentCaptor<String> leagueNameCaptor;
+	
 	private ApiRequest apiRequest;
 	
 	@Before
 	public void setUp() {
 		MockitoAnnotations.initMocks(this);
 		
-		service = new LeagueListServicesImpl(leagueRepository);
+		service = new LeagueListServicesImpl(leagueRepository, ownerRepository);
 		
 		apiRequest = ApcfflTest.buildApiRequest();
 		apiRequest.setUserGroupName(SecurityConstants.USER_GROUP_ADMIN);
@@ -121,5 +136,80 @@ public class LeagueListServicesImplTest {
 		assertEquals(ApcfflTest.LEAGUE_2_NUM_TEAMS, response.getLeagues().get(1).getNumTeams());
 		
 		verify(leagueRepository, times(1)).findAll();
+	}
+	
+	@Test
+	public void verify_leagueOwners_notUserGroupAdmin() {
+		
+		// prepare test data
+		
+		LeagueOwnersRequest request = ApcfflTest.buildLeagueOwnersRequest();
+		request.setUserGroupName(SecurityConstants.USER_GROUP_OWNER);
+		
+		List<OwnerModel> mockOwners = Arrays.asList(ApcfflTest.buildOwnerModel());
+		when(ownerRepository.findByLeague(anyString())).thenReturn(mockOwners);
+		
+		// invoke
+		
+		LeagueOwnersResponse response = service.leagueOwners(request);
+		
+		// verify
+		
+		assertEquals(UserGroupAccessError.toString(), response.getError().getErrorCode());
+		assertEquals(UIMessages.ERROR_USER_GROUP_ACCESS, response.getError().getMessage());
+		assertEquals(null, response.getLeagueOwners());
+		
+		verify(ownerRepository, never()).findByLeague(leagueNameCaptor.capture());
+		
+	}
+	
+	@Test
+	public void verify_leagueOwners_findByLeagueException() {
+		
+		// prepare test data
+		
+		LeagueOwnersRequest request = ApcfflTest.buildLeagueOwnersRequest();
+		
+		when(ownerRepository.findByLeague(anyString())).thenThrow(new NullPointerException("error1"));
+		
+		// invoke
+		
+		LeagueOwnersResponse response = service.leagueOwners(request);
+		
+		// verify
+		
+		assertEquals(LeagueError.toString(), response.getError().getErrorCode());
+		assertEquals(UIMessages.ERROR_GENERAL_INTERNAL_EXCEPTION, response.getError().getMessage());
+		assertEquals(null, response.getLeagueOwners());
+		
+		verify(ownerRepository, times(1)).findByLeague(leagueNameCaptor.capture());
+		assertEquals(ApcfflTest.LEAGUE_2_NAME, leagueNameCaptor.getValue());
+		
+	}
+	
+	@Test
+	public void verify_leagueOwners() {
+		
+		// prepare test data
+		
+		LeagueOwnersRequest request = ApcfflTest.buildLeagueOwnersRequest();
+		
+		List<OwnerModel> mockOwners = Arrays.asList(ApcfflTest.buildOwnerModel());
+		when(ownerRepository.findByLeague(anyString())).thenReturn(mockOwners);
+		
+		// invoke
+		
+		LeagueOwnersResponse response = service.leagueOwners(request);
+		
+		// verify
+		
+		assertEquals(null, response.getError());
+		assertEquals(1, response.getLeagueOwners().size());
+		LeagueOwner leagueOwner = response.getLeagueOwners().get(0);
+		assertEquals(true, leagueOwner.getActiveFlag());
+		
+		verify(ownerRepository, times(1)).findByLeague(leagueNameCaptor.capture());
+		assertEquals(ApcfflTest.LEAGUE_2_NAME, leagueNameCaptor.getValue());
+		
 	}
 }

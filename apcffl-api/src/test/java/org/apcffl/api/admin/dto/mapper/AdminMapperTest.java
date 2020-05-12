@@ -13,12 +13,37 @@ import org.junit.Test;
 public class AdminMapperTest {
 	
 	@Test
+	public void verify_convertAccountModel_noTeam() {
+		
+		// prepare test data
+		
+		OwnerModel owner = ApcfflTest.buildOwnerModel();
+		owner.setTeamModel(null);
+		
+		// invoke method
+		
+		AccountResponse response = AdminMapper.convertAccountModel(owner);
+		
+		// verify results
+		
+		assertEquals(ApcfflTest.OWNER_ACTIVE,response.getActiveFlag());
+		assertEquals(ApcfflTest.OWNER_EMAIL1, response.getEmail1());
+		assertEquals(ApcfflTest.OWNER_EMAIL2, response.getEmail2());
+		assertEquals(ApcfflTest.OWNER_EMAIL3, response.getEmail3());
+		assertEquals(null, response.getError());
+		assertEquals(ApcfflTest.OWNER_FIRST_NAME, response.getFirstName());
+		assertEquals(ApcfflTest.OWNER_LAST_NAME, response.getLastName());
+		
+		assertEquals(null, response.getLeagueName());
+	}
+	
+	@Test
 	public void verify_convertAccountModel_noLeague() {
 		
 		// prepare test data
 		
 		OwnerModel owner = ApcfflTest.buildOwnerModel();
-		owner.setLeagueModel(null);
+		owner.getTeamModel().setLeagueModel(null);
 		
 		// invoke method
 		

@@ -1,5 +1,7 @@
 package org.apcffl.api.persistence.repository;
 
+import java.util.List;
+
 import org.apcffl.api.persistence.model.OwnerModel;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -14,4 +16,7 @@ public interface OwnerRepository extends JpaRepository<OwnerModel, Long> {
 
 	@Query("select o from OwnerModel o where o.email1 = :email")
 	OwnerModel findByEmail(@Param("email") String email);
+	
+	@Query("select o from OwnerModel o where o.teamModel.leagueModel.leagueName = :leagueName")
+	List<OwnerModel> findByLeague(@Param("leagueName") String leagueName);
 }

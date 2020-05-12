@@ -96,7 +96,7 @@ public class MessageBoardServiceImpl extends ApcfflService implements MessageBoa
 			messageBoard.setCreateDate(new Date(Calendar.getInstance().getTimeInMillis()));
 			messageBoard.setMessage(request.getMessage());
 			messageBoard.setOwnerModel(owner);
-			messageBoard.setLeagueModel(owner.getLeagueModel());
+			messageBoard.setLeagueModel(owner.getTeamModel().getLeagueModel());
 
 			// persist the message board
 

@@ -12,10 +12,12 @@ import org.apcffl.api.constants.UIMessages;
 import org.apcffl.api.dto.ApiResponse;
 import org.apcffl.api.persistence.model.LeagueModel;
 import org.apcffl.api.persistence.model.OwnerModel;
+import org.apcffl.api.persistence.model.TeamModel;
 import org.apcffl.api.persistence.model.UserGroupModel;
 import org.apcffl.api.persistence.model.UserModel;
 import org.apcffl.api.persistence.repository.LeagueRepository;
 import org.apcffl.api.persistence.repository.OwnerRepository;
+import org.apcffl.api.persistence.repository.TeamRepository;
 import org.apcffl.api.persistence.repository.UserGroupRepository;
 import org.apcffl.api.persistence.repository.UserRepository;
 import org.apcffl.api.security.constants.SecurityConstants;
@@ -68,6 +70,9 @@ public class AdminServiceImplTest {
 	private LeagueRepository leagueRepository;
 	
 	@Mock
+	private TeamRepository teamRepository;
+	
+	@Mock
 	private EmailManager emailManager;
 	
 	@Mock
@@ -89,6 +94,9 @@ public class AdminServiceImplTest {
 	private ArgumentCaptor<LeagueModel> leagueCaptor;
 	
 	@Captor
+	private ArgumentCaptor<TeamModel> teamCaptor;
+	
+	@Captor
 	private ArgumentCaptor<String> emailCaptor;
 	
 	@Before
@@ -96,8 +104,8 @@ public class AdminServiceImplTest {
 		MockitoAnnotations.initMocks(this);
 		
 		service = 
-				new AdminServiceImpl(ownerRepository, userRepository, userGroupRepository, 
-						emailManager, emailConfig, leagueRepository);
+				new AdminServiceImpl(ownerRepository, userRepository, teamRepository,
+						userGroupRepository, emailManager, emailConfig, leagueRepository);
 
 	    final Logger logger = (Logger)LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME);
 	    logger.setLevel(Level.DEBUG);
@@ -943,6 +951,9 @@ public class AdminServiceImplTest {
 		LeagueModel mockLeague = ApcfflTest.buildLeagueModels().get(0);
 		when(leagueRepository.findByLeagueName(anyString())).thenReturn(mockLeague);
 		
+		TeamModel mockTeam = ApcfflTest.buildTeamModel();
+		when(teamRepository.save(any())).thenReturn(mockTeam);
+		
 		when(ownerRepository.save(any())).thenReturn(mockOwner);
 		
 		// invoke
@@ -957,6 +968,8 @@ public class AdminServiceImplTest {
 		verify(ownerRepository, never()).findByUserName(userNameCaptor.capture());
 		
 		verify(leagueRepository, never()).findByLeagueName(leagueNameCaptor.capture());
+		
+		verify(teamRepository, never()).save(teamCaptor.capture());
 		
 		verify(ownerRepository, never()).save(ownerCaptor.capture());
 	}
@@ -974,6 +987,9 @@ public class AdminServiceImplTest {
 		LeagueModel mockLeague = ApcfflTest.buildLeagueModels().get(0);
 		when(leagueRepository.findByLeagueName(anyString())).thenReturn(mockLeague);
 		
+		TeamModel mockTeam = ApcfflTest.buildTeamModel();
+		when(teamRepository.save(any())).thenReturn(mockTeam);
+		
 		when(ownerRepository.save(any())).thenReturn(mockOwner);
 		
 		// invoke
@@ -989,6 +1005,9 @@ public class AdminServiceImplTest {
 		
 		verify(leagueRepository, times(1)).findByLeagueName(leagueNameCaptor.capture());
 		assertEquals(ApcfflTest.LEAGUE_1_NAME, leagueNameCaptor.getValue());
+		
+		verify(teamRepository, times(1)).save(teamCaptor.capture());
+		assertEquals(ApcfflTest.LEAGUE_1_TEAM_1, teamCaptor.getValue().getTeamName());
 		
 		verify(ownerRepository, times(1)).save(ownerCaptor.capture());
 	}

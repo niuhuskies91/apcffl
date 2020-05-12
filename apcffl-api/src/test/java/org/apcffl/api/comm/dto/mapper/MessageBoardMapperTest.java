@@ -46,13 +46,33 @@ public class MessageBoardMapperTest {
 	}
 	
 	@Test
+	public void verify_map_noAssociatedTeam() {
+		
+		// prepare test data
+		
+		MessageBoardModel model = ApcfflTest.buildMessageBoardModel();
+		
+		model.getOwnerModel().setTeamModel(null);
+		
+		List<MessageBoardModel> input = Arrays.asList(model);
+		
+		// invoke
+		
+		List<MessageBoard> result = MessageBoardMapper.map(input);
+		
+		// verify
+		
+		assertEquals(0, result.size());
+	}
+	
+	@Test
 	public void verify_map_noAssociatedLeague() {
 		
 		// prepare test data
 		
 		MessageBoardModel model = ApcfflTest.buildMessageBoardModel();
 		
-		model.getOwnerModel().setLeagueModel(null);
+		model.getOwnerModel().getTeamModel().setLeagueModel(null);
 		
 		List<MessageBoardModel> input = Arrays.asList(model);
 		

@@ -1,10 +1,13 @@
 package org.apcffl.api.league.dto;
 
+import java.util.List;
+
 public class League {
 
 	private String leagueName;
 	private Integer numTeams;
 	private Integer numDivisions;
+	private List<Division> divisions;
 	
 	public String getLeagueName() {
 		return leagueName;
@@ -24,6 +27,11 @@ public class League {
 	public void setNumDivisions(Integer numDivisions) {
 		this.numDivisions = numDivisions;
 	}
-	
+	public List<Division> getDivisions() {
+		return divisions;
+	}
+	public void setDivisions(List<Division> divisions) {
+		this.divisions = divisions;
+	}
 	
 }

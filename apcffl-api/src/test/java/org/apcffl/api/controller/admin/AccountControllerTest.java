@@ -393,5 +393,6 @@ public class AccountControllerTest {
     	assertEquals(ApcfflTest.USER_NAME, leagueCaptorValue.getUserName());
     	assertEquals(ApcfflTest.LEAGUE_1_NAME, leagueCaptorValue.getOwnerLeagueName());
     	assertEquals(ApcfflTest.USER_GUEST_NAME, leagueCaptorValue.getOwnerUserName());
+    	assertEquals(ApcfflTest.LEAGUE_1_TEAM_1, leagueCaptorValue.getOwnerTeamName());
     }
 }

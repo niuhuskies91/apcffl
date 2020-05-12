@@ -3,7 +3,9 @@ package org.apcffl;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.apcffl.api.admin.dto.AccountCreateRequest;
 import org.apcffl.api.admin.dto.AccountRequest;
@@ -13,12 +15,17 @@ import org.apcffl.api.admin.dto.LeagueAssignmentRequest;
 import org.apcffl.api.comm.dto.MessageBoard;
 import org.apcffl.api.comm.dto.MessageBoardRequest;
 import org.apcffl.api.dto.ApiRequest;
+import org.apcffl.api.league.dto.Division;
 import org.apcffl.api.league.dto.League;
+import org.apcffl.api.league.dto.LeagueOwner;
+import org.apcffl.api.league.dto.LeagueOwnersRequest;
 import org.apcffl.api.persistence.model.ApplicationActivityModel;
+import org.apcffl.api.persistence.model.DivisionModel;
 import org.apcffl.api.persistence.model.GroupActivityMapModel;
 import org.apcffl.api.persistence.model.LeagueModel;
 import org.apcffl.api.persistence.model.MessageBoardModel;
 import org.apcffl.api.persistence.model.OwnerModel;
+import org.apcffl.api.persistence.model.TeamModel;
 import org.apcffl.api.persistence.model.UserGroupModel;
 import org.apcffl.api.persistence.model.UserModel;
 import org.apcffl.api.security.dto.PasswordResetRequest;
@@ -54,10 +61,14 @@ public class ApcfflTest {
 	public static final String  LEAGUE_1_NAME      = "The Apcffl";
 	public static final Integer LEAGUE_1_NUM_TEAMS = 8;
 	public static final Integer LEAGUE_1_NUM_DIV   = 2;
+	public static final String  LEAGUE_1_DIV_1     = "Natural Grass Division";
+	public static final String  LEAGUE_1_DIV_2     = "Artificial Turf Division";
 	public static final Long    LEAGUE_2_ID        = 2L;
 	public static final String  LEAGUE_2_NAME      = "Test League";
 	public static final Integer LEAGUE_2_NUM_TEAMS = 8;
 	public static final Integer LEAGUE_2_NUM_DIV   = 2;
+	
+	public static final String  LEAGUE_1_TEAM_1    = "Don't Call Me Shirley";
 	
 	// User Groups
 	
@@ -206,9 +217,24 @@ public class ApcfflTest {
 		
 		LeagueModel model = 
 				buildLeagueModel(LEAGUE_1_ID, LEAGUE_1_NAME, LEAGUE_1_NUM_TEAMS, LEAGUE_1_NUM_DIV);
+		model.setDivisions(buildDivisionModels());
 		models.add(model);
 		
 		model = buildLeagueModel(LEAGUE_2_ID, LEAGUE_2_NAME, LEAGUE_2_NUM_TEAMS, LEAGUE_2_NUM_DIV);
+		model.setDivisions(buildDivisionModels());
+		models.add(model);
+		
+		return models;
+	}
+	
+	public static Set<DivisionModel> buildDivisionModels() {
+		Set<DivisionModel> models = new LinkedHashSet<>();
+		
+		DivisionModel model = new DivisionModel();
+		model.setDivisionName(LEAGUE_1_DIV_1);
+		models.add(model);
+		model = new DivisionModel();
+		model.setDivisionName(LEAGUE_1_DIV_2);
 		models.add(model);
 		
 		return models;
@@ -221,15 +247,39 @@ public class ApcfflTest {
 		league.setLeagueName(LEAGUE_1_NAME);
 		league.setNumDivisions(LEAGUE_1_NUM_DIV);
 		league.setNumTeams(LEAGUE_1_NUM_TEAMS);
+		league.setDivisions(buildDivisions());
 		leagues.add(league);
 		
 		return leagues;
 	}
 	
+	public static List<Division> buildDivisions() {
+		List<Division> divisions = new ArrayList<Division>();
+		
+		divisions.add(new Division(LEAGUE_1_DIV_1));
+		divisions.add(new Division(LEAGUE_1_DIV_2));
+		
+		return divisions;
+	}
+	
+	public static TeamModel buildTeamModel() {
+
+		TeamModel team = new TeamModel();
+		team.setTeamName(LEAGUE_1_TEAM_1);
+		team.setLeagueModel(buildLeagueModel(LEAGUE_1_ID, LEAGUE_1_NAME, LEAGUE_1_NUM_TEAMS, LEAGUE_1_NUM_DIV));
+		
+		DivisionModel division = new DivisionModel();
+		division.setDivisionName(LEAGUE_1_DIV_1);
+		team.setDivisionModel(division);
+		
+		return team;
+	}
+	
 	public static OwnerModel buildOwnerModel() {
 		OwnerModel model = new OwnerModel();
+		
 		model.setOwnerId(ANSWER_TO_THE_UNIVERSE);
-		model.setLeagueModel(buildLeagueModel(LEAGUE_1_ID, LEAGUE_1_NAME, LEAGUE_1_NUM_TEAMS, LEAGUE_1_NUM_DIV));
+		model.setTeamModel(buildTeamModel());
 		model.setUserModel(buildUserModel());
 		model.setFirstName(OWNER_FIRST_NAME);
 		model.setLastName(OWNER_LAST_NAME);
@@ -337,7 +387,31 @@ public class ApcfflTest {
 		request.setUserName(USER_NAME);
 		request.setOwnerLeagueName(LEAGUE_1_NAME);
 		request.setOwnerUserName(USER_GUEST_NAME);
+		request.setOwnerTeamName(LEAGUE_1_TEAM_1);
 		
 		return request;
+	}
+	
+	public static LeagueOwnersRequest buildLeagueOwnersRequest() {
+		LeagueOwnersRequest request = new LeagueOwnersRequest();
+		request.setLeagueName(LEAGUE_1_NAME);
+		request.setUserName(USER_NAME);
+		request.setUserGroupName(USER_GROUP_ADMIN);
+		request.setSecurityToken(TEST_TOKEN);
+		request.setOwnerLeagueName(LEAGUE_2_NAME);
+		
+		return request;
+	}
+	
+	public static LeagueOwner buildLeagueOwner() {
+		LeagueOwner leagueOwner = new LeagueOwner();
+		leagueOwner.setActiveFlag(true);
+		leagueOwner.setDivisionName(LEAGUE_1_DIV_1);
+		leagueOwner.setEmail(OWNER_EMAIL1);
+		leagueOwner.setFirstName(OWNER_FIRST_NAME);
+		leagueOwner.setLastName(OWNER_LAST_NAME);
+		leagueOwner.setTeamName(LEAGUE_1_TEAM_1);
+		
+		return leagueOwner;
 	}
 }

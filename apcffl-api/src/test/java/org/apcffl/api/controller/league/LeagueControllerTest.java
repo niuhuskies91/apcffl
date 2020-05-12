@@ -1,5 +1,7 @@
 package org.apcffl.api.controller.league;
 
+import java.util.Arrays;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -22,6 +24,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import org.apcffl.ApcfflTest;
 import org.apcffl.api.dto.ApiRequest;
 import org.apcffl.api.league.dto.LeagueListsResponse;
+import org.apcffl.api.league.dto.LeagueOwnersRequest;
+import org.apcffl.api.league.dto.LeagueOwnersResponse;
 import org.apcffl.api.league.service.LeagueListServices;
 import org.apcffl.api.service.manager.SessionManager;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,10 +38,11 @@ import org.springframework.test.web.servlet.MockMvc;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @RunWith(SpringRunner.class)
-@WebMvcTest(value = LeagueListController.class)
-public class LeagueListControllerTest {
+@WebMvcTest(value = LeagueController.class)
+public class LeagueControllerTest {
 	
-	private static final String LEAGUE_LIST_RETRIEVE_ALL_URL = "/league/allLeagues";
+	private static final String LEAGUE_LIST_RETRIEVE_ALL_URL           = "/league/allLeagues";
+	private static final String LEAGUE_LIST_RETRIEVE_LEAGUE_OWNERS_URL = "/league/leagueOwners";
 
 	@Autowired
 	private MockMvc mockMvc;
@@ -56,6 +61,9 @@ public class LeagueListControllerTest {
 	
 	@Captor
 	private ArgumentCaptor<ApiRequest> apiRequestCaptor;
+	
+	@Captor
+	private ArgumentCaptor<LeagueOwnersRequest> leagueOwnerRequestCaptor;
 	
 	private ObjectMapper objectMapper;
  
@@ -137,5 +145,80 @@ public class LeagueListControllerTest {
 		verify(service, times(1)).allLeagues(apiRequestCaptor.capture());
 		assertEquals(ApcfflTest.USER_GROUP_OWNER, apiRequestCaptor.getValue().getUserGroupName());
     }
+    
+    @Test
+    public void verify_leagueOwners_invalidSessionToken() throws Exception {
+    	
+    	// prepare test data
+    	
+    	LeagueOwnersRequest request = ApcfflTest.buildLeagueOwnersRequest();
 
+		when(sessionManager.isValidSessionToken(anyString(), anyString())).thenReturn(false);
+		
+		// perform the mock REST call
+		
+		String jsonRequest = objectMapper.writeValueAsString(request);
+		
+		mockMvc.perform(
+				post(LEAGUE_LIST_RETRIEVE_LEAGUE_OWNERS_URL)
+				.contentType(MediaType.APPLICATION_JSON)
+				.content(jsonRequest)
+				.accept(MediaType.APPLICATION_JSON))
+			.andDo(print())
+			.andExpect(status().isUnauthorized());
+    	
+    	// verify results
+    	
+		verify(sessionManager, times(1))
+		.isValidSessionToken(userNameCaptor.capture(), tokenCaptor.capture());
+		assertEquals(ApcfflTest.USER_NAME, userNameCaptor.getValue());
+		assertEquals(ApcfflTest.TEST_TOKEN, tokenCaptor.getValue());
+		
+		verify(service, never()).leagueOwners(leagueOwnerRequestCaptor.capture());
+    }
+    
+    @Test
+    public void verify_leagueOwners() throws Exception {
+    	
+    	// prepare test data
+    	
+    	LeagueOwnersRequest request = ApcfflTest.buildLeagueOwnersRequest();
+
+    	LeagueOwnersResponse mockResponse = new LeagueOwnersResponse();
+    	mockResponse.setLeagueOwners(Arrays.asList(ApcfflTest.buildLeagueOwner()));
+    	when(service.leagueOwners(any())).thenReturn(mockResponse);
+		
+		// perform the mock REST call
+		
+		String jsonRequest = objectMapper.writeValueAsString(request);
+		
+		mockMvc.perform(
+				post(LEAGUE_LIST_RETRIEVE_LEAGUE_OWNERS_URL)
+				.contentType(MediaType.APPLICATION_JSON)
+				.content(jsonRequest)
+				.accept(MediaType.APPLICATION_JSON))
+			.andDo(print())
+			.andExpect(status().isOk())
+			.andExpect(jsonPath("$.leagueOwners[0].email").value(ApcfflTest.OWNER_EMAIL1))
+			.andExpect(jsonPath("$.leagueOwners[0].firstName").value(ApcfflTest.OWNER_FIRST_NAME))
+			.andExpect(jsonPath("$.leagueOwners[0].lastName").value(ApcfflTest.OWNER_LAST_NAME))
+			.andExpect(jsonPath("$.leagueOwners[0].activeFlag").value(true))
+			.andExpect(jsonPath("$.leagueOwners[0].teamName").value(ApcfflTest.LEAGUE_1_TEAM_1))
+			.andExpect(jsonPath("$.leagueOwners[0].divisionName").value(ApcfflTest.LEAGUE_1_DIV_1));
+    	
+    	// verify results
+    	
+		verify(sessionManager, times(1))
+		.isValidSessionToken(userNameCaptor.capture(), tokenCaptor.capture());
+		assertEquals(ApcfflTest.USER_NAME, userNameCaptor.getValue());
+		assertEquals(ApcfflTest.TEST_TOKEN, tokenCaptor.getValue());
+		
+		verify(service, times(1)).leagueOwners(leagueOwnerRequestCaptor.capture());
+		LeagueOwnersRequest captorReq = leagueOwnerRequestCaptor.getValue();
+		assertEquals(ApcfflTest.TEST_TOKEN, captorReq.getSecurityToken());
+		assertEquals(ApcfflTest.LEAGUE_1_NAME, captorReq.getLeagueName());
+		assertEquals(ApcfflTest.USER_NAME, captorReq.getUserName());
+		assertEquals(ApcfflTest.USER_GROUP_ADMIN, captorReq.getUserGroupName());
+		assertEquals(ApcfflTest.LEAGUE_1_NAME, captorReq.getLeagueName());
+    }
 }

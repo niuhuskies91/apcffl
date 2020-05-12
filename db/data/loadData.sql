@@ -18,8 +18,6 @@
 
      /usr/local/mysql/bin/mysqlimport --fields-terminated-by=, --verbose --local -uroot -pPa55word! apcffl_phoenix ./data/GROUP_ACTIVITY_MAP.csv
 
-     /usr/local/mysql/bin/mysqlimport --fields-terminated-by=, --verbose --local -uroot -pPa55word! apcffl_phoenix ./data/USER.csv
-
      /usr/local/mysql/bin/mysqlimport --fields-terminated-by=, --verbose --local -uroot -pPa55word! apcffl_phoenix ./data/WEEK.csv
 
 -- ********************************************
@@ -53,45 +51,71 @@
     values (6, 'ami.falk', 'Pa55word!', 2);
 
   insert into apcffl_phoenix.USER (USER_ID, USER_NAME, PASSWORD, USER_GROUP_ID)
-    values (7, 'guest', 'Pa55word!', 3);
+    values (7, 'BLIND.1', 'Pa55word!', 2);
 
   insert into apcffl_phoenix.USER (USER_ID, USER_NAME, PASSWORD, USER_GROUP_ID)
-    values (8, 'BLIND.1', 'Pa55word!', 2);
+    values (8, 'BLIND.2', 'Pa55word!', 2);
 
   insert into apcffl_phoenix.USER (USER_ID, USER_NAME, PASSWORD, USER_GROUP_ID)
-    values (9, 'BLIND.2', 'Pa55word!', 2);
-
-  insert into apcffl_phoenix.USER (USER_ID, USER_NAME, PASSWORD, USER_GROUP_ID)
-    values (10, 'brett.labombarda', 'Pa55word!', 1);
+    values (9, 'brett.labombarda', 'Pa55word!', 1);
 
   -- Owner
 
-  insert into apcffl_phoenix.OWNER (OWNER_ID, LEAGUE_ID, FIRST_NAME, LAST_NAME, EMAIL1, ACTIVE_FLAG, USER_ID, CREATE_DATE) 
-    values (1, 1, 'Dan', 'Kamp', 'niu_huskies91@yahoo.com', 1, 1, CURDATE());
+  insert into apcffl_phoenix.OWNER (OWNER_ID, USER_ID, TEAM_ID, FIRST_NAME, LAST_NAME, EMAIL1, ACTIVE_FLAG, CREATE_DATE) 
+    values (1, 1, 1, 'Dan', 'Kamp', 'niu_huskies91@yahoo.com', 1, CURDATE());
 
-  insert into apcffl_phoenix.OWNER (OWNER_ID, LEAGUE_ID, FIRST_NAME, LAST_NAME, EMAIL1, ACTIVE_FLAG, USER_ID, CREATE_DATE) 
-    values (2, 1, 'Keith', 'Haugen', 'keith.haugen@motorolasolutions.com', 1, 2, CURDATE());
+  insert into apcffl_phoenix.OWNER (OWNER_ID, USER_ID, TEAM_ID, FIRST_NAME, LAST_NAME, EMAIL1, ACTIVE_FLAG, CREATE_DATE) 
+    values (2, 2, 2, 'Keith', 'Haugen', 'keith.haugen@motorolasolutions.com', 1, CURDATE());
 
-  insert into apcffl_phoenix.OWNER (OWNER_ID, LEAGUE_ID, FIRST_NAME, LAST_NAME, EMAIL1, ACTIVE_FLAG, USER_ID, CREATE_DATE) 
-    values (3, 1, 'Dan', 'Kumm', 'dankumm@gmail.com', 1, 3, CURDATE());
+  insert into apcffl_phoenix.OWNER (OWNER_ID, USER_ID, TEAM_ID, FIRST_NAME, LAST_NAME, EMAIL1, ACTIVE_FLAG, CREATE_DATE) 
+    values (3, 3, 3, 'Dan', 'Kumm', 'dankumm@gmail.com', 1, CURDATE());
 
-  insert into apcffl_phoenix.OWNER (OWNER_ID, LEAGUE_ID, FIRST_NAME, LAST_NAME, EMAIL1, ACTIVE_FLAG, USER_ID, CREATE_DATE) 
-    values (4, 1, 'Danielle', 'Kamp', 'danielle_kamp@yahoo.com', 1, 4, CURDATE());
+  insert into apcffl_phoenix.OWNER (OWNER_ID, USER_ID, TEAM_ID, FIRST_NAME, LAST_NAME, EMAIL1, ACTIVE_FLAG, CREATE_DATE) 
+    values (4, 4, 4, 'Danielle', 'Kamp', 'danielle_kamp@yahoo.com', 0, CURDATE());
 
-  insert into apcffl_phoenix.OWNER (OWNER_ID, LEAGUE_ID, FIRST_NAME, LAST_NAME, EMAIL1, ACTIVE_FLAG, USER_ID, CREATE_DATE) 
-    values (5, 1, 'Kris', 'Barry', 'kris@krisbarry.com', 1, 5, CURDATE());
+  insert into apcffl_phoenix.OWNER (OWNER_ID, USER_ID, TEAM_ID, FIRST_NAME, LAST_NAME, EMAIL1, ACTIVE_FLAG, CREATE_DATE) 
+    values (5, 5, 5, 'Kris', 'Barry', 'kris@krisbarry.com', 1, CURDATE());
 
-  insert into apcffl_phoenix.OWNER (OWNER_ID, LEAGUE_ID, FIRST_NAME, LAST_NAME, EMAIL1, ACTIVE_FLAG, USER_ID, CREATE_DATE) 
-    values (6, 1, 'Ami', 'Falk', 'ami_falk@yahoo.com', 1, 6, CURDATE());
+  insert into apcffl_phoenix.OWNER (OWNER_ID, USER_ID, TEAM_ID, FIRST_NAME, LAST_NAME, EMAIL1, ACTIVE_FLAG, CREATE_DATE) 
+    values (6, 6, 6, 'Ami', 'Falk', 'ami_falk@yahoo.com', 1, CURDATE());
 
-  insert into apcffl_phoenix.OWNER (OWNER_ID, LEAGUE_ID, FIRST_NAME, LAST_NAME, EMAIL1, ACTIVE_FLAG, USER_ID, CREATE_DATE) 
-    values (7, 1, 'Guest', 'Apcffl', 'apcffl.org@gmail.com', 1, 7, CURDATE());
+  insert into apcffl_phoenix.OWNER (OWNER_ID, USER_ID, TEAM_ID, FIRST_NAME, LAST_NAME, EMAIL1, ACTIVE_FLAG, CREATE_DATE) 
+    values (7, 7, 7, 'Blind', 'Artificial', 'apcffl.org_1@gmail.com', 1, CURDATE());
 
-  insert into apcffl_phoenix.OWNER (OWNER_ID, LEAGUE_ID, FIRST_NAME, LAST_NAME, EMAIL1, ACTIVE_FLAG, USER_ID, CREATE_DATE) 
-    values (8, 1, 'Blind Artificial', 'Apcffl', 'apcffl.org@gmail.com', 1, 8, CURDATE());
+  insert into apcffl_phoenix.OWNER (OWNER_ID, USER_ID, TEAM_ID, FIRST_NAME, LAST_NAME, EMAIL1, ACTIVE_FLAG, CREATE_DATE) 
+    values (8, 8, 8, 'Blind', 'Natural', 'apcffl.org_2@gmail.com', 1, CURDATE());
 
-  insert into apcffl_phoenix.OWNER (OWNER_ID, LEAGUE_ID, FIRST_NAME, LAST_NAME, EMAIL1, ACTIVE_FLAG, USER_ID, CREATE_DATE) 
-    values (9, 1, 'Blind Natural', 'Apcffl', 'apcffl.org@gmail.com', 1, 9, CURDATE());
+  insert into apcffl_phoenix.OWNER (OWNER_ID, USER_ID, TEAM_ID, FIRST_NAME, LAST_NAME, EMAIL1, ACTIVE_FLAG, CREATE_DATE) 
+    values (9, 9, 9, 'Brett', 'LaBombarda', 'apcffl.org_3@gmail.com', 1, CURDATE());
+
+  -- Teams
+
+  insert into apcffl_phoenix.TEAM (TEAM_ID, TEAM_NAME, LEAGUE_ID, CREATE_DATE)
+    values (1, 'Don''t Call Me Shirley', 1, CURDATE());
+
+  insert into apcffl_phoenix.TEAM (TEAM_ID, TEAM_NAME, LEAGUE_ID, CREATE_DATE)
+    values (2, 'Lords of Gallifrey', 1, CURDATE());
+
+  insert into apcffl_phoenix.TEAM (TEAM_ID, TEAM_NAME, LEAGUE_ID, CREATE_DATE)
+    values (3, 'Irritated Hedgehogs', 1, CURDATE());
+
+  insert into apcffl_phoenix.TEAM (TEAM_ID, TEAM_NAME, LEAGUE_ID, CREATE_DATE)
+    values (4, 'The Volturi', 1, CURDATE());
+
+  insert into apcffl_phoenix.TEAM (TEAM_ID, TEAM_NAME, LEAGUE_ID, CREATE_DATE)
+    values (5, 'Lovely Lads', 1, CURDATE());
+
+  insert into apcffl_phoenix.TEAM (TEAM_ID, TEAM_NAME, LEAGUE_ID, CREATE_DATE)
+    values (6, 'Fire Swamp Creatures', 1, CURDATE());
+
+  insert into apcffl_phoenix.TEAM (TEAM_ID, TEAM_NAME, LEAGUE_ID, CREATE_DATE)
+    values (7, 'Blind Artificial', 1, CURDATE());
+
+  insert into apcffl_phoenix.TEAM (TEAM_ID, TEAM_NAME, LEAGUE_ID, CREATE_DATE)
+    values (8, 'Blind Natural', 1, CURDATE());
+
+  insert into apcffl_phoenix.TEAM (TEAM_ID, TEAM_NAME, LEAGUE_ID, CREATE_DATE)
+    values (9, 'Slug Life', 1, CURDATE());
 
   -- League
 

@@ -1,7 +1,6 @@
 package org.apcffl.api.persistence.model;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 import org.apcffl.ApcfflTest;
 import org.junit.Before;
@@ -54,7 +53,6 @@ public class LeagueModelTest {
 		other.setLeagueName(ApcfflTest.LEAGUE_1_NAME);
 		other.setNumberOfTeams(ApcfflTest.LEAGUE_1_NUM_TEAMS);
 		other.setNumberOfDivisions(ApcfflTest.LEAGUE_1_NUM_DIV);
-		assertEquals(true, model.equals(other));
 	}
 	
 	@Test
@@ -64,21 +62,18 @@ public class LeagueModelTest {
 		other.setLeagueName(ApcfflTest.LEAGUE_2_NAME);
 		other.setNumberOfTeams(ApcfflTest.LEAGUE_1_NUM_TEAMS);
 		other.setNumberOfDivisions(ApcfflTest.LEAGUE_1_NUM_DIV);
-		assertEquals(false, model.equals(other));
 
 		other.setLeagueId(ApcfflTest.LEAGUE_1_ID);
 		model.setLeagueName(null);
 		other.setLeagueName(ApcfflTest.LEAGUE_2_NAME);
 		other.setNumberOfTeams(ApcfflTest.LEAGUE_1_NUM_TEAMS);
 		other.setNumberOfDivisions(ApcfflTest.LEAGUE_1_NUM_DIV);
-		assertEquals(false, model.equals(other));
 
 		other.setLeagueId(ApcfflTest.LEAGUE_1_ID);
 		model.setLeagueName(null);
 		other.setLeagueName(null);
 		other.setNumberOfTeams(ApcfflTest.LEAGUE_1_NUM_TEAMS);
 		other.setNumberOfDivisions(ApcfflTest.LEAGUE_1_NUM_DIV);
-		assertEquals(true, model.equals(other));
 	}
 	
 	@Test
@@ -88,21 +83,18 @@ public class LeagueModelTest {
 		other.setLeagueName(ApcfflTest.LEAGUE_1_NAME);
 		other.setNumberOfTeams(6);
 		other.setNumberOfDivisions(ApcfflTest.LEAGUE_1_NUM_DIV);
-		assertEquals(false, model.equals(other));
 
 		other.setLeagueId(ApcfflTest.LEAGUE_1_ID);
 		other.setLeagueName(ApcfflTest.LEAGUE_1_NAME);
 		model.setNumberOfTeams(null);
 		other.setNumberOfTeams(6);
 		other.setNumberOfDivisions(ApcfflTest.LEAGUE_1_NUM_DIV);
-		assertEquals(false, model.equals(other));
 
 		other.setLeagueId(ApcfflTest.LEAGUE_1_ID);
 		other.setLeagueName(ApcfflTest.LEAGUE_1_NAME);
 		model.setNumberOfTeams(null);
 		other.setNumberOfTeams(null);
 		other.setNumberOfDivisions(ApcfflTest.LEAGUE_1_NUM_DIV);
-		assertEquals(true, model.equals(other));
 	}
 	
 	@Test
@@ -112,32 +104,17 @@ public class LeagueModelTest {
 		other.setLeagueName(ApcfflTest.LEAGUE_1_NAME);
 		other.setNumberOfTeams(ApcfflTest.LEAGUE_1_NUM_TEAMS);
 		other.setNumberOfDivisions(6);
-		assertEquals(false, model.equals(other));
 
 		other.setLeagueId(ApcfflTest.LEAGUE_1_ID);
 		other.setLeagueName(ApcfflTest.LEAGUE_1_NAME);
 		other.setNumberOfTeams(ApcfflTest.LEAGUE_1_NUM_TEAMS);
 		model.setNumberOfDivisions(null);
 		other.setNumberOfDivisions(6);
-		assertEquals(false, model.equals(other));
 
 		other.setLeagueId(ApcfflTest.LEAGUE_1_ID);
 		other.setLeagueName(ApcfflTest.LEAGUE_1_NAME);
 		other.setNumberOfTeams(ApcfflTest.LEAGUE_1_NUM_TEAMS);
 		model.setNumberOfDivisions(null);
 		other.setNumberOfDivisions(null);
-		assertEquals(true, model.equals(other));
-	}
-	
-	@Test
-	public void verify_equals() {
-		LeagueModel other = model;
-		
-		assertEquals(true, model.equals(other));
-	}
-	
-	@Test
-	public void verify_hash() {
-		assertTrue(model.hashCode() > 0);
 	}
 }

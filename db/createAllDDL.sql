@@ -9,12 +9,6 @@
 
 create database apcffl_phoenix;
 
-create table apcffl_phoenix.CONFIG (
-      CONFIG_KEY            varchar(64) not null primary key,
-      CONFIG_VALUE          varchar(2048) not null,
-      CONFIG_DESC           varchar(128)
-);
-
 /* **************************************************************
 
        League tables
@@ -140,19 +134,44 @@ on delete no action
 on update no action;
 
 -- ================================================
+--    Team
+-- ================================================
+
+create table apcffl_phoenix.TEAM (
+       TEAM_ID              bigint (15) not null auto_increment primary key,
+       TEAM_NAME            varchar(50) not null,
+       LEAGUE_ID            bigint (15) not null,
+       DIVISION_ID          bigint (15),
+       CREATE_DATE          datetime,
+       UPDATE_DATE          datetime
+);
+
+alter table apcffl_phoenix.TEAM
+add foreign key fk_league_team(LEAGUE_ID)
+references apcffl_phoenix.LEAGUE(LEAGUE_ID)
+on delete no action
+on update no action;
+
+alter table apcffl_phoenix.TEAM
+add foreign key fk_division_team(DIVISION_ID)
+references apcffl_phoenix.DIVISION(DIVISION_ID)
+on delete no action
+on update no action;
+
+-- ================================================
 --    Owner
 -- ================================================
 
 create table apcffl_phoenix.OWNER (
        OWNER_ID             bigint (15) not null auto_increment primary key,
-       LEAGUE_ID            bigint (15),
+       USER_ID              bigint (15) not null,
+       TEAM_ID              bigint (15),
        FIRST_NAME           varchar(20) not null,
        LAST_NAME            varchar(25) not null,
-       EMAIL1               varchar(60) not null,
+       EMAIL1               varchar(60) not null unique,
        EMAIL2               varchar(60),
        EMAIL3               varchar(60),
        ACTIVE_FLAG          boolean not null default 0,
-       USER_ID              bigint (15) not null,
        CREATE_DATE          datetime,
        UPDATE_DATE          datetime
 );
@@ -164,8 +183,8 @@ on delete no action
 on update no action;
 
 alter table apcffl_phoenix.OWNER
-add foreign key fk_league_owner(LEAGUE_ID)
-references apcffl_phoenix.LEAGUE(LEAGUE_ID)
+add foreign key fk_team_owner(TEAM_ID)
+references apcffl_phoenix.TEAM(TEAM_ID)
 on delete no action
 on update no action;
 
@@ -201,31 +220,6 @@ create table apcffl_phoenix.SCHOOL (
 alter table apcffl_phoenix.SCHOOL
 add foreign key fk_conference_school(CONFERENCE_ID)
 references apcffl_phoenix.CONFERENCE(CONFERENCE_ID)
-on delete no action
-on update no action;
-
--- ================================================
---    Team
--- ================================================
-
-create table apcffl_phoenix.TEAM (
-       TEAM_ID              bigint (15) not null auto_increment primary key,
-       TEAM_NAME            varchar(50) not null,
-       OWNER_ID             bigint (15) not null,
-       DIVISION_ID          bigint (15) not null,
-       CREATE_DATE          datetime,
-       UPDATE_DATE          datetime
-);
-
-alter table apcffl_phoenix.TEAM
-add foreign key fk_owner_team(OWNER_ID)
-references apcffl_phoenix.OWNER(OWNER_ID)
-on delete no action
-on update no action;
-
-alter table apcffl_phoenix.TEAM
-add foreign key fk_division_team(DIVISION_ID)
-references apcffl_phoenix.DIVISION(DIVISION_ID)
 on delete no action
 on update no action;
 
