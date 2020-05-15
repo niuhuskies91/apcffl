@@ -1,0 +1,759 @@
+{
+	"info": {
+		"_postman_id": "a6c26102-f2ee-433a-a3e7-2267b15f8a97",
+		"name": "Apcffl",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Security: Login -  admin",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"userName\": \"dan.kamp\",\n\t\"password\": \"Pa55word!\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/apcffl-api/security/login",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"apcffl-api",
+						"security",
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Security: Login - newUserTest1",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"userName\": \"newUserTest1\",\n\t\"password\": \"password\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/apcffl-api/security/login",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"apcffl-api",
+						"security",
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Security: PasswordResetToken",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/apcffl-api/security/passwordResetToken/userName/dan.kamp",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"apcffl-api",
+						"security",
+						"passwordResetToken",
+						"userName",
+						"dan.kamp"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Security: PasswordReset",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"password\": \"Pa55word!\",\n  \"passwordResetToken\": 91829,\n  \"userName\": \"dan.kamp\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/apcffl-api/security/passwordReset",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"apcffl-api",
+						"security",
+						"passwordReset"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Security: UserNameRecovery",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/apcffl-api/security/userNameRecovery/email/niu_huskies91@yahoo.com",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"apcffl-api",
+						"security",
+						"userNameRecovery",
+						"email",
+						"niu_huskies91@yahoo.com"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Account: AccountRetrieval",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"securityToken\": \"Mk1HQWU2U3VyUXhCSnJjcHBpSW1hZz09\",\n\t\"userName\": \"newUserTest1\",\n\t\"userGroupName\": \"TEAM_OWNER\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/apcffl-api/account/accountRetrieval",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"apcffl-api",
+						"account",
+						"accountRetrieval"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Account: AccountRetrievalAll",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"securityToken\": \"NUZVODVJeUxqbDVEeTJqWEY4RkJEZz09\",\n\t\"userName\": \"dan.kamp\",\n\t\"userGroupName\": \"ADMINISTRATOR\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/apcffl-api/account/accountRetrievalAll",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"apcffl-api",
+						"account",
+						"accountRetrievalAll"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Account: AccountRetrievalAll - invalid group creds",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"securityToken\": \"L2dFaDlBdUpkaEozdk42ZHFBR3RsQT09\",\n\t\"userName\": \"dan.kamp\",\n\t\"userGroupName\": \"OWNER\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/apcffl-api/account/accountRetrievalAll",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"apcffl-api",
+						"account",
+						"accountRetrievalAll"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Account: AccountCreate",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"email1\": \"danielle_kamp@gmail.com\",\n  \"email2\": \"daniel.kamp@drivindealer.com\",\n  \"email3\": \"danielle_kamp@gmail.com\",\n  \"firstName\": \"John\",\n  \"lastName\": \"Doe\",\n  \"password\": \"password\",\n  \"userName\": \"newUserTest1\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/apcffl-api/account/accountCreation",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"apcffl-api",
+						"account",
+						"accountCreation"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Account: OwnerLeagueAssignment",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"securityToken\": \"blpTVjVRN2UzdXZ4Sjl0RjVxQzdqdz09\",\n\t\"userName\": \"dan.kamp\",\n\t\"userGroupName\": \"ADMINISTRATOR\",\n\t\"ownerLeagueName\": \"Test League\",\n\t\"ownerUserName\": \"newUserTest1\",\n\t\"ownerTeamName\": \"Dont Forget Your Towel\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/apcffl-api/account/ownerLeagueAssignment",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"apcffl-api",
+						"account",
+						"ownerLeagueAssignment"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Account: AccountUpdate - owner",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"securityToken\": \"bmpHd0J1dWYxa0RhTnRReGFvd1ZNQT09\",\n\t\"userName\": \"newUserTest1\",\n\t\"userGroupName\": \"TEAM_OWNER\",\n    \"leagueName\": \"Test League\",\n    \"firstName\": \"John\",\n    \"lastName\": \"Doe\",\n    \"email1\": \"danielle_kamp@gmail.com\",\n    \"email2\": \"jane.doe@whoami.com\",\n    \"email3\": \"john.doe@amnesia.com\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/apcffl-api/account/accountUpdate",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"apcffl-api",
+						"account",
+						"accountUpdate"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Account: AccountUpdate - not owner",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"securityToken\": \"MEtXWHJnZ2Z4QlM5U1owYlYrdVBMUT09\",\n\t\"userName\": \"newUserTest1\",\n\t\"userGroupName\": \"GUEST\",\n    \"leagueName\": \"Test League\",\n    \"firstName\": \"John\",\n    \"lastName\": \"Doe\",\n    \"email1\": \"daniel.g.kamp@gmail.com\",\n    \"email2\": \"daniel.kamp@drivindealer.com\",\n    \"email3\": \"john.doe@amnesia.com\",\n    \"activeFlag\": true\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/apcffl-api/account/accountUpdate",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"apcffl-api",
+						"account",
+						"accountUpdate"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Account: AccountUpdate - primary email error",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"securityToken\": \"MEtXWHJnZ2Z4QlM5U1owYlYrdVBMUT09\",\n\t\"userName\": \"newUserTest1\",\n\t\"userGroupName\": \"TEAM_OWNER\",\n    \"leagueName\": \"Test League\",\n    \"firstName\": \"John\",\n    \"lastName\": \"Doe\",\n    \"email1\": \"niu_huskies91@yahoo.com\",\n    \"email2\": \"daniel.kamp@drivindealer.com\",\n    \"email3\": \"john.doe@amnesia.com\",\n    \"activeFlag\": true\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/apcffl-api/account/accountUpdate",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"apcffl-api",
+						"account",
+						"accountUpdate"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "League: AllLeagues - invalid group",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"securityToken\": \"L1dtVHhHbDVSWjlwS3NRSXFMOFBidz09\",\n\t\"userName\": \"dan.kamp\",\n\t\"userGroupName\": \"TEAM_OWNER\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/apcffl-api/league/allLeagues",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"apcffl-api",
+						"league",
+						"allLeagues"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "League: AllLeagues - admin",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"securityToken\": \"QlllRU1HNFQzTkY2cnhvelczbUR3Zz09\",\n\t\"userName\": \"dan.kamp\",\n\t\"userGroupName\": \"ADMINISTRATOR\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/apcffl-api/league/allLeagues",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"apcffl-api",
+						"league",
+						"allLeagues"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Comm: MessageBoardAll - invalid group",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"leagueName\": \"string\",\n  \"securityToken\": \"dFhUa25mNDBOVEQyeVEwdkIvV0Uwdz09\",\n  \"userGroupName\": \"GUEST\",\n  \"userName\": \"dan.kamp\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/apcffl-api/communications/allMessageBoard",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"apcffl-api",
+						"communications",
+						"allMessageBoard"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Comm: MessageBoardAll - no league",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"securityToken\": \"dFhUa25mNDBOVEQyeVEwdkIvV0Uwdz09\",\n  \"userGroupName\": \"ADMINISTRATOR\",\n  \"userName\": \"dan.kamp\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/apcffl-api/communications/allMessageBoard",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"apcffl-api",
+						"communications",
+						"allMessageBoard"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Comm: MessageBoardAll",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"leagueName\": \"The Apcffl\",\n  \"securityToken\": \"RmFHNnpqK3pKRG1xTHVWWC9LOXMrQT09\",\n  \"userGroupName\": \"ADMINISTRATOR\",\n  \"userName\": \"dan.kamp\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/apcffl-api/communications/allMessageBoard",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"apcffl-api",
+						"communications",
+						"allMessageBoard"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Comm: MessageBoard new - invalid group",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"leagueName\": \"The Apcffl\",\n  \"securityToken\": \"RmFHNnpqK3pKRG1xTHVWWC9LOXMrQT09\",\n  \"userGroupName\": \"GUEST\",\n  \"userName\": \"dan.kamp\",\n  \"message\": \"My hovercraft is full of eels\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/apcffl-api/communications/newMessageBoard",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"apcffl-api",
+						"communications",
+						"newMessageBoard"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Comm: MessageBoard new - no league",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"securityToken\": \"RmFHNnpqK3pKRG1xTHVWWC9LOXMrQT09\",\n  \"userGroupName\": \"ADMINISTRATOR\",\n  \"userName\": \"dan.kamp\",\n  \"message\": \"My hovercraft is full of eels\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/apcffl-api/communications/newMessageBoard",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"apcffl-api",
+						"communications",
+						"newMessageBoard"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Comm: MessageBoard new",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"leagueName\": \"The Apcffl\",\n  \"securityToken\": \"RmFHNnpqK3pKRG1xTHVWWC9LOXMrQT09\",\n  \"userGroupName\": \"ADMINISTRATOR\",\n  \"userName\": \"dan.kamp\",\n  \"message\": \"My hovercraft is full of eels\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/apcffl-api/communications/newMessageBoard",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"apcffl-api",
+						"communications",
+						"newMessageBoard"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"protocolProfileBehavior": {}
+}

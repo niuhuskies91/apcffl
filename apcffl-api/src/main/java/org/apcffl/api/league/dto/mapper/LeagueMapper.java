@@ -51,6 +51,7 @@ public class LeagueMapper {
 		}
 		for (OwnerModel owner : owners) {
 			LeagueOwner leagueOwner = new LeagueOwner();
+			leagueOwner.setUserName(owner.getUserModel().getUserName());
 			leagueOwner.setActiveFlag(owner.getActiveFlag());
 			leagueOwner.setEmail(owner.getEmail1());
 			leagueOwner.setFirstName(owner.getFirstName());

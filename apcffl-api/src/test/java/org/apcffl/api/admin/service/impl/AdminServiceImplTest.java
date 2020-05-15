@@ -138,6 +138,7 @@ public class AdminServiceImplTest {
 		assertEquals(null, response.getFirstName());
 		assertEquals(null, response.getLastName());
 		assertEquals(null, response.getLeagueName());
+		assertEquals(null, response.getTeamName());
 		
 		verify(ownerRepository, times(1)).findByUserName(userNameCaptor.capture());
 		assertEquals(ApcfflTest.USER_NAME, userNameCaptor.getValue());
@@ -171,6 +172,7 @@ public class AdminServiceImplTest {
 		assertEquals(null, response.getFirstName());
 		assertEquals(null, response.getLastName());
 		assertEquals(null, response.getLeagueName());
+		assertEquals(null, response.getTeamName());
 		
 		verify(ownerRepository, never()).findByUserName(userNameCaptor.capture());
 	}
@@ -203,6 +205,7 @@ public class AdminServiceImplTest {
 		assertEquals(null, response.getFirstName());
 		assertEquals(null, response.getLastName());
 		assertEquals(null, response.getLeagueName());
+		assertEquals(null, response.getTeamName());
 		
 		verify(ownerRepository, times(1)).findByUserName(userNameCaptor.capture());
 		assertEquals(ApcfflTest.USER_NAME, userNameCaptor.getValue());
@@ -235,6 +238,7 @@ public class AdminServiceImplTest {
 		assertEquals(ApcfflTest.OWNER_FIRST_NAME, response.getFirstName());
 		assertEquals(ApcfflTest.OWNER_LAST_NAME, response.getLastName());
 		assertEquals(ApcfflTest.LEAGUE_1_NAME, response.getLeagueName());
+		assertEquals(ApcfflTest.LEAGUE_1_TEAM_1, response.getTeamName());
 		
 		verify(ownerRepository, times(1)).findByUserName(userNameCaptor.capture());
 		assertEquals(ApcfflTest.USER_NAME, userNameCaptor.getValue());
@@ -313,6 +317,7 @@ public class AdminServiceImplTest {
 		assertEquals(ApcfflTest.OWNER_FIRST_NAME, response.getAccounts().get(0).getFirstName());
 		assertEquals(ApcfflTest.OWNER_LAST_NAME, response.getAccounts().get(0).getLastName());
 		assertEquals(ApcfflTest.LEAGUE_1_NAME, response.getAccounts().get(0).getLeagueName());
+		assertEquals(ApcfflTest.LEAGUE_1_TEAM_1, response.getAccounts().get(0).getTeamName());
 		
 		verify(ownerRepository, times(1)).findAll();
 	}

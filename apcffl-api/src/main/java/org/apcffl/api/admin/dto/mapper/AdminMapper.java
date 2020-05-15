@@ -21,6 +21,7 @@ public class AdminMapper {
 		dto.setLastName(owner.getLastName());
 		if (owner.getTeamModel() != null && owner.getTeamModel().getLeagueModel() != null) {
 			dto.setLeagueName(owner.getTeamModel().getLeagueModel().getLeagueName());
+			dto.setTeamName(owner.getTeamModel().getTeamName());
 		}
 		return dto;
 	}

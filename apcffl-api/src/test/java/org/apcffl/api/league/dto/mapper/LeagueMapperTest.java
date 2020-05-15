@@ -154,6 +154,7 @@ public class LeagueMapperTest {
 		// verify
 		
 		assertEquals(1, result.size());
+		assertEquals(ApcfflTest.USER_NAME, result.get(0).getUserName());
 		assertEquals(true, result.get(0).getActiveFlag());
 		assertEquals(ApcfflTest.OWNER_EMAIL1, result.get(0).getEmail());
 		assertEquals(ApcfflTest.OWNER_FIRST_NAME, result.get(0).getFirstName());
@@ -180,6 +181,7 @@ public class LeagueMapperTest {
 		// verify
 		
 		assertEquals(1, result.size());
+		assertEquals(ApcfflTest.USER_NAME, result.get(0).getUserName());
 		assertEquals(true, result.get(0).getActiveFlag());
 		assertEquals(ApcfflTest.OWNER_EMAIL1, result.get(0).getEmail());
 		assertEquals(ApcfflTest.OWNER_FIRST_NAME, result.get(0).getFirstName());
@@ -204,6 +206,7 @@ public class LeagueMapperTest {
 		// verify
 		
 		assertEquals(1, result.size());
+		assertEquals(ApcfflTest.USER_NAME, result.get(0).getUserName());
 		assertEquals(true, result.get(0).getActiveFlag());
 		assertEquals(ApcfflTest.OWNER_EMAIL1, result.get(0).getEmail());
 		assertEquals(ApcfflTest.OWNER_FIRST_NAME, result.get(0).getFirstName());

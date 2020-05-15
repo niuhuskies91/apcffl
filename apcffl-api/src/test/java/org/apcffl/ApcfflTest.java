@@ -19,6 +19,9 @@ import org.apcffl.api.league.dto.Division;
 import org.apcffl.api.league.dto.League;
 import org.apcffl.api.league.dto.LeagueOwner;
 import org.apcffl.api.league.dto.LeagueOwnersRequest;
+import org.apcffl.api.league.dto.LeagueOwnersResponse;
+import org.apcffl.api.league.dto.Team;
+import org.apcffl.api.league.dto.TeamsDivisionAssignmentRequest;
 import org.apcffl.api.persistence.model.ApplicationActivityModel;
 import org.apcffl.api.persistence.model.DivisionModel;
 import org.apcffl.api.persistence.model.GroupActivityMapModel;
@@ -96,6 +99,7 @@ public class ApcfflTest {
 	public static final String OWNER_EMAIL2                = "email2@gmail.com";
 	public static final String OWNER_EMAIL3                = "email3@gmail.com";
 	public static final Boolean OWNER_ACTIVE               = true;
+	public static final String OWNER_TEAM_NAME             = "Don't Forget to Bring a Towel";
 	
 	// Guest User
 	
@@ -262,6 +266,18 @@ public class ApcfflTest {
 		return divisions;
 	}
 	
+	public static Team buildTeam() {
+		
+		Team team = new Team();
+		team.setActiveFlag(true);
+		team.setDivisionName(LEAGUE_1_DIV_1);
+		team.setLeagueName(LEAGUE_1_NAME);
+		team.setTeamName(OWNER_TEAM_NAME);
+		team.setUserName(USER_NAME);
+		
+		return team;
+	}
+	
 	public static TeamModel buildTeamModel() {
 
 		TeamModel team = new TeamModel();
@@ -413,5 +429,25 @@ public class ApcfflTest {
 		leagueOwner.setTeamName(LEAGUE_1_TEAM_1);
 		
 		return leagueOwner;
+	}
+	
+	public static LeagueOwnersResponse buildLeagueOwnersResponse() {
+		LeagueOwnersResponse response = new LeagueOwnersResponse();
+		response.setLeagueOwners(Arrays.asList(buildLeagueOwner()));
+		
+		return response;
+	}
+	
+	public static TeamsDivisionAssignmentRequest buildTeamsDivisionAssignmentRequest() {
+		
+		TeamsDivisionAssignmentRequest request = new TeamsDivisionAssignmentRequest();
+		request.setLeagueName(LEAGUE_1_NAME);
+		request.setSecurityToken(TEST_TOKEN);
+		request.setUserGroupName(USER_GROUP_ADMIN);
+		request.setUserName(USER_NAME);
+		request.setTeams(Arrays.asList(buildTeam()));
+		request.setOwnerLeagueName(LEAGUE_1_NAME);
+		
+		return request;
 	}
 }

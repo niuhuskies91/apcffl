@@ -5,6 +5,7 @@ import org.apcffl.api.dto.ApiResponse;
 public class AccountResponse extends ApiResponse {
 
 	private String leagueName;
+	private String teamName;
 	private String firstName;
 	private String lastName;
 	private String email1;
@@ -17,6 +18,13 @@ public class AccountResponse extends ApiResponse {
 	}
 	public void setLeagueName(String leagueName) {
 		this.leagueName = leagueName;
+	}
+	
+	public String getTeamName() {
+		return teamName;
+	}
+	public void setTeamName(String teamName) {
+		this.teamName = teamName;
 	}
 	public String getFirstName() {
 		return firstName;

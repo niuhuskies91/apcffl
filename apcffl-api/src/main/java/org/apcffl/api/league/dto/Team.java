@@ -1,12 +1,10 @@
 package org.apcffl.api.league.dto;
 
-public class LeagueOwner {
+public class Team {
 
 	private String userName;
-	private String firstName;
-	private String lastName;
-	private String email;
 	private Boolean activeFlag;
+	private String leagueName;
 	private String teamName;
 	private String divisionName;
 	
@@ -16,29 +14,17 @@ public class LeagueOwner {
 	public void setUserName(String userName) {
 		this.userName = userName;
 	}
-	public String getFirstName() {
-		return firstName;
-	}
-	public void setFirstName(String firstName) {
-		this.firstName = firstName;
-	}
-	public String getLastName() {
-		return lastName;
-	}
-	public void setLastName(String lastName) {
-		this.lastName = lastName;
-	}
-	public String getEmail() {
-		return email;
-	}
-	public void setEmail(String email) {
-		this.email = email;
-	}
 	public Boolean getActiveFlag() {
 		return activeFlag;
 	}
 	public void setActiveFlag(Boolean activeFlag) {
 		this.activeFlag = activeFlag;
+	}
+	public String getLeagueName() {
+		return leagueName;
+	}
+	public void setLeagueName(String leagueName) {
+		this.leagueName = leagueName;
 	}
 	public String getTeamName() {
 		return teamName;
@@ -52,4 +38,5 @@ public class LeagueOwner {
 	public void setDivisionName(String divisionName) {
 		this.divisionName = divisionName;
 	}
+	
 }

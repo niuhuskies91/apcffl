@@ -6,7 +6,9 @@ import org.apcffl.api.dto.ErrorDto;
 import org.apcffl.api.league.dto.LeagueListsResponse;
 import org.apcffl.api.league.dto.LeagueOwnersRequest;
 import org.apcffl.api.league.dto.LeagueOwnersResponse;
+import org.apcffl.api.league.dto.TeamsDivisionAssignmentRequest;
 import org.apcffl.api.league.service.LeagueListServices;
+import org.apcffl.api.league.service.LeagueServices;
 import org.apcffl.api.service.manager.SessionManager;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -24,11 +26,15 @@ import io.swagger.annotations.ApiOperation;
 @RequestMapping("/league")
 public class LeagueController extends ApcfflController {
 
-	private final LeagueListServices service;
+	private final LeagueListServices leagueListServices;
 	
-	public LeagueController(final LeagueListServices service, final SessionManager sessionManager) {
-		this.service = service;
+	private final LeagueServices leagueServices;
+	
+	public LeagueController(final LeagueListServices leagueListServices, final SessionManager sessionManager,
+			final LeagueServices leagueServices) {
+		this.leagueListServices = leagueListServices;
 		this.sessionManager = sessionManager;
+		this.leagueServices = leagueServices;
 	}
 
 	@ApiOperation(value="Retrieve all leagues request", httpMethod = "POST",  consumes = MediaType.APPLICATION_JSON_VALUE,
@@ -45,7 +51,7 @@ public class LeagueController extends ApcfflController {
 		}
 		
 		// retrieve all accounts
-		return new ResponseEntity<>(service.allLeagues(request), HttpStatus.OK);
+		return new ResponseEntity<>(leagueListServices.allLeagues(request), HttpStatus.OK);
 	}
 
 	@ApiOperation(value="Retrieve all owners in a league", httpMethod = "POST",  consumes = MediaType.APPLICATION_JSON_VALUE,
@@ -62,6 +68,22 @@ public class LeagueController extends ApcfflController {
 		}
 		
 		// retrieve all accounts
-		return new ResponseEntity<>(service.leagueOwners(request), HttpStatus.OK);
+		return new ResponseEntity<>(leagueListServices.leagueOwners(request), HttpStatus.OK);
+	}
+
+	@ApiOperation(value="Assign teams to a division in a league", httpMethod = "POST",  consumes = MediaType.APPLICATION_JSON_VALUE,
+			produces = MediaType.APPLICATION_JSON_VALUE, response = LeagueOwnersResponse.class)
+	@RequestMapping(value="/teamsDivisionAssignment", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = {MediaType.APPLICATION_JSON_VALUE})
+	public ResponseEntity<LeagueOwnersResponse> teamsDivisionAssignment(@RequestBody TeamsDivisionAssignmentRequest request) {
+		
+		// validate the session token
+		ErrorDto error = isValidSessionToken(request.getSecurityToken(), request.getUserName());
+		if (error != null) {
+			LeagueOwnersResponse response = new LeagueOwnersResponse();
+			response.setError(error);
+			return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
+		}
+		// assign teams to divisions
+		return new ResponseEntity<>(leagueServices.teamsDivisionAssignment(request), HttpStatus.OK);
 	}
 }

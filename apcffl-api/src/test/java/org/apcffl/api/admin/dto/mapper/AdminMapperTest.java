@@ -35,6 +35,7 @@ public class AdminMapperTest {
 		assertEquals(ApcfflTest.OWNER_LAST_NAME, response.getLastName());
 		
 		assertEquals(null, response.getLeagueName());
+		assertEquals(null, response.getTeamName());
 	}
 	
 	@Test
@@ -59,6 +60,7 @@ public class AdminMapperTest {
 		assertEquals(ApcfflTest.OWNER_FIRST_NAME, response.getFirstName());
 		assertEquals(ApcfflTest.OWNER_LAST_NAME, response.getLastName());
 		assertEquals(null, response.getLeagueName());
+		assertEquals(null, response.getTeamName());
 	}
 	
 	@Test
@@ -82,6 +84,7 @@ public class AdminMapperTest {
 		assertEquals(ApcfflTest.OWNER_FIRST_NAME, response.getFirstName());
 		assertEquals(ApcfflTest.OWNER_LAST_NAME, response.getLastName());
 		assertEquals(ApcfflTest.LEAGUE_1_NAME, response.getLeagueName());
+		assertEquals(ApcfflTest.LEAGUE_1_TEAM_1, response.getTeamName());
 	}
 	
 	@Test
@@ -140,5 +143,6 @@ public class AdminMapperTest {
 		assertEquals(ApcfflTest.OWNER_FIRST_NAME, response.get(0).getFirstName());
 		assertEquals(ApcfflTest.OWNER_LAST_NAME, response.get(0).getLastName());
 		assertEquals(ApcfflTest.LEAGUE_1_NAME, response.get(0).getLeagueName());
+		assertEquals(ApcfflTest.LEAGUE_1_TEAM_1, response.get(0).getTeamName());
 	}
 }

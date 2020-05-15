@@ -41,5 +41,10 @@ public class UIMessages {
 	public static final String ACCOUNT_NOT_FOUND                       = "The account profile could not be found.";
 	public static final String ACCOUNT_UPDATE_PRIMARY_EMAIL_NOT_UNIQUE = "The primary email is already assigned to a different user name and cannot be duplicate.";
 	
+	// league errors
+	
+	public static final String LEAGUE_DIVISION_NAME_NOT_MATCH    = "The provided division name does not match an available division for the league.";
+	public static final String LEAGUE_DIVISION_EXCEED_TEAM_COUNT = "The number of teams in a division has exceeded the max limit.";
+	
 	private UIMessages() {}
 }
