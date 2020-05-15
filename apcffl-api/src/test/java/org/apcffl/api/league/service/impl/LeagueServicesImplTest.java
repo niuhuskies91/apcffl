@@ -29,8 +29,6 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.apcffl.api.constants.Enums.ErrorCodeEnums.*;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -77,7 +75,7 @@ public class LeagueServicesImplTest {
 	}
 	
 	@Test
-	public void teamsDivisionAssignment_invalidGroupTier() {
+	public void verify_teamsDivisionAssignment_invalidGroupTier() {
 		
 		// prepare test data
 		
@@ -118,7 +116,7 @@ public class LeagueServicesImplTest {
 	}
 	
 	@Test
-	public void teamsDivisionAssignment_findDivisionsForLeague_exception() {
+	public void verify_teamsDivisionAssignment_findDivisionsForLeague_exception() {
 		
 		// prepare test data
 		
@@ -142,8 +140,8 @@ public class LeagueServicesImplTest {
 		
 		// verify
 		
-		assertEquals(UserGroupAccessError.toString(), response.getError().getErrorCode());
-		assertEquals(UIMessages.ERROR_USER_GROUP_ACCESS, response.getError().getMessage());
+		assertEquals(LeagueError.toString(), response.getError().getErrorCode());
+		assertEquals(UIMessages.ERROR_GENERAL_INTERNAL_EXCEPTION, response.getError().getMessage());
 		
 		assertEquals(null, response.getLeagueOwners());
 		
@@ -158,7 +156,7 @@ public class LeagueServicesImplTest {
 	}
 	
 	@Test
-	public void teamsDivisionAssignment_findByLeagueName_exception() {
+	public void verify_teamsDivisionAssignment_findByLeagueName_exception() {
 		
 		// prepare test data
 		
@@ -181,9 +179,9 @@ public class LeagueServicesImplTest {
 		LeagueOwnersResponse response = leagueServices.teamsDivisionAssignment(request);
 		
 		// verify
-		
-		assertEquals(UserGroupAccessError.toString(), response.getError().getErrorCode());
-		assertEquals(UIMessages.ERROR_USER_GROUP_ACCESS, response.getError().getMessage());
+
+		assertEquals(LeagueError.toString(), response.getError().getErrorCode());
+		assertEquals(UIMessages.ERROR_GENERAL_INTERNAL_EXCEPTION, response.getError().getMessage());
 		
 		assertEquals(null, response.getLeagueOwners());
 		
@@ -199,7 +197,197 @@ public class LeagueServicesImplTest {
 	}
 	
 	@Test
-	public void teamsDivisionAssignment_invalidGroupTier() {
+	public void verify_teamsDivisionAssignment_saveAll_exception() {
+		
+		// prepare test data
+		
+		TeamsDivisionAssignmentRequest request = 
+				ApcfflTest.buildTeamsDivisionAssignmentRequest();
+		
+		Set<DivisionModel> mockDivisionModels = ApcfflTest.buildDivisionModels();
+		when(leagueRepository.findDivisionsForLeague(anyString())).thenReturn(mockDivisionModels);
+		
+		List<TeamModel> mockTeamModels = Arrays.asList(ApcfflTest.buildTeamModel());
+		when(teamRepository.findByLeagueName(anyString())).thenReturn(mockTeamModels);
+		
+		when(teamRepository.saveAll(any())).thenThrow(new NullPointerException("error"));
+		
+		LeagueOwnersResponse mockLeagueOwners = ApcfflTest.buildLeagueOwnersResponse();
+		when(leagueListServices.leagueOwners(any())).thenReturn(mockLeagueOwners);
+		
+		// invoke
+		
+		LeagueOwnersResponse response = leagueServices.teamsDivisionAssignment(request);
+		
+		// verify
+
+		assertEquals(LeagueError.toString(), response.getError().getErrorCode());
+		assertEquals(UIMessages.ERROR_GENERAL_INTERNAL_EXCEPTION, response.getError().getMessage());
+		
+		assertEquals(null, response.getLeagueOwners());
+		
+		verify(leagueRepository, times(1)).findDivisionsForLeague(leagueNameCaptor.capture());
+		assertEquals(ApcfflTest.LEAGUE_1_NAME, leagueNameCaptor.getValue());
+		
+		verify(teamRepository, times(1)).findByLeagueName(leagueNameCaptor.capture());
+		assertEquals(ApcfflTest.LEAGUE_1_NAME, leagueNameCaptor.getValue());
+		
+		verify(teamRepository, times(1)).saveAll(teamModelsCaptor.capture());
+		assertEquals(1, teamModelsCaptor.getValue().size());
+		TeamModel teamModel = teamModelsCaptor.getValue().get(0);
+		assertEquals(ApcfflTest.LEAGUE_1_TEAM_1, teamModel.getTeamName());
+		
+		verify(leagueListServices, never()).leagueOwners(leagueOwnersRequestCaptor.capture());
+	}
+	
+	@Test
+	public void verify_teamsDivisionAssignment_leagueOwners_exception() {
+		
+		// prepare test data
+		
+		TeamsDivisionAssignmentRequest request = 
+				ApcfflTest.buildTeamsDivisionAssignmentRequest();
+		
+		Set<DivisionModel> mockDivisionModels = ApcfflTest.buildDivisionModels();
+		when(leagueRepository.findDivisionsForLeague(anyString())).thenReturn(mockDivisionModels);
+		
+		List<TeamModel> mockTeamModels = Arrays.asList(ApcfflTest.buildTeamModel());
+		when(teamRepository.findByLeagueName(anyString())).thenReturn(mockTeamModels);
+		
+		when(teamRepository.saveAll(any())).thenReturn(mockTeamModels);
+		
+		when(leagueListServices.leagueOwners(any())).thenThrow(new NullPointerException("error"));
+		
+		// invoke
+		
+		LeagueOwnersResponse response = leagueServices.teamsDivisionAssignment(request);
+		
+		// verify
+
+		assertEquals(LeagueError.toString(), response.getError().getErrorCode());
+		assertEquals(UIMessages.ERROR_GENERAL_INTERNAL_EXCEPTION, response.getError().getMessage());
+		
+		assertEquals(null, response.getLeagueOwners());
+		
+		verify(leagueRepository, times(1)).findDivisionsForLeague(leagueNameCaptor.capture());
+		assertEquals(ApcfflTest.LEAGUE_1_NAME, leagueNameCaptor.getValue());
+		
+		verify(teamRepository, times(1)).findByLeagueName(leagueNameCaptor.capture());
+		assertEquals(ApcfflTest.LEAGUE_1_NAME, leagueNameCaptor.getValue());
+		
+		verify(teamRepository, times(1)).saveAll(teamModelsCaptor.capture());
+		assertEquals(1, teamModelsCaptor.getValue().size());
+		TeamModel teamModel = teamModelsCaptor.getValue().get(0);
+		assertEquals(ApcfflTest.LEAGUE_1_TEAM_1, teamModel.getTeamName());
+		
+		verify(leagueListServices, times(1)).leagueOwners(leagueOwnersRequestCaptor.capture());
+		assertEquals(ApcfflTest.LEAGUE_1_NAME, leagueOwnersRequestCaptor.getValue().getLeagueName());
+		assertEquals(ApcfflTest.LEAGUE_1_NAME, leagueOwnersRequestCaptor.getValue().getOwnerLeagueName());
+		assertEquals(ApcfflTest.TEST_TOKEN, leagueOwnersRequestCaptor.getValue().getSecurityToken());
+		assertEquals(ApcfflTest.USER_GROUP_ADMIN, leagueOwnersRequestCaptor.getValue().getUserGroupName());
+		assertEquals(ApcfflTest.USER_NAME, leagueOwnersRequestCaptor.getValue().getUserName());
+	}
+	
+	@Test
+	public void verify_teamsDivisionAssignment_invalidAssigned_divisionNames() {
+		
+		// prepare test data
+		
+		TeamsDivisionAssignmentRequest request = 
+				ApcfflTest.buildTeamsDivisionAssignmentRequest();
+		
+		request.getTeams().get(0).setDivisionName("invalid");
+		
+		Set<DivisionModel> mockDivisionModels = ApcfflTest.buildDivisionModels();
+		when(leagueRepository.findDivisionsForLeague(anyString())).thenReturn(mockDivisionModels);
+		
+		List<TeamModel> mockTeamModels = Arrays.asList(ApcfflTest.buildTeamModel());
+		when(teamRepository.findByLeagueName(anyString())).thenReturn(mockTeamModels);
+		
+		when(teamRepository.saveAll(any())).thenReturn(mockTeamModels);
+		
+		LeagueOwnersResponse mockLeagueOwners = ApcfflTest.buildLeagueOwnersResponse();
+		when(leagueListServices.leagueOwners(any())).thenReturn(mockLeagueOwners);
+		
+		// invoke
+		
+		LeagueOwnersResponse response = leagueServices.teamsDivisionAssignment(request);
+		
+		// verify
+		
+		assertEquals(LeagueError.toString(), response.getError().getErrorCode());
+		assertEquals(UIMessages.LEAGUE_DIVISION_NAME_NOT_MATCH, response.getError().getMessage());
+		
+		assertEquals(null, response.getLeagueOwners());
+		
+		verify(leagueRepository, times(1)).findDivisionsForLeague(leagueNameCaptor.capture());
+		assertEquals(ApcfflTest.LEAGUE_1_NAME, leagueNameCaptor.getValue());
+		
+		verify(teamRepository, never()).findByLeagueName(leagueNameCaptor.capture());
+		
+		verify(teamRepository, never()).saveAll(teamModelsCaptor.capture());
+		
+		verify(leagueListServices, never()).leagueOwners(leagueOwnersRequestCaptor.capture());
+	}
+	
+	@Test
+	public void verify_teamsDivisionAssignment_null_divisionName() {
+		
+		// prepare test data
+		
+		TeamsDivisionAssignmentRequest request = 
+				ApcfflTest.buildTeamsDivisionAssignmentRequest();
+		
+		request.getTeams().get(0).setDivisionName(null);
+		
+		Set<DivisionModel> mockDivisionModels = ApcfflTest.buildDivisionModels();
+		when(leagueRepository.findDivisionsForLeague(anyString())).thenReturn(mockDivisionModels);
+		
+		List<TeamModel> mockTeamModels = Arrays.asList(ApcfflTest.buildTeamModel());
+		when(teamRepository.findByLeagueName(anyString())).thenReturn(mockTeamModels);
+		
+		when(teamRepository.saveAll(any())).thenReturn(mockTeamModels);
+		
+		LeagueOwnersResponse mockLeagueOwners = ApcfflTest.buildLeagueOwnersResponse();
+		mockLeagueOwners.getLeagueOwners().get(0).setDivisionName(null);
+		when(leagueListServices.leagueOwners(any())).thenReturn(mockLeagueOwners);
+		
+		// invoke
+		
+		LeagueOwnersResponse response = leagueServices.teamsDivisionAssignment(request);
+		
+		// verify
+		
+		assertEquals(null, response.getError());
+		
+		assertEquals(1, response.getLeagueOwners().size());
+		assertEquals(null, response.getLeagueOwners().get(0).getDivisionName());
+		assertEquals(ApcfflTest.OWNER_EMAIL1, response.getLeagueOwners().get(0).getEmail());
+		assertEquals(ApcfflTest.OWNER_FIRST_NAME, response.getLeagueOwners().get(0).getFirstName());
+		assertEquals(ApcfflTest.OWNER_LAST_NAME, response.getLeagueOwners().get(0).getLastName());
+		assertEquals(ApcfflTest.LEAGUE_1_TEAM_1, response.getLeagueOwners().get(0).getTeamName());
+		
+		verify(leagueRepository, times(1)).findDivisionsForLeague(leagueNameCaptor.capture());
+		assertEquals(ApcfflTest.LEAGUE_1_NAME, leagueNameCaptor.getValue());
+		
+		verify(teamRepository, times(1)).findByLeagueName(leagueNameCaptor.capture());
+		assertEquals(ApcfflTest.LEAGUE_1_NAME, leagueNameCaptor.getValue());
+		
+		verify(teamRepository, times(1)).saveAll(teamModelsCaptor.capture());
+		assertEquals(1, teamModelsCaptor.getValue().size());
+		TeamModel teamModel = teamModelsCaptor.getValue().get(0);
+		assertEquals(ApcfflTest.LEAGUE_1_TEAM_1, teamModel.getTeamName());
+		
+		verify(leagueListServices, times(1)).leagueOwners(leagueOwnersRequestCaptor.capture());
+		assertEquals(ApcfflTest.LEAGUE_1_NAME, leagueOwnersRequestCaptor.getValue().getLeagueName());
+		assertEquals(ApcfflTest.LEAGUE_1_NAME, leagueOwnersRequestCaptor.getValue().getOwnerLeagueName());
+		assertEquals(ApcfflTest.TEST_TOKEN, leagueOwnersRequestCaptor.getValue().getSecurityToken());
+		assertEquals(ApcfflTest.USER_GROUP_ADMIN, leagueOwnersRequestCaptor.getValue().getUserGroupName());
+		assertEquals(ApcfflTest.USER_NAME, leagueOwnersRequestCaptor.getValue().getUserName());
+	}
+	
+	@Test
+	public void verify_teamsDivisionAssignment() {
 		
 		// prepare test data
 		
@@ -223,51 +411,14 @@ public class LeagueServicesImplTest {
 		
 		// verify
 		
-		assertEquals(UserGroupAccessError.toString(), response.getError().getErrorCode());
-		assertEquals(UIMessages.ERROR_USER_GROUP_ACCESS, response.getError().getMessage());
+		assertEquals(null, response.getError());
 		
-		assertEquals(null, response.getLeagueOwners());
-		
-		verify(leagueRepository, times(1)).findDivisionsForLeague(leagueNameCaptor.capture());
-		assertEquals(ApcfflTest.LEAGUE_1_NAME, leagueNameCaptor.getValue());
-		
-		verify(teamRepository, times(1)).findByLeagueName(leagueNameCaptor.capture());
-		assertEquals(ApcfflTest.LEAGUE_1_NAME, leagueNameCaptor.getValue());
-		
-		verify(teamRepository, never()).saveAll(teamModelsCaptor.capture());
-		
-		verify(leagueListServices, never()).leagueOwners(leagueOwnersRequestCaptor.capture());
-	}
-	
-	@Test
-	public void teamsDivisionAssignment_invalidGroupTier() {
-		
-		// prepare test data
-		
-		TeamsDivisionAssignmentRequest request = 
-				ApcfflTest.buildTeamsDivisionAssignmentRequest();
-		
-		Set<DivisionModel> mockDivisionModels = ApcfflTest.buildDivisionModels();
-		when(leagueRepository.findDivisionsForLeague(anyString())).thenReturn(mockDivisionModels);
-		
-		List<TeamModel> mockTeamModels = Arrays.asList(ApcfflTest.buildTeamModel());
-		when(teamRepository.findByLeagueName(anyString())).thenReturn(mockTeamModels);
-		
-		when(teamRepository.saveAll(any())).thenReturn(mockTeamModels);
-		
-		LeagueOwnersResponse mockLeagueOwners = ApcfflTest.buildLeagueOwnersResponse();
-		when(leagueListServices.leagueOwners(any())).thenReturn(mockLeagueOwners);
-		
-		// invoke
-		
-		LeagueOwnersResponse response = leagueServices.teamsDivisionAssignment(request);
-		
-		// verify
-		
-		assertEquals(UserGroupAccessError.toString(), response.getError().getErrorCode());
-		assertEquals(UIMessages.ERROR_USER_GROUP_ACCESS, response.getError().getMessage());
-		
-		assertEquals(null, response.getLeagueOwners());
+		assertEquals(1, response.getLeagueOwners().size());
+		assertEquals(ApcfflTest.LEAGUE_1_DIV_1, response.getLeagueOwners().get(0).getDivisionName());
+		assertEquals(ApcfflTest.OWNER_EMAIL1, response.getLeagueOwners().get(0).getEmail());
+		assertEquals(ApcfflTest.OWNER_FIRST_NAME, response.getLeagueOwners().get(0).getFirstName());
+		assertEquals(ApcfflTest.OWNER_LAST_NAME, response.getLeagueOwners().get(0).getLastName());
+		assertEquals(ApcfflTest.LEAGUE_1_TEAM_1, response.getLeagueOwners().get(0).getTeamName());
 		
 		verify(leagueRepository, times(1)).findDivisionsForLeague(leagueNameCaptor.capture());
 		assertEquals(ApcfflTest.LEAGUE_1_NAME, leagueNameCaptor.getValue());
@@ -275,49 +426,16 @@ public class LeagueServicesImplTest {
 		verify(teamRepository, times(1)).findByLeagueName(leagueNameCaptor.capture());
 		assertEquals(ApcfflTest.LEAGUE_1_NAME, leagueNameCaptor.getValue());
 		
-		verify(teamRepository, never()).saveAll(teamModelsCaptor.capture());
+		verify(teamRepository, times(1)).saveAll(teamModelsCaptor.capture());
+		assertEquals(1, teamModelsCaptor.getValue().size());
+		TeamModel teamModel = teamModelsCaptor.getValue().get(0);
+		assertEquals(ApcfflTest.LEAGUE_1_TEAM_1, teamModel.getTeamName());
 		
-		verify(leagueListServices, never()).leagueOwners(leagueOwnersRequestCaptor.capture());
-	}
-	
-	@Test
-	public void teamsDivisionAssignment_invalidGroupTier() {
-		
-		// prepare test data
-		
-		TeamsDivisionAssignmentRequest request = 
-				ApcfflTest.buildTeamsDivisionAssignmentRequest();
-		
-		Set<DivisionModel> mockDivisionModels = ApcfflTest.buildDivisionModels();
-		when(leagueRepository.findDivisionsForLeague(anyString())).thenReturn(mockDivisionModels);
-		
-		List<TeamModel> mockTeamModels = Arrays.asList(ApcfflTest.buildTeamModel());
-		when(teamRepository.findByLeagueName(anyString())).thenReturn(mockTeamModels);
-		
-		when(teamRepository.saveAll(any())).thenReturn(mockTeamModels);
-		
-		LeagueOwnersResponse mockLeagueOwners = ApcfflTest.buildLeagueOwnersResponse();
-		when(leagueListServices.leagueOwners(any())).thenReturn(mockLeagueOwners);
-		
-		// invoke
-		
-		LeagueOwnersResponse response = leagueServices.teamsDivisionAssignment(request);
-		
-		// verify
-		
-		assertEquals(UserGroupAccessError.toString(), response.getError().getErrorCode());
-		assertEquals(UIMessages.ERROR_USER_GROUP_ACCESS, response.getError().getMessage());
-		
-		assertEquals(null, response.getLeagueOwners());
-		
-		verify(leagueRepository, times(1)).findDivisionsForLeague(leagueNameCaptor.capture());
-		assertEquals(ApcfflTest.LEAGUE_1_NAME, leagueNameCaptor.getValue());
-		
-		verify(teamRepository, times(1)).findByLeagueName(leagueNameCaptor.capture());
-		assertEquals(ApcfflTest.LEAGUE_1_NAME, leagueNameCaptor.getValue());
-		
-		verify(teamRepository, never()).saveAll(teamModelsCaptor.capture());
-		
-		verify(leagueListServices, never()).leagueOwners(leagueOwnersRequestCaptor.capture());
+		verify(leagueListServices, times(1)).leagueOwners(leagueOwnersRequestCaptor.capture());
+		assertEquals(ApcfflTest.LEAGUE_1_NAME, leagueOwnersRequestCaptor.getValue().getLeagueName());
+		assertEquals(ApcfflTest.LEAGUE_1_NAME, leagueOwnersRequestCaptor.getValue().getOwnerLeagueName());
+		assertEquals(ApcfflTest.TEST_TOKEN, leagueOwnersRequestCaptor.getValue().getSecurityToken());
+		assertEquals(ApcfflTest.USER_GROUP_ADMIN, leagueOwnersRequestCaptor.getValue().getUserGroupName());
+		assertEquals(ApcfflTest.USER_NAME, leagueOwnersRequestCaptor.getValue().getUserName());
 	}
 }

@@ -533,6 +533,228 @@
 			"response": []
 		},
 		{
+			"name": "League: LeagueOwners - invalid group",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"securityToken\": \"dE0zRDZjQ1NOSWd4TmYxTVBkUExYZz09\",\n\t\"userName\": \"dan.kamp\",\n\t\"userGroupName\": \"TEAM_OWNER\",\n\t\"ownerLeagueName\": \"The Apcffl\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/apcffl-api/league/leagueOwners",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"apcffl-api",
+						"league",
+						"leagueOwners"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "League: LeagueOwners - admin",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"securityToken\": \"QUpTQlRvK1VzUlpTV3VGK2l5TVNDQT09\",\n\t\"userName\": \"dan.kamp\",\n\t\"userGroupName\": \"ADMINISTRATOR\",\n\t\"ownerLeagueName\": \"The Apcffl\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/apcffl-api/league/leagueOwners",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"apcffl-api",
+						"league",
+						"leagueOwners"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "League: assignDivisionTeams - invalid group",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"securityToken\": \"RUZEVGFMK1YzODhsUGRORVYrSW4yQT09\",\n\t\"userName\": \"dan.kamp\",\n\t\"userGroupName\": \"TEAM_OWNER\",\n\t\"ownerLeagueName\": \"The Apcffl\",\n\t\"teams\": \n\t[\n\t\t{\n\t\t\t\"userName\": \"dan.kamp\",\n\t\t\t\"activeFlag\": true,\n\t\t\t\"leagueName\": \"The Apcffl\",\n\t\t\t\"teamName\": \"Don't Call Me Shirley\",\n\t\t\t\"divisionName\": \"\"\n\t\t}\n\t]\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/apcffl-api/league/teamsDivisionAssignment",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"apcffl-api",
+						"league",
+						"teamsDivisionAssignment"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "League: assignDivisionTeams - invalid division",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"securityToken\": \"RUZEVGFMK1YzODhsUGRORVYrSW4yQT09\",\n\t\"userName\": \"dan.kamp\",\n\t\"userGroupName\": \"ADMINISTRATOR\",\n\t\"ownerLeagueName\": \"The Apcffl\",\n\t\"teams\": \n\t[\n\t\t{\n\t\t\t\"userName\": \"dan.kamp\",\n\t\t\t\"activeFlag\": true,\n\t\t\t\"leagueName\": \"The Apcffl\",\n\t\t\t\"teamName\": \"Don't Call Me Shirley\",\n\t\t\t\"divisionName\": \"invalid\"\n\t\t}\n\t]\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/apcffl-api/league/teamsDivisionAssignment",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"apcffl-api",
+						"league",
+						"teamsDivisionAssignment"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "League: assignDivisionTeams - too many teams per division",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"securityToken\": \"c21rNHk3ZVhCOGdETkhqUFBCRVcyQT09\",\n\t\"userName\": \"dan.kamp\",\n\t\"userGroupName\": \"ADMINISTRATOR\",\n\t\"ownerLeagueName\": \"The Apcffl\",\n\t\"teams\": \n\t[\n\t\t{\n\t\t\t\"userName\": \"dan.kamp\",\n\t\t\t\"activeFlag\": true,\n\t\t\t\"leagueName\": \"The Apcffl\",\n\t\t\t\"teamName\": \"Don't Call Me Shirley\",\n\t\t\t\"divisionName\": \"Natural Grass Division\"\n\t\t},\n        {\n            \"userName\": \"keith.haugen\",\n            \"activeFlag\": true,\n\t\t\t\"leagueName\": \"The Apcffl\",\n            \"teamName\": \"Lords of Gallifrey\",\n            \"divisionName\": \"Artificial Turf Division\"\n        },\n        {\n            \"userName\": \"dan.kumm\",\n            \"activeFlag\": true,\n\t\t\t\"leagueName\": \"The Apcffl\",\n            \"teamName\": \"Irritated Hedgehogs\",\n            \"divisionName\": \"Natural Grass Division\"\n        },\n        {\n            \"userName\": \"kris.barry\",\n            \"activeFlag\": true,\n\t\t\t\"leagueName\": \"The Apcffl\",\n            \"teamName\": \"Lovely Lads\",\n            \"divisionName\": \"Artificial Turf Division\"\n        },\n        {\n            \"userName\": \"ami.falk\",\n            \"activeFlag\": true,\n\t\t\t\"leagueName\": \"The Apcffl\",\n            \"teamName\": \"Fire Swamp Creatures\",\n            \"divisionName\": \"Natural Grass Division\"\n        },\n        {\n            \"userName\": \"brett.labombarda\",\n            \"activeFlag\": true,\n\t\t\t\"leagueName\": \"The Apcffl\",\n            \"teamName\": \"Slug Life\",\n            \"divisionName\": \"Artificial Turf Division\"\n        },\n        {\n            \"userName\": \"BLIND.1\",\n            \"activeFlag\": true,\n\t\t\t\"leagueName\": \"The Apcffl\",\n            \"teamName\": \"Blind Artificial\",\n            \"divisionName\": \"Artificial Turf Division\"\n        },\n        {\n            \"userName\": \"BLIND.2\",\n            \"activeFlag\": true,\n\t\t\t\"leagueName\": \"The Apcffl\",\n            \"teamName\": \"Blind Natural\",\n            \"divisionName\": \"Artificial Turf Division\"\n        }\n\t]\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/apcffl-api/league/teamsDivisionAssignment",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"apcffl-api",
+						"league",
+						"teamsDivisionAssignment"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "League: assignDivisionTeams - admin",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"securityToken\": \"VlBrN2VUUjV3V0M3S1lLcU54T3NBUT09\",\n\t\"userName\": \"dan.kamp\",\n\t\"userGroupName\": \"ADMINISTRATOR\",\n\t\"ownerLeagueName\": \"The Apcffl\",\n\t\"teams\": \n\t[\n\t\t{\n\t\t\t\"userName\": \"dan.kamp\",\n\t\t\t\"activeFlag\": true,\n\t\t\t\"leagueName\": \"The Apcffl\",\n\t\t\t\"teamName\": \"Don't Call Me Shirley\",\n\t\t\t\"divisionName\": \"Natural Grass Division\"\n\t\t},\n        {\n            \"userName\": \"keith.haugen\",\n            \"activeFlag\": true,\n\t\t\t\"leagueName\": \"The Apcffl\",\n            \"teamName\": \"Lords of Gallifrey\",\n            \"divisionName\": \"Artificial Turf Division\"\n        },\n        {\n            \"userName\": \"dan.kumm\",\n            \"activeFlag\": true,\n\t\t\t\"leagueName\": \"The Apcffl\",\n            \"teamName\": \"Irritated Hedgehogs\",\n            \"divisionName\": \"Natural Grass Division\"\n        },\n        {\n            \"userName\": \"kris.barry\",\n            \"activeFlag\": true,\n\t\t\t\"leagueName\": \"The Apcffl\",\n            \"teamName\": \"Lovely Lads\",\n            \"divisionName\": \"Artificial Turf Division\"\n        },\n        {\n            \"userName\": \"ami.falk\",\n            \"activeFlag\": true,\n\t\t\t\"leagueName\": \"The Apcffl\",\n            \"teamName\": \"Fire Swamp Creatures\",\n            \"divisionName\": \"Natural Grass Division\"\n        },\n        {\n            \"userName\": \"brett.labombarda\",\n            \"activeFlag\": true,\n\t\t\t\"leagueName\": \"The Apcffl\",\n            \"teamName\": \"Slug Life\",\n            \"divisionName\": \"Artificial Turf Division\"\n        },\n        {\n            \"userName\": \"BLIND.1\",\n            \"activeFlag\": true,\n\t\t\t\"leagueName\": \"The Apcffl\",\n            \"teamName\": \"Blind Artificial\",\n            \"divisionName\": \"Artificial Turf Division\"\n        },\n        {\n            \"userName\": \"BLIND.2\",\n            \"activeFlag\": true,\n\t\t\t\"leagueName\": \"The Apcffl\",\n            \"teamName\": \"Blind Natural\",\n            \"divisionName\": \"Natural Grass Division\"\n        }\n\t]\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/apcffl-api/league/teamsDivisionAssignment",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"apcffl-api",
+						"league",
+						"teamsDivisionAssignment"
+					]
+				}
+			},
+			"response": []
+		},
+		{
 			"name": "Comm: MessageBoardAll - invalid group",
 			"request": {
 				"method": "POST",

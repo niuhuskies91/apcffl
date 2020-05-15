@@ -99,7 +99,6 @@ public class ApcfflTest {
 	public static final String OWNER_EMAIL2                = "email2@gmail.com";
 	public static final String OWNER_EMAIL3                = "email3@gmail.com";
 	public static final Boolean OWNER_ACTIVE               = true;
-	public static final String OWNER_TEAM_NAME             = "Don't Forget to Bring a Towel";
 	
 	// Guest User
 	
@@ -272,7 +271,7 @@ public class ApcfflTest {
 		team.setActiveFlag(true);
 		team.setDivisionName(LEAGUE_1_DIV_1);
 		team.setLeagueName(LEAGUE_1_NAME);
-		team.setTeamName(OWNER_TEAM_NAME);
+		team.setTeamName(LEAGUE_1_TEAM_1);
 		team.setUserName(USER_NAME);
 		
 		return team;
