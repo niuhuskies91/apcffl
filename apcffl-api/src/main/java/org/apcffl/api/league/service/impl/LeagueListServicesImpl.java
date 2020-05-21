@@ -4,16 +4,20 @@ import static org.apcffl.api.constants.Enums.ErrorCodeEnums.*;
 
 import java.util.List;
 
+import org.apcffl.api.constants.ApcfflConstants;
 import org.apcffl.api.constants.UIMessages;
 import org.apcffl.api.dto.ApiRequest;
 import org.apcffl.api.dto.ErrorDto;
+import org.apcffl.api.league.dto.ConferenceListResponse;
 import org.apcffl.api.league.dto.LeagueListsResponse;
 import org.apcffl.api.league.dto.LeagueOwnersRequest;
 import org.apcffl.api.league.dto.LeagueOwnersResponse;
 import org.apcffl.api.league.dto.mapper.LeagueMapper;
 import org.apcffl.api.league.service.LeagueListServices;
+import org.apcffl.api.persistence.model.ConferenceModel;
 import org.apcffl.api.persistence.model.LeagueModel;
 import org.apcffl.api.persistence.model.OwnerModel;
+import org.apcffl.api.persistence.repository.ConferenceRepository;
 import org.apcffl.api.persistence.repository.LeagueRepository;
 import org.apcffl.api.persistence.repository.OwnerRepository;
 import org.apcffl.api.security.constants.SecurityConstants;
@@ -29,10 +33,13 @@ public class LeagueListServicesImpl extends ApcfflService implements LeagueListS
 	
 	private final LeagueRepository leagueRepository;
 	private final OwnerRepository ownerRepository;
+	private final ConferenceRepository conferenceRepository;
 	
-	public LeagueListServicesImpl(final LeagueRepository leagueRepository, final OwnerRepository ownerRepository) {
+	public LeagueListServicesImpl(final LeagueRepository leagueRepository, final OwnerRepository ownerRepository,
+			final ConferenceRepository conferenceRepository) {
 		this.leagueRepository = leagueRepository;
 		this.ownerRepository = ownerRepository;
+		this.conferenceRepository = conferenceRepository;
 	}
 
 	@Override
@@ -80,4 +87,26 @@ public class LeagueListServicesImpl extends ApcfflService implements LeagueListS
 		return response;
 	}
 
+	@Override
+	public ConferenceListResponse allConferences(ApiRequest request) {
+		ConferenceListResponse response = new ConferenceListResponse();
+		
+		// validate user group access
+		ErrorDto error = 
+			validateGroupRole(request.getUserGroupName(), SecurityConstants.USER_GROUP_TIER_OWNER);
+		if (error != null) {
+			LOG.error(error.getMessage());
+			response.setError(error);
+			return response;
+		}
+		try {
+			List<ConferenceModel> conferences =
+					conferenceRepository.findByConferenceType(ApcfflConstants.NCAA_CONFERENCE_FBS);
+			response.setConferences(LeagueMapper.convertConferences(conferences));
+		} catch (Exception e) {
+			response.setError(new ErrorDto(LeagueError.toString(), UIMessages.ERROR_GENERAL_INTERNAL_EXCEPTION));
+			LOG.error(response.getError().getMessage(), e);
+		}
+		return response;
+	}
 }

@@ -4,6 +4,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apcffl.api.constants.UIMessages;
 import org.apcffl.api.exception.SecurityException;
 import org.apcffl.api.persistence.model.OwnerModel;
+import org.apcffl.api.persistence.model.TeamModel;
 import org.apcffl.api.persistence.model.UserModel;
 import org.apcffl.api.persistence.repository.OwnerRepository;
 import org.apcffl.api.persistence.repository.UserRepository;
@@ -40,16 +41,26 @@ public class AuthorizationServiceImpl implements AuthorizationService {
 	@Override
 	public UserDto login(String userName, String password) {
 		
-		UserModel user = userRepository.findByUserNamePassword(userName, password);
-		if (user == null) {
+		UserModel userModel = userRepository.findByUserNamePassword(userName, password);
+		OwnerModel owner = ownerRepository.findByUserName(userName);
+		if (userModel == null || owner == null) {
 			String error = UIMessages.ERROR_AUTH_FAIL + userName;
 			LOG.warn(error);
 			throw new SecurityException(error);
 		}
-		return new UserDto(
+		UserDto user = new UserDto(
 				userName, 
-				user.getUserGroupModel().getUserGroupName(),
+				userModel.getUserGroupModel().getUserGroupName(),
 				sessionManager.generateTokenForUser(userName));
+		
+		TeamModel teamModel = owner.getTeamModel();
+		if (teamModel != null) {
+			user.setTeamName(teamModel.getTeamName());
+			if (teamModel.getLeagueModel() != null) {
+				user.setLeagueName(teamModel.getLeagueModel().getLeagueName());
+			}
+		}
+		return user;
 	}
 
 	@Override

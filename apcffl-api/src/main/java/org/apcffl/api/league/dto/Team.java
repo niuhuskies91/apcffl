@@ -1,5 +1,7 @@
 package org.apcffl.api.league.dto;
 
+import java.util.List;
+
 public class Team {
 
 	private String userName;
@@ -7,6 +9,7 @@ public class Team {
 	private String leagueName;
 	private String teamName;
 	private String divisionName;
+	private List<TeamRoster> roster;
 	
 	public String getUserName() {
 		return userName;
@@ -37,6 +40,12 @@ public class Team {
 	}
 	public void setDivisionName(String divisionName) {
 		this.divisionName = divisionName;
+	}
+	public List<TeamRoster> getRoster() {
+		return roster;
+	}
+	public void setRoster(List<TeamRoster> roster) {
+		this.roster = roster;
 	}
 	
 }

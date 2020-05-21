@@ -6,7 +6,7 @@ import org.apcffl.api.dto.ErrorDto;
 import org.apcffl.api.league.dto.LeagueListsResponse;
 import org.apcffl.api.league.dto.LeagueOwnersRequest;
 import org.apcffl.api.league.dto.LeagueOwnersResponse;
-import org.apcffl.api.league.dto.TeamsDivisionAssignmentRequest;
+import org.apcffl.api.league.dto.LeagueTeams;
 import org.apcffl.api.league.service.LeagueListServices;
 import org.apcffl.api.league.service.LeagueServices;
 import org.apcffl.api.service.manager.SessionManager;
@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 
-@Api(value = "League List Services")
+@Api(value = "League Services")
 @RestController
 @RequestMapping("/league")
 public class LeagueController extends ApcfflController {
@@ -74,7 +74,7 @@ public class LeagueController extends ApcfflController {
 	@ApiOperation(value="Assign teams to a division in a league", httpMethod = "POST",  consumes = MediaType.APPLICATION_JSON_VALUE,
 			produces = MediaType.APPLICATION_JSON_VALUE, response = LeagueOwnersResponse.class)
 	@RequestMapping(value="/teamsDivisionAssignment", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = {MediaType.APPLICATION_JSON_VALUE})
-	public ResponseEntity<LeagueOwnersResponse> teamsDivisionAssignment(@RequestBody TeamsDivisionAssignmentRequest request) {
+	public ResponseEntity<LeagueOwnersResponse> teamsDivisionAssignment(@RequestBody LeagueTeams request) {
 		
 		// validate the session token
 		ErrorDto error = isValidSessionToken(request.getSecurityToken(), request.getUserName());

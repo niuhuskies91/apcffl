@@ -5,6 +5,7 @@ public class ApiRequest {
 	protected String userGroupName;
 	protected String securityToken;
 	protected String leagueName;
+	protected String teamName;
 	
 	public String getUserName() {
 		return userName;
@@ -29,6 +30,12 @@ public class ApiRequest {
 	}
 	public void setLeagueName(String leagueName) {
 		this.leagueName = leagueName;
+	}
+	public String getTeamName() {
+		return teamName;
+	}
+	public void setTeamName(String teamName) {
+		this.teamName = teamName;
 	}
 	
 }

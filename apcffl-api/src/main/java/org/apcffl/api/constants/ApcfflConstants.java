@@ -9,6 +9,14 @@ public class ApcfflConstants {
 	public static final int BIZ_RULE_NUM_DIVISIONS_LEAGUE = 2;
 	public static final int BIZ_RULE_NUM_TEAMS_DIVISION   = 4;
 	public static final int BIZ_RULE_NUM_TEAMS_LEAGUE     = 8;
+	public static final int BIZ_RULE_MAX_SCHOLARSHIP_PTS  = 200;
+	public static final int BIZ_RULE_MAX_SCHOOLS_ROSTER   = 15;
+	public static final int BIZ_RULE_MAX_SCHOOLS_DIVISION = 3;
+	
+	// Conference constants
+	
+	public static final String NCAA_CONFERENCE_FBS     = "FBS";
+	public static final String NCAA_CONFERENCE_FCS     = "FCS";
 	
 	// Message board constants
 	

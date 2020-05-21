@@ -6,6 +6,7 @@ import java.util.Date;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.apcffl.api.admin.dto.AccountCreateRequest;
 import org.apcffl.api.admin.dto.AccountRequest;
@@ -14,21 +15,29 @@ import org.apcffl.api.admin.dto.AllAccountsResponse;
 import org.apcffl.api.admin.dto.LeagueAssignmentRequest;
 import org.apcffl.api.comm.dto.MessageBoard;
 import org.apcffl.api.comm.dto.MessageBoardRequest;
+import org.apcffl.api.constants.ApcfflConstants;
 import org.apcffl.api.dto.ApiRequest;
+import org.apcffl.api.league.dto.Conference;
 import org.apcffl.api.league.dto.Division;
 import org.apcffl.api.league.dto.League;
 import org.apcffl.api.league.dto.LeagueOwner;
 import org.apcffl.api.league.dto.LeagueOwnersRequest;
 import org.apcffl.api.league.dto.LeagueOwnersResponse;
+import org.apcffl.api.league.dto.School;
 import org.apcffl.api.league.dto.Team;
-import org.apcffl.api.league.dto.TeamsDivisionAssignmentRequest;
+import org.apcffl.api.league.dto.TeamResponse;
+import org.apcffl.api.league.dto.TeamRoster;
+import org.apcffl.api.league.dto.LeagueTeams;
 import org.apcffl.api.persistence.model.ApplicationActivityModel;
+import org.apcffl.api.persistence.model.ConferenceModel;
 import org.apcffl.api.persistence.model.DivisionModel;
 import org.apcffl.api.persistence.model.GroupActivityMapModel;
 import org.apcffl.api.persistence.model.LeagueModel;
 import org.apcffl.api.persistence.model.MessageBoardModel;
 import org.apcffl.api.persistence.model.OwnerModel;
+import org.apcffl.api.persistence.model.SchoolModel;
 import org.apcffl.api.persistence.model.TeamModel;
+import org.apcffl.api.persistence.model.TeamRosterModel;
 import org.apcffl.api.persistence.model.UserGroupModel;
 import org.apcffl.api.persistence.model.UserModel;
 import org.apcffl.api.security.dto.PasswordResetRequest;
@@ -72,6 +81,22 @@ public class ApcfflTest {
 	public static final Integer LEAGUE_2_NUM_DIV   = 2;
 	
 	public static final String  LEAGUE_1_TEAM_1    = "Don't Call Me Shirley";
+	
+	// Conferences and Schools
+	
+	public static final String CONF_NAME_BIG_10      = "Big 10";
+	public static final String CONF_ABBR_BIG_10      = "Big 10";
+	public static final String SCHOOL_NAME_BIG_10_1  = "Ohio State";
+	public static final String SCHOOL_NAME_BIG_10_2  = "Wisconsin";
+	
+	public static final String CONF_NAME_MAC         = "Mid American";
+	public static final String CONF_ABBR_MAC         = "MAC";
+	public static final String SCHOOL_NAME_MAC_1     = "Northern Illinois";
+	public static final String SCHOOL_NAME_MAC_2     = "Ball State";
+	
+	// Roster
+	
+	public static final Integer SCHOLARSHIP_POINT_MIN = 1;
 	
 	// User Groups
 	
@@ -120,6 +145,7 @@ public class ApcfflTest {
 	public static final ApiRequest buildApiRequest() {
 		ApiRequest request = new ApiRequest();
 		request.setLeagueName(LEAGUE_1_NAME);
+		request.setTeamName(LEAGUE_1_TEAM_1);
 		request.setSecurityToken(TEST_TOKEN);
 		request.setUserGroupName(USER_GROUP_OWNER);
 		request.setUserName(USER_NAME);
@@ -437,9 +463,9 @@ public class ApcfflTest {
 		return response;
 	}
 	
-	public static TeamsDivisionAssignmentRequest buildTeamsDivisionAssignmentRequest() {
+	public static LeagueTeams buildTeamsDivisionAssignmentRequest() {
 		
-		TeamsDivisionAssignmentRequest request = new TeamsDivisionAssignmentRequest();
+		LeagueTeams request = new LeagueTeams();
 		request.setLeagueName(LEAGUE_1_NAME);
 		request.setSecurityToken(TEST_TOKEN);
 		request.setUserGroupName(USER_GROUP_ADMIN);
@@ -448,5 +474,160 @@ public class ApcfflTest {
 		request.setOwnerLeagueName(LEAGUE_1_NAME);
 		
 		return request;
+	}
+	
+	public static List<ConferenceModel> buildConferenceModels() {
+		List<ConferenceModel> conferences = new ArrayList<ConferenceModel>();
+		
+		ConferenceModel conference = new ConferenceModel();
+		conference.setConferenceAbbr(CONF_ABBR_BIG_10);
+		conference.setConferenceName(CONF_NAME_BIG_10);
+		conference.setNcaaDivisionType(ApcfflConstants.NCAA_CONFERENCE_FBS);
+		conference.setSchools(buildSchoolModels(conference));
+		conferences.add(conference);
+		
+		conference = new ConferenceModel();
+		conference.setConferenceAbbr(CONF_ABBR_MAC);
+		conference.setConferenceName(CONF_NAME_MAC);
+		conference.setNcaaDivisionType(ApcfflConstants.NCAA_CONFERENCE_FBS);
+		conference.setSchools(buildSchoolModels(conference));
+		conferences.add(conference);
+		
+		return conferences;
+	}
+	
+	public static Set<SchoolModel> buildSchoolModels(ConferenceModel conference) {
+		Set<SchoolModel> schools = new LinkedHashSet<SchoolModel>();
+		if (CONF_ABBR_BIG_10.equals(conference.getConferenceAbbr())) {
+			
+			SchoolModel school = new SchoolModel();
+			school.setSchoolName(SCHOOL_NAME_BIG_10_1);
+			school.setConference(conference);
+			schools.add(school);
+			
+			school = new SchoolModel();
+			school.setSchoolName(SCHOOL_NAME_BIG_10_2);
+			school.setConference(conference);
+			schools.add(school);
+		}
+		else if (CONF_ABBR_MAC.equals(conference.getConferenceAbbr())) {
+			
+			SchoolModel school = new SchoolModel();
+			school.setSchoolName(SCHOOL_NAME_MAC_1);
+			school.setConference(conference);
+			schools.add(school);
+			
+			school = new SchoolModel();
+			school.setSchoolName(SCHOOL_NAME_MAC_2);
+			school.setConference(conference);
+			schools.add(school);
+		}
+		return schools;
+	}
+	
+	public static List<Conference> buildConferences() {
+		List<Conference> conferences = new ArrayList<Conference>();
+		
+		Conference conference = new Conference();
+		conference.setConferenceAbbr(CONF_ABBR_BIG_10);
+		conference.setConferenceName(CONF_NAME_BIG_10);
+		conference.setConferenceType(ApcfflConstants.NCAA_CONFERENCE_FBS);
+		conference.setSchools(buildSchools(conference));
+		conferences.add(conference);
+		
+		conference = new Conference();
+		conference.setConferenceAbbr(CONF_ABBR_MAC);
+		conference.setConferenceName(CONF_NAME_MAC);
+		conference.setConferenceType(ApcfflConstants.NCAA_CONFERENCE_FBS);
+		conference.setSchools(buildSchools(conference));
+		conferences.add(conference);
+		
+		return conferences;
+	}
+	
+	public static List<School> buildSchools(Conference conference) {
+		List<School> schools = new ArrayList<School>();
+		if (CONF_ABBR_BIG_10.equals(conference.getConferenceAbbr())) {
+			
+			School school = new School();
+			school.setSchoolName(SCHOOL_NAME_BIG_10_1);
+			school.setConferenceAbbr(conference.getConferenceAbbr());
+			school.setConferenceName(conference.getConferenceName());
+			schools.add(school);
+			
+			school = new School();
+			school.setSchoolName(SCHOOL_NAME_BIG_10_2);
+			school.setConferenceAbbr(conference.getConferenceAbbr());
+			school.setConferenceName(conference.getConferenceName());
+			schools.add(school);
+		}
+		else if (CONF_ABBR_MAC.equals(conference.getConferenceAbbr())) {
+			
+			School school = new School();
+			school.setSchoolName(SCHOOL_NAME_MAC_1);
+			school.setConferenceAbbr(conference.getConferenceAbbr());
+			school.setConferenceName(conference.getConferenceName());
+			schools.add(school);
+			
+			school = new School();
+			school.setSchoolName(SCHOOL_NAME_MAC_2);
+			school.setConferenceAbbr(conference.getConferenceAbbr());
+			school.setConferenceName(conference.getConferenceName());
+			schools.add(school);
+		}
+		return schools;
+	}
+	
+	public static List<TeamRosterModel> buildTeamRosterModels() {
+		
+		List<TeamRosterModel> roster = new ArrayList<TeamRosterModel>();
+		
+		List<ConferenceModel> conferences = buildConferenceModels();
+		List<SchoolModel> big10Schools =
+				conferences.get(0).getSchools().parallelStream().collect(Collectors.toList());
+		
+		TeamRosterModel rosterEntry = new TeamRosterModel();
+		rosterEntry.setScholarshipPoints(SCHOLARSHIP_POINT_MIN);
+		rosterEntry.setTeamModel(buildTeamModel());
+		rosterEntry.setSchoolModel(big10Schools.get(0));
+		roster.add(rosterEntry);
+		
+		rosterEntry = new TeamRosterModel();
+		rosterEntry.setScholarshipPoints(SCHOLARSHIP_POINT_MIN);
+		rosterEntry.setTeamModel(buildTeamModel());
+		rosterEntry.setSchoolModel(big10Schools.get(1));
+		roster.add(rosterEntry);
+		
+		return roster;
+	}
+	
+	public static TeamResponse buildTeamResponse() {
+		TeamResponse response = new TeamResponse();
+		
+		Team team = buildTeam();
+		team.setRoster(buildTeamRoster());
+		
+		response.setTeam(team);
+		
+		return response;
+	}
+	
+	public static List<TeamRoster> buildTeamRoster() {
+		
+		List<School> big10Schools = buildConferences().get(0).getSchools();
+		
+		List<TeamRoster> roster = new ArrayList<TeamRoster>();
+		
+		TeamRoster rosterEntry = new TeamRoster();
+		rosterEntry.setScholarshipPoints(SCHOLARSHIP_POINT_MIN);
+		rosterEntry.setSchool(big10Schools.get(0));
+		roster.add(rosterEntry);
+		
+		rosterEntry = new TeamRoster();
+		rosterEntry.setScholarshipPoints(SCHOLARSHIP_POINT_MIN);
+		rosterEntry.setSchool(big10Schools.get(1));
+		roster.add(rosterEntry);
+		
+		return roster;
 	}
 }

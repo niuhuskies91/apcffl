@@ -12,14 +12,18 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.apcffl.ApcfflTest;
+import org.apcffl.api.constants.ApcfflConstants;
 import org.apcffl.api.constants.UIMessages;
 import org.apcffl.api.dto.ApiRequest;
+import org.apcffl.api.league.dto.ConferenceListResponse;
 import org.apcffl.api.league.dto.LeagueListsResponse;
 import org.apcffl.api.league.dto.LeagueOwner;
 import org.apcffl.api.league.dto.LeagueOwnersRequest;
 import org.apcffl.api.league.dto.LeagueOwnersResponse;
+import org.apcffl.api.persistence.model.ConferenceModel;
 import org.apcffl.api.persistence.model.LeagueModel;
 import org.apcffl.api.persistence.model.OwnerModel;
+import org.apcffl.api.persistence.repository.ConferenceRepository;
 import org.apcffl.api.persistence.repository.LeagueRepository;
 import org.apcffl.api.persistence.repository.OwnerRepository;
 import org.apcffl.api.security.constants.SecurityConstants;
@@ -51,8 +55,14 @@ public class LeagueListServicesImplTest {
 	@Mock
 	private OwnerRepository ownerRepository;
 	
+	@Mock
+	private ConferenceRepository conferenceRepository;
+	
 	@Captor
 	private ArgumentCaptor<String> leagueNameCaptor;
+	
+	@Captor
+	private ArgumentCaptor<String> conferenceType;
 	
 	private ApiRequest apiRequest;
 	
@@ -60,7 +70,8 @@ public class LeagueListServicesImplTest {
 	public void setUp() {
 		MockitoAnnotations.initMocks(this);
 		
-		service = new LeagueListServicesImpl(leagueRepository, ownerRepository);
+		service = 
+				new LeagueListServicesImpl(leagueRepository, ownerRepository, conferenceRepository);
 		
 		apiRequest = ApcfflTest.buildApiRequest();
 		apiRequest.setUserGroupName(SecurityConstants.USER_GROUP_ADMIN);
@@ -211,5 +222,77 @@ public class LeagueListServicesImplTest {
 		verify(ownerRepository, times(1)).findByLeague(leagueNameCaptor.capture());
 		assertEquals(ApcfflTest.LEAGUE_2_NAME, leagueNameCaptor.getValue());
 		
+	}
+	
+	@Test
+	public void verify_allConferences_invalidGroup() {
+		
+		// prepare test data
+		
+		ApiRequest request = ApcfflTest.buildApiRequest();
+		request.setUserGroupName(SecurityConstants.USER_GROUP_GUEST);
+		
+		List<ConferenceModel> mockConferences = ApcfflTest.buildConferenceModels();
+		when(conferenceRepository.findByConferenceType(anyString())).thenReturn(mockConferences);
+		
+		// invoke
+		
+		ConferenceListResponse response = service.allConferences(request);
+		
+		// verify
+		
+		assertEquals(UserGroupAccessError.toString(), response.getError().getErrorCode());
+		assertEquals(UIMessages.ERROR_USER_GROUP_ACCESS, response.getError().getMessage());
+		assertEquals(null, response.getConferences());
+		
+		verify(conferenceRepository, never()).findByConferenceType(conferenceType.capture());
+		
+	}
+	
+	@Test
+	public void verify_allConferences_findByConferenceType_exception() {
+		
+		// prepare test data
+		
+		ApiRequest request = ApcfflTest.buildApiRequest();
+		
+		when(conferenceRepository.findByConferenceType(anyString()))
+		.thenThrow(new NullPointerException("error"));
+		
+		// invoke
+		
+		ConferenceListResponse response = service.allConferences(request);
+		
+		// verify
+		
+		assertEquals(LeagueError.toString(), response.getError().getErrorCode());
+		assertEquals(UIMessages.ERROR_GENERAL_INTERNAL_EXCEPTION, response.getError().getMessage());
+		assertEquals(null, response.getConferences());
+		
+		verify(conferenceRepository, times(1)).findByConferenceType(conferenceType.capture());
+		
+	}
+	
+	@Test
+	public void verify_allConferences() {
+		
+		// prepare test data
+		
+		ApiRequest request = ApcfflTest.buildApiRequest();
+		
+		List<ConferenceModel> mockConferences = ApcfflTest.buildConferenceModels();
+		when(conferenceRepository.findByConferenceType(anyString())).thenReturn(mockConferences);
+		
+		// invoke
+		
+		ConferenceListResponse response = service.allConferences(request);
+		
+		// verify
+		
+		assertEquals(null, response.getError());
+		assertEquals(2, response.getConferences().size());
+		
+		verify(conferenceRepository, times(1)).findByConferenceType(conferenceType.capture());
+		assertEquals(ApcfflConstants.NCAA_CONFERENCE_FBS, conferenceType.getValue());
 	}
 }

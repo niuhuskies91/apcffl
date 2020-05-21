@@ -26,7 +26,7 @@ import org.apcffl.api.dto.ApiRequest;
 import org.apcffl.api.league.dto.LeagueListsResponse;
 import org.apcffl.api.league.dto.LeagueOwnersRequest;
 import org.apcffl.api.league.dto.LeagueOwnersResponse;
-import org.apcffl.api.league.dto.TeamsDivisionAssignmentRequest;
+import org.apcffl.api.league.dto.LeagueTeams;
 import org.apcffl.api.league.service.LeagueListServices;
 import org.apcffl.api.league.service.LeagueServices;
 import org.apcffl.api.service.manager.SessionManager;
@@ -72,7 +72,7 @@ public class LeagueControllerTest {
 	private ArgumentCaptor<LeagueOwnersRequest> leagueOwnerRequestCaptor;
 	
 	@Captor
-	private ArgumentCaptor<TeamsDivisionAssignmentRequest> teamDivisionAssignmentCaptor;
+	private ArgumentCaptor<LeagueTeams> teamDivisionAssignmentCaptor;
 	
 	private ObjectMapper objectMapper;
  
@@ -236,7 +236,7 @@ public class LeagueControllerTest {
     	
     	// prepare test data
     	
-    	TeamsDivisionAssignmentRequest request = ApcfflTest.buildTeamsDivisionAssignmentRequest();
+    	LeagueTeams request = ApcfflTest.buildTeamsDivisionAssignmentRequest();
 
 		when(sessionManager.isValidSessionToken(anyString(), anyString())).thenReturn(false);
 		
@@ -267,7 +267,7 @@ public class LeagueControllerTest {
     	
     	// prepare test data
     	
-    	TeamsDivisionAssignmentRequest request = ApcfflTest.buildTeamsDivisionAssignmentRequest();
+    	LeagueTeams request = ApcfflTest.buildTeamsDivisionAssignmentRequest();
 
     	LeagueOwnersResponse mockResponse = new LeagueOwnersResponse();
     	mockResponse.setLeagueOwners(Arrays.asList(ApcfflTest.buildLeagueOwner()));
@@ -299,7 +299,7 @@ public class LeagueControllerTest {
 		assertEquals(ApcfflTest.TEST_TOKEN, tokenCaptor.getValue());
 		
 		verify(leagueServices, times(1)).teamsDivisionAssignment(teamDivisionAssignmentCaptor.capture());
-		TeamsDivisionAssignmentRequest captorRequest = teamDivisionAssignmentCaptor.getValue();
+		LeagueTeams captorRequest = teamDivisionAssignmentCaptor.getValue();
 		assertEquals(ApcfflTest.LEAGUE_1_NAME, captorRequest.getLeagueName());
 		assertEquals(ApcfflTest.LEAGUE_1_NAME, captorRequest.getOwnerLeagueName());
 		assertEquals(ApcfflTest.TEST_TOKEN, captorRequest.getSecurityToken());

@@ -29,6 +29,7 @@ public class MessageBoardMapper {
 			messageBoard.setUserName(owner.getUserModel().getUserName());
 			messageBoard.setUserGroupName(model.getOwnerModel().getUserModel().getUserGroupModel().getUserGroupName());
 			if (owner.getTeamModel() != null && owner.getTeamModel().getLeagueModel() != null) {
+				messageBoard.setTeamName(owner.getTeamModel().getTeamName());
 				messageBoard.setLeagueName(owner.getTeamModel().getLeagueModel().getLeagueName());
 				result.add(messageBoard);
 			}

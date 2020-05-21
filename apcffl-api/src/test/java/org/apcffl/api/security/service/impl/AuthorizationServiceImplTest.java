@@ -75,7 +75,7 @@ public class AuthorizationServiceImplTest {
 	}
 
 	@Test(expected = org.apcffl.api.exception.SecurityException.class)
-	public void verify_login_fail() {
+	public void verify_login_userNotFound() {
 		
 		// prepare test data
 		
@@ -85,6 +85,98 @@ public class AuthorizationServiceImplTest {
 		// invoke service
 		
 		service.login(ApcfflTest.USER_NAME, ApcfflTest.PASSWORD);
+	}
+
+	@Test(expected = org.apcffl.api.exception.SecurityException.class)
+	public void verify_login_ownerNotFound() {
+		
+		// prepare test data
+		
+		UserModel mockUser = ApcfflTest.buildUserModel();
+		when(userRepository.findByUserNamePassword(anyString(), anyString()))
+		.thenReturn(mockUser);
+		
+		when(ownerRepository.findByUserName(anyString())).thenReturn(null);
+		
+		// invoke service
+		
+		service.login(ApcfflTest.USER_NAME, ApcfflTest.PASSWORD);
+	}
+	
+	@Test
+	public void verify_login_noTeam() {
+		
+		// prepare test data
+		
+		UserModel mockUser = ApcfflTest.buildUserModel();
+		when(userRepository.findByUserNamePassword(anyString(), anyString()))
+		.thenReturn(mockUser);
+		
+		OwnerModel mockOwner = ApcfflTest.buildOwnerModel();
+		mockOwner.setTeamModel(null);
+		when(ownerRepository.findByUserName(anyString())).thenReturn(mockOwner);
+		
+		// invoke service
+		
+		UserDto dto = service.login(ApcfflTest.USER_NAME, ApcfflTest.PASSWORD);
+		
+		// verify results
+		
+		assertEquals(ApcfflTest.USER_GROUP_OWNER, dto.getUserGroupName());
+		assertEquals(ApcfflTest.USER_NAME, dto.getUserName());
+		assertEquals(ApcfflTest.TEST_TOKEN, dto.getSecurityToken());
+		assertEquals(null, dto.getLeagueName());
+		assertEquals(null, dto.getTeamName());
+		
+		verify(userRepository, times(1))
+		.findByUserNamePassword(userNameCaptor.capture(), passwordCaptor.capture());
+		
+		assertEquals(ApcfflTest.USER_NAME, userNameCaptor.getValue());
+		assertEquals(ApcfflTest.PASSWORD, passwordCaptor.getValue());
+		
+		verify(ownerRepository, times(1)).findByUserName(userNameCaptor.capture());
+		assertEquals(ApcfflTest.USER_NAME, userNameCaptor.getValue());
+		
+		verify(sessionManager, times(1)).generateTokenForUser(userNameCaptor.capture());
+		assertEquals(ApcfflTest.USER_NAME, userNameCaptor.getValue());
+	}
+	
+	@Test
+	public void verify_login_leagueNull() {
+		
+		// prepare test data
+		
+		UserModel mockUser = ApcfflTest.buildUserModel();
+		when(userRepository.findByUserNamePassword(anyString(), anyString()))
+		.thenReturn(mockUser);
+		
+		OwnerModel mockOwner = ApcfflTest.buildOwnerModel();
+		mockOwner.getTeamModel().setLeagueModel(null);
+		when(ownerRepository.findByUserName(anyString())).thenReturn(mockOwner);
+		
+		// invoke service
+		
+		UserDto dto = service.login(ApcfflTest.USER_NAME, ApcfflTest.PASSWORD);
+		
+		// verify results
+		
+		assertEquals(ApcfflTest.USER_GROUP_OWNER, dto.getUserGroupName());
+		assertEquals(ApcfflTest.USER_NAME, dto.getUserName());
+		assertEquals(ApcfflTest.TEST_TOKEN, dto.getSecurityToken());
+		assertEquals(null, dto.getLeagueName());
+		assertEquals(ApcfflTest.LEAGUE_1_TEAM_1, dto.getTeamName());
+		
+		verify(userRepository, times(1))
+		.findByUserNamePassword(userNameCaptor.capture(), passwordCaptor.capture());
+		
+		assertEquals(ApcfflTest.USER_NAME, userNameCaptor.getValue());
+		assertEquals(ApcfflTest.PASSWORD, passwordCaptor.getValue());
+		
+		verify(ownerRepository, times(1)).findByUserName(userNameCaptor.capture());
+		assertEquals(ApcfflTest.USER_NAME, userNameCaptor.getValue());
+		
+		verify(sessionManager, times(1)).generateTokenForUser(userNameCaptor.capture());
+		assertEquals(ApcfflTest.USER_NAME, userNameCaptor.getValue());
 	}
 	
 	@Test
@@ -96,6 +188,9 @@ public class AuthorizationServiceImplTest {
 		when(userRepository.findByUserNamePassword(anyString(), anyString()))
 		.thenReturn(mockUser);
 		
+		OwnerModel mockOwner = ApcfflTest.buildOwnerModel();
+		when(ownerRepository.findByUserName(anyString())).thenReturn(mockOwner);
+		
 		// invoke service
 		
 		UserDto dto = service.login(ApcfflTest.USER_NAME, ApcfflTest.PASSWORD);
@@ -105,12 +200,17 @@ public class AuthorizationServiceImplTest {
 		assertEquals(ApcfflTest.USER_GROUP_OWNER, dto.getUserGroupName());
 		assertEquals(ApcfflTest.USER_NAME, dto.getUserName());
 		assertEquals(ApcfflTest.TEST_TOKEN, dto.getSecurityToken());
+		assertEquals(ApcfflTest.LEAGUE_1_NAME, dto.getLeagueName());
+		assertEquals(ApcfflTest.LEAGUE_1_TEAM_1, dto.getTeamName());
 		
 		verify(userRepository, times(1))
 		.findByUserNamePassword(userNameCaptor.capture(), passwordCaptor.capture());
 		
 		assertEquals(ApcfflTest.USER_NAME, userNameCaptor.getValue());
 		assertEquals(ApcfflTest.PASSWORD, passwordCaptor.getValue());
+		
+		verify(ownerRepository, times(1)).findByUserName(userNameCaptor.capture());
+		assertEquals(ApcfflTest.USER_NAME, userNameCaptor.getValue());
 		
 		verify(sessionManager, times(1)).generateTokenForUser(userNameCaptor.capture());
 		assertEquals(ApcfflTest.USER_NAME, userNameCaptor.getValue());

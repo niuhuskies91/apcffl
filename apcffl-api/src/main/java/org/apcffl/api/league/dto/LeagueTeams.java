@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.apcffl.api.dto.ApiRequest;
 
-public class TeamsDivisionAssignmentRequest extends ApiRequest {
+public class LeagueTeams extends ApiRequest {
 
 	private String ownerLeagueName;
 	private List<Team> teams;

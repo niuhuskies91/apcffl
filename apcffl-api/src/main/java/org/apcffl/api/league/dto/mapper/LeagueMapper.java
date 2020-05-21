@@ -5,12 +5,18 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.collections4.CollectionUtils;
+import org.apcffl.api.league.dto.Conference;
 import org.apcffl.api.league.dto.Division;
 import org.apcffl.api.league.dto.League;
 import org.apcffl.api.league.dto.LeagueOwner;
+import org.apcffl.api.league.dto.School;
+import org.apcffl.api.league.dto.TeamRoster;
+import org.apcffl.api.persistence.model.ConferenceModel;
 import org.apcffl.api.persistence.model.DivisionModel;
 import org.apcffl.api.persistence.model.LeagueModel;
 import org.apcffl.api.persistence.model.OwnerModel;
+import org.apcffl.api.persistence.model.SchoolModel;
+import org.apcffl.api.persistence.model.TeamRosterModel;
 
 public class LeagueMapper {
 
@@ -65,5 +71,52 @@ public class LeagueMapper {
 			leagueOwners.add(leagueOwner);
 		}
 		return leagueOwners;
+	}
+	
+	public static List<Conference> convertConferences(List<ConferenceModel> models) {
+		List<Conference> conferences = new ArrayList<Conference>();
+		if (CollectionUtils.isEmpty(models)) {
+			return conferences;
+		}
+		for (ConferenceModel model : models) {
+			Conference conference = new Conference();
+			conference.setConferenceAbbr(model.getConferenceAbbr());
+			conference.setConferenceName(model.getConferenceName());
+			conference.setConferenceType(model.getNcaaDivisionType());
+			conference.setSchools(convertSchools(model.getSchools()));
+			conferences.add(conference);
+		}
+		return conferences;
+	}
+	
+	public static List<School> convertSchools(Set<SchoolModel> models) {
+		List<School> schools = new ArrayList<School>();
+		for (SchoolModel model : models) {
+			schools.add(convertSchool(model));
+		}
+		return schools;
+	}
+	
+	private static School convertSchool(SchoolModel model) {
+		School school = new School();
+		school.setSchoolName(model.getSchoolName());
+		school.setConferenceName(model.getConference().getConferenceName());
+		school.setConferenceAbbr(model.getConference().getConferenceAbbr());
+		return school;
+	}
+	
+	public static List<TeamRoster> convertTeamRosters(List<TeamRosterModel> models) {
+		
+		List<TeamRoster> roster = new ArrayList<TeamRoster>();
+		if (CollectionUtils.isEmpty(models)) {
+			return roster;
+		}
+		for (TeamRosterModel model : models) {
+			TeamRoster rosterEntry = new TeamRoster();
+			rosterEntry.setScholarshipPoints(model.getScholarshipPoints());
+			rosterEntry.setSchool(convertSchool(model.getSchoolModel()));
+			roster.add(rosterEntry);
+		}
+		return roster;
 	}
 }

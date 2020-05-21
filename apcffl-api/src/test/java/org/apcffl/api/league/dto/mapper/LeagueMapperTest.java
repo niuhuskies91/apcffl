@@ -8,11 +8,17 @@ import java.util.LinkedHashSet;
 import java.util.List;
 
 import org.apcffl.ApcfflTest;
+import org.apcffl.api.constants.ApcfflConstants;
+import org.apcffl.api.league.dto.Conference;
 import org.apcffl.api.league.dto.League;
 import org.apcffl.api.league.dto.LeagueOwner;
+import org.apcffl.api.league.dto.School;
+import org.apcffl.api.league.dto.TeamRoster;
+import org.apcffl.api.persistence.model.ConferenceModel;
 import org.apcffl.api.persistence.model.DivisionModel;
 import org.apcffl.api.persistence.model.LeagueModel;
 import org.apcffl.api.persistence.model.OwnerModel;
+import org.apcffl.api.persistence.model.TeamRosterModel;
 import org.junit.Test;
 
 public class LeagueMapperTest {
@@ -214,5 +220,136 @@ public class LeagueMapperTest {
 
 		assertEquals(ApcfflTest.LEAGUE_1_TEAM_1, result.get(0).getTeamName());
 		assertEquals(ApcfflTest.LEAGUE_1_DIV_1, result.get(0).getDivisionName());
+	}
+	
+	@Test
+	public void verify_convertConferences_nullConferences() {
+		
+		// prepare test data
+		
+		List<ConferenceModel> models = null;
+		
+		// invoke
+		
+		List<Conference> conferences = LeagueMapper.convertConferences(models);
+		
+		// verify
+		
+		assertEquals(0, conferences.size());
+	}
+	
+	@Test
+	public void verify_convertConferences_emptyConferences() {
+		
+		// prepare test data
+		
+		List<ConferenceModel> models = Collections.emptyList();
+		
+		// invoke
+		
+		List<Conference> conferences = LeagueMapper.convertConferences(models);
+		
+		// verify
+		
+		assertEquals(0, conferences.size());
+	}
+	
+	@Test
+	public void verify_convertConferences() {
+		
+		// prepare test data
+		
+		List<ConferenceModel> models = ApcfflTest.buildConferenceModels();
+		
+		// invoke
+		
+		List<Conference> conferences = LeagueMapper.convertConferences(models);
+		
+		// verify
+		
+		assertEquals(2, conferences.size());
+		
+		Conference conference = conferences.get(0);
+		assertEquals(ApcfflTest.CONF_ABBR_BIG_10, conference.getConferenceAbbr());
+		assertEquals(ApcfflTest.CONF_NAME_BIG_10, conference.getConferenceName());
+		assertEquals(ApcfflConstants.NCAA_CONFERENCE_FBS, conference.getConferenceType());
+		School school = conference.getSchools().get(0);
+		assertEquals(ApcfflTest.CONF_ABBR_BIG_10, school.getConferenceAbbr());
+		assertEquals(ApcfflTest.CONF_NAME_BIG_10, school.getConferenceName());
+		assertEquals(ApcfflTest.SCHOOL_NAME_BIG_10_1, school.getSchoolName());
+		school = conference.getSchools().get(1);
+		assertEquals(ApcfflTest.CONF_ABBR_BIG_10, school.getConferenceAbbr());
+		assertEquals(ApcfflTest.CONF_NAME_BIG_10, school.getConferenceName());
+		assertEquals(ApcfflTest.SCHOOL_NAME_BIG_10_2, school.getSchoolName());
+		
+		conference = conferences.get(1);
+		assertEquals(ApcfflTest.CONF_ABBR_MAC, conference.getConferenceAbbr());
+		assertEquals(ApcfflTest.CONF_NAME_MAC, conference.getConferenceName());
+		assertEquals(ApcfflConstants.NCAA_CONFERENCE_FBS, conference.getConferenceType());
+		school = conference.getSchools().get(0);
+		assertEquals(ApcfflTest.CONF_ABBR_MAC, school.getConferenceAbbr());
+		assertEquals(ApcfflTest.CONF_NAME_MAC, school.getConferenceName());
+		assertEquals(ApcfflTest.SCHOOL_NAME_MAC_1, school.getSchoolName());
+		school = conference.getSchools().get(1);
+		assertEquals(ApcfflTest.CONF_ABBR_MAC, school.getConferenceAbbr());
+		assertEquals(ApcfflTest.CONF_NAME_MAC, school.getConferenceName());
+		assertEquals(ApcfflTest.SCHOOL_NAME_MAC_2, school.getSchoolName());
+	}
+	
+	@Test
+	public void verify_convertTeamRosters_nullModel() {
+		
+		// prepare test data
+		
+		List<TeamRosterModel> models = null;
+		
+		// invoke
+		
+		List<TeamRoster> result = LeagueMapper.convertTeamRosters(models);
+		
+		// verify
+		
+		assertEquals(0, result.size());
+	}
+	
+	@Test
+	public void verify_convertTeamRosters_emptyModel() {
+		
+		// prepare test data
+		
+		List<TeamRosterModel> models = Collections.emptyList();
+		
+		// invoke
+		
+		List<TeamRoster> result = LeagueMapper.convertTeamRosters(models);
+		
+		// verify
+		
+		assertEquals(0, result.size());
+	}
+	
+	@Test
+	public void verify_convertTeamRosters() {
+		
+		// prepare test data
+		
+		List<TeamRosterModel> models = ApcfflTest.buildTeamRosterModels();
+		
+		// invoke
+		
+		List<TeamRoster> result = LeagueMapper.convertTeamRosters(models);
+		
+		// verify
+		
+		assertEquals(2, result.size());
+		
+		assertEquals(ApcfflTest.SCHOLARSHIP_POINT_MIN, result.get(0).getScholarshipPoints());
+		assertEquals(ApcfflTest.CONF_ABBR_BIG_10, result.get(0).getSchool().getConferenceAbbr());
+		assertEquals(ApcfflTest.CONF_NAME_BIG_10, result.get(0).getSchool().getConferenceName());
+		assertEquals(ApcfflTest.SCHOOL_NAME_BIG_10_1, result.get(0).getSchool().getSchoolName());
+		assertEquals(ApcfflTest.SCHOLARSHIP_POINT_MIN, result.get(1).getScholarshipPoints());
+		assertEquals(ApcfflTest.CONF_ABBR_BIG_10, result.get(1).getSchool().getConferenceAbbr());
+		assertEquals(ApcfflTest.CONF_NAME_BIG_10, result.get(1).getSchool().getConferenceName());
+		assertEquals(ApcfflTest.SCHOOL_NAME_BIG_10_2, result.get(1).getSchool().getSchoolName());
 	}
 }

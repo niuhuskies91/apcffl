@@ -46,6 +46,9 @@ public class TeamModel implements Serializable {
 	
 	@Column(name = "UPDATE_DATE")
 	private Date updateDate;
+	
+	@OneToOne(mappedBy="teamModel")
+	private OwnerModel ownerModel;
 
 	public Long getTeamId() {
 		return teamId;
@@ -93,6 +96,14 @@ public class TeamModel implements Serializable {
 
 	public void setLeagueModel(LeagueModel leagueModel) {
 		this.leagueModel = leagueModel;
+	}
+
+	public OwnerModel getOwnerModel() {
+		return ownerModel;
+	}
+
+	public void setOwnerModel(OwnerModel ownerModel) {
+		this.ownerModel = ownerModel;
 	}
 	
 }
